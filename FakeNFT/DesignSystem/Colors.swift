@@ -25,25 +25,14 @@ extension UIColor {
         )
     }
 
-    // Ниже приведены примеры цветов, настоящие цвета надо взять из фигмы
-
-    // Primary Colors
-    static let primary = UIColor(red: 0 / 255, green: 122 / 255, blue: 255 / 255, alpha: 1.0)
-
-    // Secondary Colors
-    static let secondary = UIColor(red: 255 / 255, green: 193 / 255, blue: 7 / 255, alpha: 1.0)
-
     // Background Colors
     static let background = UIColor.white
-
-    // Text Colors
-    static let textPrimary = UIColor.black
-    static let textSecondary = UIColor.gray
-    static let textOnPrimary = UIColor.white
-    static let textOnSecondary = UIColor.black
-
-    private static let yaBlackLight = UIColor(hexString: "1A1B22")
-    private static let yaBlackDark = UIColor.white
+    
+    //MARK: Day/Night
+    private static let yaBlackLight = UIColor(hexString: "#1A1B22")
+    private static let yaBlackDark = UIColor(hexString: "#FFFFFF")
+    private static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
+    private static let yaWhiteDark = UIColor(hexString: "#1A1B22")
     private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
     private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
 
@@ -64,4 +53,15 @@ extension UIColor {
         ? .yaBlackDark
         : .yaBlackLight
     }
+    
+    //MARK: Universal
+    
+    private static let yaGrayUniversal = UIColor(hexString: "#625C5C")
+    private static let yaRedUniversal = UIColor(hexString: "#F56B6C")
+    private static let yaBackgroundUniversal = UIColor(hexString: "#1A1B2280")
+    private static let yaGreenUniversal = UIColor(hexString: "#1C9F00")
+    private static let yaBlueUniversal = UIColor(hexString: "#0A84FF")
+    private static let yaBlackUniversal = UIColor(hexString: "#1A1B22")
+    private static let yaWhiteUniversal = UIColor(hexString: "#FFFFFF")
+    private static let yaYellowUniversal = UIColor(hexString: "#FEEF0D")
 }
