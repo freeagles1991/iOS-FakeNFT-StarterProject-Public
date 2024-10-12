@@ -60,8 +60,23 @@ final class CartViewController: UIViewController, CartView {
         view.backgroundColor = .systemBackground
     }
     
+    
+    
     private func setupNavigationBar() {
-        let filterButton = UIBarButtonItem(image: UIImage(named: Constants.filterButtonIcon), style: .plain, target: self, action: #selector(filterButtonTapped))
+        let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.shadowColor = nil
+
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+            navigationController?.navigationBar.compactAppearance = appearance
+
+            // Adjust the content inset if needed
+            navigationController?.navigationBar.layoutMargins = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
+        
+        let filterButton = UIBarButtonItem(image: UIImage(named: Constants.filterButtonIcon), style: .done, target: self, action: #selector(filterButtonTapped))
+        filterButton.tintColor = .black
+        
         navigationItem.rightBarButtonItem = filterButton
     }
 
@@ -75,7 +90,7 @@ final class CartViewController: UIViewController, CartView {
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
