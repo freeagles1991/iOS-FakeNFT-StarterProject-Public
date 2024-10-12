@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 final class CartItemCell: UICollectionViewCell {
-    let screenWidth = UIScreen.main.bounds.width
-    var multiplierForView: CGFloat = 0
+    private let screenWidth = UIScreen.main.bounds.width
+    private var multiplierForView: CGFloat = 0
     
     private let nftImageView: UIImageView = {
         let view = UIImageView()

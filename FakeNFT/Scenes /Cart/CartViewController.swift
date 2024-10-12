@@ -14,7 +14,11 @@ protocol CartView: UIViewController {
 
 final class CartViewController: UIViewController, CartView {
     let presenter: CartPresenter
-    private var collectionView: UICollectionView = {
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private var multiplierForView: CGFloat = 0
+    
+    private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .vertical
             layout.minimumInteritemSpacing = 0
@@ -32,11 +36,63 @@ final class CartViewController: UIViewController, CartView {
     private let interItemSpacing: CGFloat = 0
     private var cellHeight: CGFloat = 0
     
+    private let nftCount = 10
+    
+    private let buttonPanelView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        view.backgroundColor = UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaLightGrayDark : UIColor.yaLightGrayLight
+        }
+
+        view.layer.cornerRadius = 16
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        
+        return view
+    }()
+    
+    private let payButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
+        }
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        button.titleLabel?.font = UIFont.bold17
+
+        button.setTitleColor(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaWhiteDark : UIColor.yaWhiteLight
+        }, for: .normal)
+
+        return button
+    }()
+    
+    private let nftCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.regular15
+        label.textColor = UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
+        }
+        return label
+    }()
+    
+    private let totalCostLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.bold17
+        label.textColor = UIColor.yaGreenUniversal
+        return label
+    }()
+    
     enum Constants {
-        static var filterButtonIcon = "filterButtonIcon"
-        static var deleteNftIcon = "deleteNftIcon"
-        static var nftStubImage = "nftStubImage"
-        static var costString = "Цена"
+        static let filterButtonIcon = "filterButtonIcon"
+        static let deleteNftIcon = "deleteNftIcon"
+        static let nftStubImage = "nftStubImage"
+        static let costString = "Цена"
+        static let payButtonString = "К оплате"
     }
 
     init(presenter: CartPresenter) {
@@ -51,11 +107,14 @@ final class CartViewController: UIViewController, CartView {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        multiplierForView = screenWidth / 375.0
+        
         collectionView.dataSource = self
         collectionView.delegate = self
         
         setupNavigationBar()
         setupCollectionView()
+        setupButtonPanel()
         
         view.backgroundColor = .systemBackground
     }
@@ -96,12 +155,55 @@ final class CartViewController: UIViewController, CartView {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
     }
+    
+    private func setupButtonPanel() {
+        payButton.setTitle(Constants.payButtonString, for: .normal)
+        buttonPanelView.addSubview(payButton)
+        
+        NSLayoutConstraint.activate([
+            payButton.topAnchor.constraint(equalTo: buttonPanelView.topAnchor, constant: 16),
+            payButton.bottomAnchor.constraint(equalTo: buttonPanelView.bottomAnchor, constant: -16),
+            payButton.leadingAnchor.constraint(greaterThanOrEqualTo: buttonPanelView.leadingAnchor, constant: 16),
+            payButton.trailingAnchor.constraint(equalTo: buttonPanelView.trailingAnchor, constant: -16),
+            payButton.widthAnchor.constraint(equalToConstant: 240 * multiplierForView)
+        ])
+        
+        nftCountLabel.text = "\(nftCount) NFTs"
+        buttonPanelView.addSubview(nftCountLabel)
+        
+        NSLayoutConstraint.activate([
+            nftCountLabel.topAnchor.constraint(equalTo: buttonPanelView.topAnchor, constant: 16),
+            nftCountLabel.bottomAnchor.constraint(lessThanOrEqualTo: buttonPanelView.bottomAnchor, constant: -16),
+            nftCountLabel.leadingAnchor.constraint(equalTo: buttonPanelView.leadingAnchor, constant: 16),
+            nftCountLabel.trailingAnchor.constraint(greaterThanOrEqualTo: payButton.trailingAnchor, constant: -16)
+        ])
+        
+        
+        totalCostLabel.text = "\(Nft().cost * Double(nftCount)) ETH"
+        buttonPanelView.addSubview(totalCostLabel)
+        
+        NSLayoutConstraint.activate([
+            totalCostLabel.topAnchor.constraint(greaterThanOrEqualTo: nftCountLabel.bottomAnchor, constant: 2),
+            totalCostLabel.bottomAnchor.constraint(equalTo: buttonPanelView.bottomAnchor, constant: -16),
+            totalCostLabel.leadingAnchor.constraint(equalTo: buttonPanelView.leadingAnchor, constant: 16),
+            totalCostLabel.trailingAnchor.constraint(greaterThanOrEqualTo: payButton.trailingAnchor, constant: -16)
+        ])
+        
+        view.addSubview(buttonPanelView)
+        
+        NSLayoutConstraint.activate([
+            buttonPanelView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            buttonPanelView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            buttonPanelView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            buttonPanelView.heightAnchor.constraint(equalToConstant: 76)
+        ])
+    }
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension CartViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10 // Sample item count
+        return nftCount // Sample item count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
