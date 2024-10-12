@@ -29,12 +29,12 @@ extension UIColor {
     static let background = UIColor.white
     
     //MARK: Day/Night
-    private static let yaBlackLight = UIColor(hexString: "#1A1B22")
-    private static let yaBlackDark = UIColor(hexString: "#FFFFFF")
-    private static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
-    private static let yaWhiteDark = UIColor(hexString: "#1A1B22")
-    private static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
-    private static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
+    static let yaBlackLight = UIColor(hexString: "#1A1B22")
+    static let yaBlackDark = UIColor(hexString: "#FFFFFF")
+    static let yaWhiteLight = UIColor(hexString: "#FFFFFF")
+    static let yaWhiteDark = UIColor(hexString: "#1A1B22")
+    static let yaLightGrayLight = UIColor(hexString: "#F7F7F8")
+    static let yaLightGrayDark = UIColor(hexString: "#2C2C2E")
 
     static let segmentActive = UIColor { traits in
         return traits.userInterfaceStyle == .dark
@@ -56,12 +56,12 @@ extension UIColor {
     
     //MARK: Universal
     
-    private static let yaGrayUniversal = UIColor(hexString: "#625C5C")
-    private static let yaRedUniversal = UIColor(hexString: "#F56B6C")
-    private static let yaBackgroundUniversal = UIColor(hexString: "#1A1B2280")
-    private static let yaGreenUniversal = UIColor(hexString: "#1C9F00")
-    private static let yaBlueUniversal = UIColor(hexString: "#0A84FF")
-    private static let yaBlackUniversal = UIColor(hexString: "#1A1B22")
-    private static let yaWhiteUniversal = UIColor(hexString: "#FFFFFF")
-    private static let yaYellowUniversal = UIColor(hexString: "#FEEF0D")
+    static let yaGrayUniversal = UIColor(hexString: "#625C5C")
+    static let yaRedUniversal = UIColor(hexString: "#F56B6C")
+    static let yaBackgroundUniversal = UIColor(hexString: "#1A1B2280")
+    static let yaGreenUniversal = UIColor(hexString: "#1C9F00")
+    static let yaBlueUniversal = UIColor(hexString: "#0A84FF")
+    static let yaBlackUniversal = UIColor(hexString: "#1A1B22")
+    static let yaWhiteUniversal = UIColor(hexString: "#FFFFFF")
+    static let yaYellowUniversal = UIColor(hexString: "#FEEF0D")
 }
