@@ -2,6 +2,7 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
+
     var servicesAssembly: ServicesAssembly!
 
     private let catalogTabBarItem = UITabBarItem(
@@ -12,8 +13,8 @@ final class TabBarController: UITabBarController {
     
     private let cartTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.cart", comment: ""),
-        image: UIImage(systemName: "basket.fill"),
-        tag: 2
+        image: UIImage(named: "cartTabBarIcon_nonactive"),  // Custom image for inactive state
+        selectedImage: UIImage(named: "cartTabBarIcon_active") // Custom image for active state
     )
 
     override func viewDidLoad() {
