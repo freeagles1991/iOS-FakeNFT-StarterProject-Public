@@ -92,9 +92,10 @@ extension ProfileViewController: ProfileViewDelegate {
             let myNFTsViewController = MyNFTsViewController()
             navigationController?.pushViewController(myNFTsViewController, animated: true)
         case 1:
-            let myNFTsViewController = MyNFTsViewController()
+            let myFavoriteNFTsViewController = FavouritesNFTsViewController()
+            navigationController?.pushViewController(myFavoriteNFTsViewController, animated: true)
         case 2:
-            let myNFTsViewController = MyNFTsViewController()
+            _ = MyNFTsViewController()
         default:
             break
         }

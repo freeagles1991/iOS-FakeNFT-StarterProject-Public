@@ -152,9 +152,9 @@ extension ProfileView: UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            cell.configure(with: "Мои NFT", count: 112)
+            cell.configure(with: "Мои NFT", count: nil)
         case 1:
-            cell.configure(with: "Избранные NFT", count: 11)
+            cell.configure(with: "Избранные NFT", count: nil)
         case 2:
             cell.configure(with: "О разработчике", count: nil)
         default:

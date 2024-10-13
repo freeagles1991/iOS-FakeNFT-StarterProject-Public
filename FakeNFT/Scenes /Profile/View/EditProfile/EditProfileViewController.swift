@@ -96,7 +96,7 @@ final class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         setupButton()
-        view.backgroundColor = .white
+        
         if let profile = profile, let avatarURL = URL(string: profile.avatarURL ?? "") {
             avatarImage.kf.setImage(with: avatarURL)
         }
@@ -163,6 +163,7 @@ final class EditProfileViewController: UIViewController {
             $0.layer.cornerRadius = 12
         }
         
+        view.backgroundColor = .systemBackground
         view.addSubview(closeButton)
         view.addSubview(mainStack)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
