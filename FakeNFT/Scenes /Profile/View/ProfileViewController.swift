@@ -34,6 +34,10 @@ final class ProfileViewController: UIViewController {
     @objc
     private func editButtonPressed() {
         print("Show edit")
+        guard let profile = presenter?.getCurrentProfile() else { return }
+        let editProfileVC = EditProfileViewController(profile: profile)
+        editProfileVC.delegate = self
+        present(editProfileVC, animated: true)
     }
     
     private func setupUI() {
@@ -71,3 +75,12 @@ extension ProfileViewController: ProfileViewProtocol {
     }
     
 }
+
+extension ProfileViewController: EditProfileDelegate {
+    func didUpdateProfile(_ updatedProfile: Profile) {
+        presenter?.updateProfileData(updatedProfile)
+        profileView.update(with: updatedProfile)
+    }
+}
+
+

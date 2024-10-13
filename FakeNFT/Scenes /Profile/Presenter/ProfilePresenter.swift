@@ -13,11 +13,14 @@ protocol ProfileViewProtocol: AnyObject {
 
 protocol ProfilePresenterProtocol: AnyObject {
     func loadProfileData()
+    func getCurrentProfile() -> Profile?
+    func updateProfileData(_ updatedProfile: Profile)
 }
 
 
 final class ProfilePresenter: ProfilePresenterProtocol {
     weak var view: ProfileViewProtocol?
+    private var currentProfile: Profile?
     
     init(view: ProfileViewProtocol?) {
         self.view = view
@@ -31,6 +34,16 @@ final class ProfilePresenter: ProfilePresenterProtocol {
             avatarURL: "https://gravatar.com/avatar/5ecccac69e3d98d59e95a789c07fef55?s=400&d=robohash&r=x",
             website: "Joaquin Phoenix.com"
         )
+        self.currentProfile = profile
         view?.displayProfileData(profile)
+    }
+    
+    func updateProfileData(_ updatedProfile: Profile) {
+        self.currentProfile = updatedProfile
+        view?.displayProfileData(updatedProfile)
+    }
+    
+    func getCurrentProfile() -> Profile? {
+        return currentProfile
     }
 }

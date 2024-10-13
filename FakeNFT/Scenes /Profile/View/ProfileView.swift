@@ -120,13 +120,14 @@ final class ProfileView: UIView {
         ])
     }
 }
-
+//MARK: - UITableViewDelegate
 extension ProfileView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         54
     }
 }
 
+//MARK: - UITableViewDataSource
 extension ProfileView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         3
