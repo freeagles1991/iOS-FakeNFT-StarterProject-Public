@@ -81,6 +81,7 @@ final class EditProfileViewController: UIViewController {
         return textField
     }()
     
+    //MARK: - Init
     init(profile: Profile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
@@ -90,6 +91,7 @@ final class EditProfileViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
@@ -102,6 +104,7 @@ final class EditProfileViewController: UIViewController {
         loadProfileData()
     }
     
+    //MARK: - Private Methods
     private func setupButton() {
         let largeConfig = UIImage.SymbolConfiguration(pointSize: 18 ,weight: .bold)
         let pencilImage = UIImage(systemName: "xmark", withConfiguration: largeConfig)
@@ -128,31 +131,27 @@ final class EditProfileViewController: UIViewController {
         websiteTextField.text = profile?.website
     }
     
+    //MARK: - setupLayout()
     private func setupLayout() {
-        // Стэк для аватарки и имени
         let avatarStack = UIStackView(arrangedSubviews: [avatarImage])
         avatarStack.alignment = .center
         avatarStack.translatesAutoresizingMaskIntoConstraints = false
         
-        // Стэк для имени
         let nameStack = UIStackView(arrangedSubviews: [nameLabel, nameTextField])
         nameStack.axis = .vertical
         nameStack.spacing = 8
         nameStack.translatesAutoresizingMaskIntoConstraints = false
         
-        // Стэк для описания
         let descriptionStack = UIStackView(arrangedSubviews: [descriptionLabel, descriptionTextView])
         descriptionStack.axis = .vertical
         descriptionStack.spacing = 8
         descriptionStack.translatesAutoresizingMaskIntoConstraints = false
         
-        // Стэк для сайта
         let websiteStack = UIStackView(arrangedSubviews: [websiteLabel, websiteTextField])
         websiteStack.axis = .vertical
         websiteStack.spacing = 8
         websiteStack.translatesAutoresizingMaskIntoConstraints = false
         
-        // Главный вертикальный стэк
         let mainStack = UIStackView(arrangedSubviews: [avatarStack, nameStack, descriptionStack, websiteStack])
         mainStack.axis = .vertical
         mainStack.spacing = 20
@@ -168,7 +167,6 @@ final class EditProfileViewController: UIViewController {
         view.addSubview(mainStack)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         
-        // Установка констрейнтов
         NSLayoutConstraint.activate([
             avatarImage.widthAnchor.constraint(equalToConstant: 70),
             avatarImage.heightAnchor.constraint(equalToConstant: 70),

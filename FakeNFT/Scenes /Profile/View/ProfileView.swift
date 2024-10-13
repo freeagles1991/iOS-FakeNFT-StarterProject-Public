@@ -8,7 +8,13 @@
 import UIKit
 import Kingfisher
 
+protocol ProfileViewDelegate: AnyObject {
+    func didSelectItem(at index: Int)
+}
+
 final class ProfileView: UIView {
+    weak var delegate: ProfileViewDelegate?
+    
     //MARK: - UI
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
@@ -102,6 +108,7 @@ final class ProfileView: UIView {
         ])
     }
     
+    //MARK: - setupTableView
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -124,6 +131,11 @@ final class ProfileView: UIView {
 extension ProfileView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         54
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        delegate?.didSelectItem(at: indexPath.row)
     }
 }
 

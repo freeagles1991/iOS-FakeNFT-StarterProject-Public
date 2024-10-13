@@ -43,6 +43,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         view?.displayProfileData(updatedProfile)
     }
     
+    
     func getCurrentProfile() -> Profile? {
         return currentProfile
     }

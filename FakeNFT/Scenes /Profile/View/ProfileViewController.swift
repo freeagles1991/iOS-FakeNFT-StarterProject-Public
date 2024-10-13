@@ -26,6 +26,7 @@ final class ProfileViewController: UIViewController {
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        profileView.delegate = self
         setupUI()
         setupNavigation()
         presenter?.loadProfileData()
@@ -33,7 +34,6 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func editButtonPressed() {
-        print("Show edit")
         guard let profile = presenter?.getCurrentProfile() else { return }
         let editProfileVC = EditProfileViewController(profile: profile)
         editProfileVC.delegate = self
@@ -53,19 +53,21 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNavigation() {
-        let largeConfig = UIImage.SymbolConfiguration(pointSize: 25 ,weight: .bold)
-        let pencilImage = UIImage(systemName: "square.and.pencil", withConfiguration: largeConfig)
-        
-        let editButton = UIBarButtonItem(
-            image: pencilImage,
-            style: .plain,
-            target: self,
-            action: #selector(editButtonPressed)
-        )
-        
+        let pencilImage = UIImage(systemName: "square.and.pencil", withConfiguration: UIImage.SymbolConfiguration(pointSize: 25, weight: .bold))
+        let editButton = UIBarButtonItem(image: pencilImage, style: .plain, target: self, action: #selector(editButtonPressed))
         editButton.tintColor = .segmentActive
         navigationItem.rightBarButtonItem = editButton
+        
+        let backImageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+        let backImage = UIImage(systemName: "chevron.backward", withConfiguration: backImageConfig)
+        
+        navigationController?.navigationBar.backIndicatorImage = backImage
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = .segmentActive
     }
+
     
 }
 
@@ -83,4 +85,18 @@ extension ProfileViewController: EditProfileDelegate {
     }
 }
 
-
+extension ProfileViewController: ProfileViewDelegate {
+    func didSelectItem(at index: Int) {
+        switch index {
+        case 0:
+            let myNFTsViewController = MyNFTsViewController()
+            navigationController?.pushViewController(myNFTsViewController, animated: true)
+        case 1:
+            let myNFTsViewController = MyNFTsViewController()
+        case 2:
+            let myNFTsViewController = MyNFTsViewController()
+        default:
+            break
+        }
+    }
+}
