@@ -135,6 +135,6 @@ final class CartItemCell: UICollectionViewCell {
         nftNameLabel.text = nft.name
         raitingView.rating = Int(nft.rating)
         costLabel.text = CartViewController.Constants.costString
-        costCounterLabel.text = "\(String(format: "%.2f", nft.cost)) ETH"
+        costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
     }
 }

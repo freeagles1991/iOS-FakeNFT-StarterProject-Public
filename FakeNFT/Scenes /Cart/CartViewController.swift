@@ -30,6 +30,23 @@ final class CartViewController: UIViewController, CartView {
         return collectionView
     }()
     
+    private let emptyStateView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .systemBackground
+        return view
+    }()
+    
+    private let emptyCartLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.bold17
+        label.textColor = UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
+        }
+        return label
+    }()
+    
     private let cellIdentifier = "CartItemCell"
     private let itemsPerRow: CGFloat = 1
     private let sectionInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -93,6 +110,7 @@ final class CartViewController: UIViewController, CartView {
         static let nftStubImage = "nftStubImage"
         static let costString = "Цена"
         static let payButtonString = "К оплате"
+        static let emptyCartLabelString = "Корзина пуста"
     }
 
     init(presenter: CartPresenter) {
@@ -116,11 +134,12 @@ final class CartViewController: UIViewController, CartView {
         setupCollectionView()
         setupButtonPanel()
         
+        switchCollectionViewState(isEmptyList: false)
+        
         view.backgroundColor = .systemBackground
     }
     
-    
-    
+    //MARK: Верстка
     private func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -139,10 +158,6 @@ final class CartViewController: UIViewController, CartView {
         navigationItem.rightBarButtonItem = filterButton
     }
 
-    @objc private func filterButtonTapped() {
-        // Handle filter button action
-    }
-
     private func setupCollectionView() {
         collectionView.register(CartItemCell.self, forCellWithReuseIdentifier: cellIdentifier)
         
@@ -153,6 +168,23 @@ final class CartViewController: UIViewController, CartView {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
+        
+        emptyCartLabel.text = Constants.emptyCartLabelString
+        emptyStateView.addSubview(emptyCartLabel)
+        
+        NSLayoutConstraint.activate([
+            emptyCartLabel.centerXAnchor.constraint(equalTo: emptyStateView.centerXAnchor),
+            emptyCartLabel.centerYAnchor.constraint(equalTo: emptyStateView.centerYAnchor),
+        ])
+        
+        view.addSubview(emptyStateView)
+        
+        NSLayoutConstraint.activate([
+            emptyStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            emptyStateView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
     }
     
@@ -179,7 +211,7 @@ final class CartViewController: UIViewController, CartView {
         ])
         
         
-        totalCostLabel.text = "\(Nft().cost * Double(nftCount)) ETH"
+        totalCostLabel.text = "\(Nft().price * Double(nftCount)) ETH"
         buttonPanelView.addSubview(totalCostLabel)
         
         NSLayoutConstraint.activate([
@@ -197,6 +229,20 @@ final class CartViewController: UIViewController, CartView {
             buttonPanelView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             buttonPanelView.heightAnchor.constraint(equalToConstant: 76)
         ])
+    }
+    
+    
+    //MARK: Кнопки
+    @objc private func filterButtonTapped() {
+        // Handle filter button action
+    }
+    
+    //
+    private func switchCollectionViewState(isEmptyList: Bool) {
+        collectionView.isHidden = isEmptyList
+        buttonPanelView.isHidden = isEmptyList
+        navigationController?.navigationBar.isHidden = isEmptyList
+        emptyStateView.isHidden = !isEmptyList
     }
 }
 
