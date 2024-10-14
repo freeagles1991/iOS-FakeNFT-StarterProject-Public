@@ -24,7 +24,7 @@ final class CatalogTableViewCell: UITableViewCell {
     }
     
     func configureCell(urlForDownloadImage: URL, header: String) {
-        
+        self.cellLabel.text = header
     }
 }
 
@@ -37,8 +37,10 @@ private extension CatalogTableViewCell {
     }
     
     func configureImageView() {
+        cellImageView.image = UIImage(named: "catalogStubImage") ?? UIImage()
         cellImageView.clipsToBounds = true
         cellImageView.layer.cornerRadius = 12
+        cellImageView.contentMode = .scaleAspectFill
         cellImageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(cellImageView)
         
@@ -51,7 +53,7 @@ private extension CatalogTableViewCell {
     }
     
     func configureCellLabel() {
-        cellLabel.text = "123"
+        cellLabel.text = "Brown (8)"
         cellLabel.textColor = UIColor.segmentActive
         cellLabel.font = UIFont.bold17
         cellLabel.translatesAutoresizingMaskIntoConstraints = false

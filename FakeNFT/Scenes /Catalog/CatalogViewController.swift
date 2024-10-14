@@ -46,13 +46,19 @@ extension CatalogViewController: CatalogView {
 // MARK: - UITableViewDataSource / UITableViewDelegate func
 
 extension CatalogViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let collectionPresenter: CollectionPresenter = CollectionPresenterImpl(selectedCollection: presenter.dataSource[indexPath.row])
+        let collectionVC = CollectionViewController(presenter: collectionPresenter)
+
+        collectionVC.modalPresentationStyle = .fullScreen
+        present(collectionVC, animated: true)
+    }
 }
 
 extension CatalogViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        presenter.dataSource.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,6 +66,9 @@ extension CatalogViewController: UITableViewDataSource {
         guard let catalogCell = cell as? CatalogTableViewCell else {
             return UITableViewCell()
         }
+        catalogCell.selectionStyle = .none
+        let nftsCountInCurrentCollection = presenter.dataSource[indexPath.row].nfts.count
+        catalogCell.configureCell(urlForDownloadImage: URL(fileURLWithPath: ""), header: "\(presenter.dataSource[indexPath.row].name) (\(nftsCountInCurrentCollection))")
         
         return catalogCell
     }
@@ -77,6 +86,7 @@ private extension CatalogViewController {
         sortButton.setImage(UIImage(resource: .filterButtonIcon), for: .normal)
         sortButton.tintColor = UIColor.segmentActive
         sortButton.translatesAutoresizingMaskIntoConstraints = false
+        sortButton.addTarget(self, action: #selector(showCollectionSortedAlert), for: .touchUpInside)
         view.addSubview(sortButton)
         
         NSLayoutConstraint.activate([
@@ -87,13 +97,32 @@ private extension CatalogViewController {
         ])
     }
     
+    @objc func showCollectionSortedAlert() {
+        let sortedActionSheet = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
+        
+        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { _ in
+            print("Сортировку сделаю в 3 модуле")
+        }
+        
+        let sortByNftCount = UIAlertAction(title: "По количеству NFT", style: .default) { _ in
+            print("Сортировку сделаю в 3 модуле")
+        }
+        
+        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel)
+        
+        sortedActionSheet.addAction(sortByNameAction)
+        sortedActionSheet.addAction(sortByNftCount)
+        sortedActionSheet.addAction(cancelAction)
+        
+        present(sortedActionSheet, animated: true)
+    }
+    
     func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .systemBackground
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-        tableView.contentMode = .scaleToFill
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(CatalogTableViewCell.self, forCellReuseIdentifier: CatalogTableViewCell.reuseIdentifier)
         view.addSubview(tableView)
