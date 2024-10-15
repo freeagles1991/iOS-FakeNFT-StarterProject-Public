@@ -3,6 +3,22 @@
 
 import UIKit
 
+struct GeometricParams {
+    let cellCount: Int
+    let leftInset: CGFloat
+    let rightInset: CGFloat
+    let cellSpacing: CGFloat
+    let paddingWidth: CGFloat
+    
+    init(cellCount: Int, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
+        self.cellCount = cellCount
+        self.leftInset = leftInset
+        self.rightInset = rightInset
+        self.cellSpacing = cellSpacing
+        self.paddingWidth = leftInset + rightInset + CGFloat(cellCount - 1) * cellSpacing
+    }
+}
+
 protocol CollectionViewC: AnyObject {
     func updateUI()
 }
@@ -17,6 +33,16 @@ final class CollectionViewController: UIViewController {
     private lazy var collectionNameLabel = UILabel()
     private lazy var collectionAuthorLabel = UILabel()
     private lazy var collectionDescriptionTextView = UITextView()
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.contentInsetAdjustmentBehavior = .always
+        collectionView.backgroundColor = .systemBackground
+        collectionView.isScrollEnabled = false
+        collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.identifier)
+        return collectionView
+    }()
+    
+    private let geometricParams = GeometricParams(cellCount: 3, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     // MARK: - Init
     
@@ -36,8 +62,65 @@ final class CollectionViewController: UIViewController {
         
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let size = CGSize(width: collectionDescriptionTextView.frame.width, height: .infinity)
+        let estimatedSize = collectionDescriptionTextView.sizeThatFits(size)
+        collectionDescriptionTextView.heightAnchor.constraint(equalToConstant: estimatedSize.height).isActive = true
+        
+        collectionView.layoutIfNeeded()
+        let contentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+        collectionView.heightAnchor.constraint(equalToConstant: contentHeight).isActive = true
+    }
+    
     // MARK: - private functions
     
+}
+
+// MARK: - UICollectionViewDataSource func
+
+extension CollectionViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath)
+        guard let collectionCell = cell as? CollectionViewCell else {
+            return CollectionViewCell()
+        }
+        return collectionCell
+    }
+}
+
+// MARK: - UICollectionViewDelegate func
+
+extension CollectionViewController: UICollectionViewDelegate {
+
+}
+
+// MARK: UICollectionViewDelegateFlowLayout func
+
+extension CollectionViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let availableWidth = collectionView.frame.width - geometricParams.paddingWidth
+        let cellWidth = availableWidth / CGFloat(geometricParams.cellCount)
+        return CGSize(width: cellWidth, height: cellWidth * 1.8)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        geometricParams.cellSpacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        8
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 0, left: geometricParams.leftInset, bottom: 24, right: geometricParams.rightInset)
+    }
 }
 
 // MARK: - ConfigureUI
@@ -50,6 +133,7 @@ private extension CollectionViewController {
         configureCollectionNameLabel()
         configureCollectionAuthorLabel()
         configureCollectionDescriptionTextView()
+        configureCollectionView()
     }
     
     func configureScrollView() {
@@ -58,6 +142,7 @@ private extension CollectionViewController {
         scrollView.backgroundColor = .systemBackground
         scrollView.showsVerticalScrollIndicator = false
         scrollView.isScrollEnabled = true
+        scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -123,20 +208,31 @@ private extension CollectionViewController {
     func configureCollectionDescriptionTextView() {
         collectionDescriptionTextView.text = presenter.selectedCollection.description
         collectionDescriptionTextView.isScrollEnabled = false
+        collectionDescriptionTextView.backgroundColor = .systemBackground
         collectionDescriptionTextView.font = UIFont.regular13
         collectionDescriptionTextView.textColor = UIColor.segmentActive
         collectionDescriptionTextView.textContainer.lineFragmentPadding = 0
         collectionDescriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(collectionDescriptionTextView)
         
-        let size = CGSize(width: contentView.frame.width - 32, height: .infinity)
-        let estimatedSize = collectionDescriptionTextView.sizeThatFits(size)
-        
         NSLayoutConstraint.activate([
             collectionDescriptionTextView.topAnchor.constraint(equalTo: collectionAuthorLabel.bottomAnchor),
             collectionDescriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             collectionDescriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            collectionDescriptionTextView.heightAnchor.constraint(equalToConstant: estimatedSize.height)
+        ])
+    }
+    
+    func configureCollectionView() {
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: collectionDescriptionTextView.bottomAnchor, constant: 24),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
     }
 }
