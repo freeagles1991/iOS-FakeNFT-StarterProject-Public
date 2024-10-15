@@ -9,7 +9,13 @@ import Foundation
 import UIKit
 import Kingfisher
 
+protocol CartItemCellDelegate: AnyObject {
+    func didTapButton(in cell: CartItemCell)
+}
+
 final class CartItemCell: UICollectionViewCell {
+    weak var delegate: CartItemCellDelegate?
+    
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
@@ -90,6 +96,7 @@ final class CartItemCell: UICollectionViewCell {
         ])
         
         contentView.addSubview(deleteButton)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -142,5 +149,9 @@ final class CartItemCell: UICollectionViewCell {
         print(raitingView.rating, nft.rating)
         costLabel.text = CartViewController.Constants.costString
         costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
+    }
+    
+    @objc func deleteButtonTapped(_ sender: UIButton) {
+        delegate?.didTapButton(in: self)
     }
 }

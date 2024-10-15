@@ -267,6 +267,7 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! CartItemCell
         guard let nfts = presenter.getNFTs() else {return cell}
         cell.configure(with: nfts[indexPath.row], stubImage: UIImage(named: Constants.nftStubImage))
+        cell.delegate = self
         return cell
     }
     
@@ -280,5 +281,19 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
         cellHeight = heightPerItem
         print(cellHeight, widthPerItem)
         return CGSize(width: widthPerItem, height: heightPerItem)
+    }
+}
+
+//MARK: CartItemCellDelegate
+extension CartViewController: CartItemCellDelegate {
+    func didTapButton(in cell: CartItemCell) {
+        if let indexPath = collectionView.indexPath(for: cell) {
+            print("Tapped button in cell at \(indexPath.row)")
+            
+            // Обработка удаления элемента
+
+            // Удаление из данных и обновление представления
+            // ...
+        }
     }
 }
