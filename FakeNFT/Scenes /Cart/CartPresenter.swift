@@ -9,6 +9,7 @@ import Foundation
 
 protocol CartPresenter {
     func getNFTs() -> [Nft]?
+    func viewDidLoad()
 }
 
 final class CartPresenterImpl: CartPresenter {
@@ -38,20 +39,22 @@ final class CartPresenterImpl: CartPresenter {
     
     init(nftService: NftService) {
         self.nftService = nftService
-        
+        //"Добавляем" в корзину nft для тестов
+        addNftToCart(nftIDs: testNFTsInCart)
+    }
+    
+    func viewDidLoad() {
         guard let view else {return}
-        
         loadNfts(byIDs: testNFTs) { [weak self] in
             guard
                 let self,
-                let nfts = self.getNFTsInCartByID(nftsInCart: testNFTsInCart)
+                let nfts = self.getNFTsInCartByID(nftsInCart: CartStore.nftsInCart)
             else {return}
             self.nfts = nfts
+            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
             view.updateCollectionView()
             view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
         }
-        
-        view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
     }
     
     func getNFTs() -> [Nft]? {
@@ -100,5 +103,9 @@ final class CartPresenterImpl: CartPresenter {
             price = price + nft.price
         }
         return price
+    }
+    
+    private func addNftToCart(nftIDs: [String]) {
+        CartStore.nftsInCart.append(contentsOf: nftIDs)
     }
 }

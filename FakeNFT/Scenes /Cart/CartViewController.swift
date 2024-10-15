@@ -134,6 +134,8 @@ final class CartViewController: UIViewController, CartView {
         setupCollectionView()
         setupButtonPanel()
         
+        presenter.viewDidLoad()
+        
         view.backgroundColor = .systemBackground
     }
     
@@ -194,6 +196,7 @@ final class CartViewController: UIViewController, CartView {
         ])
         
         view.addSubview(emptyStateView)
+        emptyStateView.isHidden = true
         
         NSLayoutConstraint.activate([
             emptyStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
