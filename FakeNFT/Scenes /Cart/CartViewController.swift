@@ -15,6 +15,19 @@ protocol CartView: UIViewController {
 final class CartViewController: UIViewController, CartView {
     let presenter: CartPresenter
     
+    let testNFTs: [String] = [
+    "1464520d-1659-4055-8a79-4593b9569e48",
+    "b2f44171-7dcd-46d7-a6d3-e2109aacf520",
+    "fa03574c-9067-45ad-9379-e3ed2d70df78"
+    ]
+    
+    let testNFTsInCart: [String] = [
+    "1464520d-1659-4055-8a79-4593b9569e48",
+    "b2f44171-7dcd-46d7-a6d3-e2109aacf520"
+    ]
+    
+    private var nfts: [Nft] = []
+    
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
@@ -52,8 +65,6 @@ final class CartViewController: UIViewController, CartView {
     private let sectionInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     private let interItemSpacing: CGFloat = 0
     private var cellHeight: CGFloat = 0
-    
-    private let nftCount = 10
     
     private let buttonPanelView: UIView = {
         let view = UIView()
@@ -124,6 +135,16 @@ final class CartViewController: UIViewController, CartView {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        presenter.loadNfts(byIDs: testNFTs) { [weak self] in
+            guard 
+                let self,
+                let nfts = self.presenter.getNFTsInCartByID(nftsInCart: testNFTsInCart)
+            else {return}
+            self.nfts = nfts
+            collectionView.reloadData()
+            configureTotalCost()
+        }
         
         multiplierForView = screenWidth / 375.0
         
@@ -199,8 +220,7 @@ final class CartViewController: UIViewController, CartView {
             payButton.trailingAnchor.constraint(equalTo: buttonPanelView.trailingAnchor, constant: -16),
             payButton.widthAnchor.constraint(equalToConstant: 240 * multiplierForView)
         ])
-        
-        nftCountLabel.text = "\(nftCount) NFTs"
+    
         buttonPanelView.addSubview(nftCountLabel)
         
         NSLayoutConstraint.activate([
@@ -210,8 +230,6 @@ final class CartViewController: UIViewController, CartView {
             nftCountLabel.trailingAnchor.constraint(greaterThanOrEqualTo: payButton.trailingAnchor, constant: -16)
         ])
         
-        
-        totalCostLabel.text = "\(Nft().price * Double(nftCount)) ETH"
         buttonPanelView.addSubview(totalCostLabel)
         
         NSLayoutConstraint.activate([
@@ -232,29 +250,42 @@ final class CartViewController: UIViewController, CartView {
     }
     
     
+    
     //MARK: Кнопки
     @objc private func filterButtonTapped() {
         // Handle filter button action
     }
     
-    //
+    //MARK: Private
     private func switchCollectionViewState(isEmptyList: Bool) {
         collectionView.isHidden = isEmptyList
         buttonPanelView.isHidden = isEmptyList
         navigationController?.navigationBar.isHidden = isEmptyList
         emptyStateView.isHidden = !isEmptyList
     }
+    
+    private func configureTotalCost() {
+        let totalPrice: Double = {
+            var price: Double = 0
+            for nft in nfts {
+                price = price + nft.price
+            }
+            return price
+        }()
+        totalCostLabel.text = "\(totalPrice) ETH"
+        nftCountLabel.text = "\(nfts.count) NFT"
+    }
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension CartViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return nftCount // Sample item count
+        return nfts.count // Sample item count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! CartItemCell
-        cell.configure(with: Nft(), stubImage: UIImage(named: Constants.nftStubImage))
+        cell.configure(with: nfts[indexPath.row], stubImage: UIImage(named: Constants.nftStubImage))
         return cell
     }
     

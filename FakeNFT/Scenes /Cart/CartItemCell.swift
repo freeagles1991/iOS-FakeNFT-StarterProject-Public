@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 final class CartItemCell: UICollectionViewCell {
     private let screenWidth = UIScreen.main.bounds.width
@@ -131,9 +132,14 @@ final class CartItemCell: UICollectionViewCell {
     }
 
     func configure(with nft: Nft, stubImage: UIImage? = UIImage()) {
-        nftImageView.image = stubImage
+        if let imageUrl = nft.images.first {
+            nftImageView.kf.setImage(with: imageUrl, placeholder: stubImage)
+        } else {
+            nftImageView.image = stubImage
+        }
         nftNameLabel.text = nft.name
-        raitingView.rating = Int(nft.rating)
+        raitingView.rating = nft.rating
+        print(raitingView.rating, nft.rating)
         costLabel.text = CartViewController.Constants.costString
         costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
     }
