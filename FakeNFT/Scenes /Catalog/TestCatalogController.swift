@@ -4,6 +4,7 @@ final class TestCatalogViewController: UIViewController {
 
     let servicesAssembly: ServicesAssembly
     let testNftButton = UIButton()
+    let raiting = StarRatingView()
 
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
@@ -18,9 +19,15 @@ final class TestCatalogViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .systemBackground
-
+        raiting.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(testNftButton)
+        view.addSubview(raiting)
         testNftButton.constraintCenters(to: view)
+        
+        raiting.topAnchor.constraint(equalTo: testNftButton.bottomAnchor, constant: 18).isActive = true
+            raiting.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        raiting.rating = 80
         testNftButton.setTitle(Constants.openNftTitle, for: .normal)
         testNftButton.addTarget(self, action: #selector(showNft), for: .touchUpInside)
         testNftButton.setTitleColor(.systemBlue, for: .normal)
