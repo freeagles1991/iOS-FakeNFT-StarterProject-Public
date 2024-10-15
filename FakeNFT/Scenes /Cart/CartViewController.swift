@@ -208,6 +208,7 @@ final class CartViewController: UIViewController, CartView {
     
     private func setupButtonPanel() {
         payButton.setTitle(Constants.payButtonString, for: .normal)
+        payButton.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
         buttonPanelView.addSubview(payButton)
         
         NSLayoutConstraint.activate([
@@ -250,7 +251,11 @@ final class CartViewController: UIViewController, CartView {
     
     //MARK: Кнопки
     @objc private func filterButtonTapped() {
-        // Handle filter button action
+        presenter.filterButtonTapped()
+    }
+    
+    @objc private func payButtonTapped() {
+        presenter.payButtonTapped()
     }
     
     //MARK: Private

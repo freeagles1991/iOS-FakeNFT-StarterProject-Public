@@ -10,6 +10,8 @@ import Foundation
 protocol CartPresenter {
     func getNFTs() -> [Nft]?
     func viewDidLoad()
+    func filterButtonTapped()
+    func payButtonTapped()
 }
 
 final class CartPresenterImpl: CartPresenter {
@@ -42,7 +44,7 @@ final class CartPresenterImpl: CartPresenter {
         //"Добавляем" в корзину nft для тестов
         addNftToCart(nftIDs: testNFTsInCart)
     }
-    
+    //MARK: Public
     func viewDidLoad() {
         guard let view else {return}
         loadNfts(byIDs: testNFTs) { [weak self] in
@@ -59,6 +61,14 @@ final class CartPresenterImpl: CartPresenter {
     
     func getNFTs() -> [Nft]? {
         return nfts
+    }
+    
+    func filterButtonTapped() {
+        print("CartPresenter: filter button tapped")
+    }
+    
+    func payButtonTapped() {
+        print("CartPresenter: pay button tapped")
     }
     
     //MARK: Private
