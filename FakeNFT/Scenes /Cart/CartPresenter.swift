@@ -8,19 +8,58 @@
 import Foundation
 
 protocol CartPresenter {
-    func getNFTsInCartByID(nftsInCart: [String]) -> [Nft]?
-    func loadNfts(byIDs ids: [String], completion: @escaping () -> Void)
+    func getNFTs() -> [Nft]?
 }
 
 final class CartPresenterImpl: CartPresenter {
     weak var view: CartView?
     private let nftService: NftService
     
-    init(nftService: NftService) {
-        self.nftService = nftService
+    let testNFTs: [String] = [
+    "1464520d-1659-4055-8a79-4593b9569e48",
+    "b2f44171-7dcd-46d7-a6d3-e2109aacf520",
+    "fa03574c-9067-45ad-9379-e3ed2d70df78"
+    ]
+    
+    let testNFTsInCart: [String] = [
+    "1464520d-1659-4055-8a79-4593b9569e48",
+    "b2f44171-7dcd-46d7-a6d3-e2109aacf520"
+    ]
+    
+    private var nfts: [Nft] = [] {
+        didSet {
+            guard let view else {return}
+            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+            view.updateCollectionView()
+            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+            
+        }
     }
     
-    func getNFTsInCartByID(nftsInCart: [String]) -> [Nft]? {
+    init(nftService: NftService) {
+        self.nftService = nftService
+        
+        guard let view else {return}
+        
+        loadNfts(byIDs: testNFTs) { [weak self] in
+            guard
+                let self,
+                let nfts = self.getNFTsInCartByID(nftsInCart: testNFTsInCart)
+            else {return}
+            self.nfts = nfts
+            view.updateCollectionView()
+            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+        }
+        
+        view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+    }
+    
+    func getNFTs() -> [Nft]? {
+        return nfts
+    }
+    
+    //MARK: Private
+    private func getNFTsInCartByID(nftsInCart: [String]) -> [Nft]? {
         var nfts: [Nft] = []
         for id in nftsInCart {
             if let nft = nftService.getNftFromStorageByID(with: id) {
@@ -32,7 +71,7 @@ final class CartPresenterImpl: CartPresenter {
         return nfts
     }
     
-    func loadNfts(byIDs ids: [String], completion: @escaping () -> Void) {
+    private func loadNfts(byIDs ids: [String], completion: @escaping () -> Void) {
         let dispatchGroup = DispatchGroup()
         
         ids.forEach { id in
@@ -53,5 +92,13 @@ final class CartPresenterImpl: CartPresenter {
         dispatchGroup.notify(queue: .main) {
             completion()
         }
+    }
+    
+    private func getNftsTotalPrice() -> Double{
+        var price: Double = 0
+        for nft in nfts {
+            price = price + nft.price
+        }
+        return price
     }
 }

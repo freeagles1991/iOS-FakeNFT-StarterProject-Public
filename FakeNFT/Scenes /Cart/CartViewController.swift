@@ -9,24 +9,13 @@ import Foundation
 import UIKit
 
 protocol CartView: UIViewController {
-    
+    func switchCollectionViewState(isEmptyList: Bool)
+    func updateCollectionView()
+    func configureTotalCost(totalPrice: Double, nftsCount: Int)
 }
 
 final class CartViewController: UIViewController, CartView {
     let presenter: CartPresenter
-    
-    let testNFTs: [String] = [
-    "1464520d-1659-4055-8a79-4593b9569e48",
-    "b2f44171-7dcd-46d7-a6d3-e2109aacf520",
-    "fa03574c-9067-45ad-9379-e3ed2d70df78"
-    ]
-    
-    let testNFTsInCart: [String] = [
-    "1464520d-1659-4055-8a79-4593b9569e48",
-    "b2f44171-7dcd-46d7-a6d3-e2109aacf520"
-    ]
-    
-    private var nfts: [Nft] = []
     
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
@@ -136,16 +125,6 @@ final class CartViewController: UIViewController, CartView {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter.loadNfts(byIDs: testNFTs) { [weak self] in
-            guard 
-                let self,
-                let nfts = self.presenter.getNFTsInCartByID(nftsInCart: testNFTsInCart)
-            else {return}
-            self.nfts = nfts
-            collectionView.reloadData()
-            configureTotalCost()
-        }
-        
         multiplierForView = screenWidth / 375.0
         
         collectionView.dataSource = self
@@ -155,9 +134,24 @@ final class CartViewController: UIViewController, CartView {
         setupCollectionView()
         setupButtonPanel()
         
-        switchCollectionViewState(isEmptyList: false)
-        
         view.backgroundColor = .systemBackground
+    }
+    
+    //MARK: Public
+    func switchCollectionViewState(isEmptyList: Bool) {
+        collectionView.isHidden = isEmptyList
+        buttonPanelView.isHidden = isEmptyList
+        navigationController?.navigationBar.isHidden = isEmptyList
+        emptyStateView.isHidden = !isEmptyList
+    }
+    
+    func configureTotalCost(totalPrice: Double, nftsCount: Int) {
+        totalCostLabel.text = "\(totalPrice) ETH"
+        nftCountLabel.text = "\(nftsCount) NFT"
+    }
+    
+    func updateCollectionView() {
+        collectionView.reloadData()
     }
     
     //MARK: Верстка
@@ -257,34 +251,18 @@ final class CartViewController: UIViewController, CartView {
     }
     
     //MARK: Private
-    private func switchCollectionViewState(isEmptyList: Bool) {
-        collectionView.isHidden = isEmptyList
-        buttonPanelView.isHidden = isEmptyList
-        navigationController?.navigationBar.isHidden = isEmptyList
-        emptyStateView.isHidden = !isEmptyList
-    }
-    
-    private func configureTotalCost() {
-        let totalPrice: Double = {
-            var price: Double = 0
-            for nft in nfts {
-                price = price + nft.price
-            }
-            return price
-        }()
-        totalCostLabel.text = "\(totalPrice) ETH"
-        nftCountLabel.text = "\(nfts.count) NFT"
-    }
+
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension CartViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return nfts.count // Sample item count
+        return presenter.getNFTs()?.count ?? 0 // Sample item count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! CartItemCell
+        guard let nfts = presenter.getNFTs() else {return cell}
         cell.configure(with: nfts[indexPath.row], stubImage: UIImage(named: Constants.nftStubImage))
         return cell
     }
