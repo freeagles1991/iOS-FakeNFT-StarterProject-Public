@@ -12,16 +12,17 @@ final class CartStore {
     private static let cartKey = "nftsInCart"
 
     //Сохраняем и получаем IDшники NFT в корзине
-    static var nftsInCart: [String] {
+    static var nftsInCart: Set<String> {
         get {
             guard let data = UserDefaults.standard.data(forKey: cartKey),
                   let nftIDs = try? JSONDecoder().decode([String].self, from: data) else {
                 return []
             }
-            return nftIDs
+            return Set(nftIDs) // Преобразуем массив в множество для уникальности
         }
         set {
-            if let data = try? JSONEncoder().encode(newValue) {
+            let nftArray = Array(newValue) // Преобразуем множество в массив для сохранения
+            if let data = try? JSONEncoder().encode(nftArray) {
                 UserDefaults.standard.set(data, forKey: cartKey)
             }
         }
