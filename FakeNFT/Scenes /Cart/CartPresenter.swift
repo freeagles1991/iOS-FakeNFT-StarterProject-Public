@@ -48,7 +48,7 @@ final class CartPresenterImpl: CartPresenter {
         loadNfts(byIDs: testNFTs) { [weak self] in
             guard
                 let self,
-                let nfts = self.getNFTsInCartByID(nftsInCart: CartStore.nftsInCart)
+                let nfts = self.getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart))
             else {return}
             self.nfts = nfts
             view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
@@ -106,6 +106,6 @@ final class CartPresenterImpl: CartPresenter {
     }
     
     private func addNftToCart(nftIDs: [String]) {
-        CartStore.nftsInCart.append(contentsOf: nftIDs)
+        CartStore.nftsInCart.formUnion(nftIDs)
     }
 }
