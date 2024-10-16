@@ -28,7 +28,8 @@ final class CollectionViewController: UIViewController {
     private let presenter: CollectionPresenter
     
     private lazy var scrollView = UIScrollView()
-    private let contentView = UIView()
+    private lazy var contentView = UIView()
+    private lazy var backButton = UIButton(type: .system)
     private lazy var collectionImageView = UIImageView()
     private lazy var collectionNameLabel = UILabel()
     private lazy var collectionAuthorLabel = UILabel()
@@ -64,10 +65,6 @@ final class CollectionViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
-        let size = CGSize(width: collectionDescriptionTextView.frame.width, height: .infinity)
-        let estimatedSize = collectionDescriptionTextView.sizeThatFits(size)
-        collectionDescriptionTextView.heightAnchor.constraint(equalToConstant: estimatedSize.height).isActive = true
         
         collectionView.layoutIfNeeded()
         let contentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
@@ -130,6 +127,7 @@ private extension CollectionViewController {
         view.backgroundColor = .systemBackground
         configureScrollView()
         configureCollectionImageView()
+        configureBackButton()
         configureCollectionNameLabel()
         configureCollectionAuthorLabel()
         configureCollectionDescriptionTextView()
@@ -175,6 +173,25 @@ private extension CollectionViewController {
             collectionImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             collectionImageView.heightAnchor.constraint(equalToConstant: 310)
         ])
+    }
+    
+    func configureBackButton() {
+        backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
+        backButton.tintColor = UIColor.segmentActive
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.addTarget(self, action: #selector(backButtonDidTapped), for: .touchUpInside)
+        contentView.addSubview(backButton)
+        
+        NSLayoutConstraint.activate([
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
+            backButton.heightAnchor.constraint(equalToConstant: 24),
+            backButton.widthAnchor.constraint(equalToConstant: 24)
+        ])
+    }
+    
+    @objc func backButtonDidTapped() {
+        self.dismiss(animated: true)
     }
     
     func configureCollectionNameLabel() {
