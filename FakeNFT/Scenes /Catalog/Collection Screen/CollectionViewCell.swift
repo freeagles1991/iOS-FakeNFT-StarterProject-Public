@@ -103,7 +103,7 @@ private extension CollectionViewCell {
         nameLabel.adjustsFontSizeToFitWidth = true
         nameLabel.minimumScaleFactor = 0.5
         
-        currencyLabel.text = "1 ETH"
+        currencyLabel.text = "2 ETH"
         currencyLabel.textAlignment = .left
         currencyLabel.textColor = UIColor.segmentActive
         currencyLabel.font = UIFont.medium10
@@ -117,7 +117,7 @@ private extension CollectionViewCell {
     }
     
     func configureCartButtonAndStackView() {
-        cartButton.setImage(UIImage(named: "deleteNftIcon"), for: .normal)
+        cartButton.setImage(UIImage(named: "cartIconAddBlack"), for: .normal)
         cartButton.translatesAutoresizingMaskIntoConstraints = false
         cartButton.addTarget(self, action: #selector(cartButtonDidTapped), for: .touchUpInside)
         

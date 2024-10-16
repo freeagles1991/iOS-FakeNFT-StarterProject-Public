@@ -176,7 +176,7 @@ private extension CollectionViewController {
     }
     
     func configureBackButton() {
-        backButton.setImage(UIImage(systemName: "chevron.backward"), for: .normal)
+        backButton.setImage(UIImage(named: "backButton"), for: .normal)
         backButton.tintColor = UIColor.segmentActive
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.addTarget(self, action: #selector(backButtonDidTapped), for: .touchUpInside)
