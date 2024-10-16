@@ -7,14 +7,21 @@
 
 import Foundation
 import UIKit
+import ProgressHUD
 
-protocol CartView: UIViewController {
+protocol CartView: UIViewController, LoadingView {
     func switchCollectionViewState(isEmptyList: Bool)
     func updateCollectionView()
     func configureTotalCost(totalPrice: Double, nftsCount: Int)
 }
 
-final class CartViewController: UIViewController, CartView {
+final class CartViewController: UIViewController, CartView{
+    var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
     let presenter: CartPresenter
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -130,6 +137,7 @@ final class CartViewController: UIViewController, CartView {
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        setupLoadingView()
         setupNavigationBar()
         setupCollectionView()
         setupButtonPanel()
@@ -157,6 +165,15 @@ final class CartViewController: UIViewController, CartView {
     }
     
     //MARK: Верстка
+    private func setupLoadingView() {
+        view.addSubview(activityIndicator)
+        
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
     private func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -209,6 +226,7 @@ final class CartViewController: UIViewController, CartView {
     private func setupButtonPanel() {
         payButton.setTitle(Constants.payButtonString, for: .normal)
         payButton.addTarget(self, action: #selector(payButtonTapped), for: .touchUpInside)
+        buttonPanelView.isHidden = true
         buttonPanelView.addSubview(payButton)
         
         NSLayoutConstraint.activate([

@@ -47,6 +47,7 @@ final class CartPresenterImpl: CartPresenter {
     //MARK: Public
     func viewDidLoad() {
         guard let view else {return}
+        view.showLoading()
         loadNfts(byIDs: testNFTs) { [weak self] in
             guard
                 let self,
@@ -56,6 +57,7 @@ final class CartPresenterImpl: CartPresenter {
             view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
             view.updateCollectionView()
             view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+            view.hideLoading()
         }
     }
     
