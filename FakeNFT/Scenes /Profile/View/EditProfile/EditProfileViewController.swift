@@ -9,12 +9,12 @@ import UIKit
 import Kingfisher
 
 protocol EditProfileDelegate: AnyObject {
-    func didUpdateProfile(_ updatedProfile: Profile)
+    func didUpdateProfile(_ updatedProfile: UserProfile)
 }
 
 final class EditProfileViewController: UIViewController {
     weak var delegate: EditProfileDelegate?
-    private var profile: Profile?
+    private var profile: UserProfile?
     
     //MARK: - UI
     private lazy var closeButton: UIButton = {
@@ -82,7 +82,7 @@ final class EditProfileViewController: UIViewController {
     }()
     
     //MARK: - Init
-    init(profile: Profile) {
+    init(profile: UserProfile) {
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,12 +96,12 @@ final class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         setupButton()
-        
-        if let profile = profile, let avatarURL = URL(string: profile.avatarURL ?? "") {
-            avatarImage.kf.setImage(with: avatarURL)
-        }
-        
         loadProfileData()
+    }
+    //MARK: - viewWillDisappear
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateProfile()
     }
     
     //MARK: - Private Methods
@@ -115,20 +115,34 @@ final class EditProfileViewController: UIViewController {
     }
     
     @objc private func saveButtonPressed() {
-        let updatedProfile = Profile(
-            name: nameTextField.text ?? "",
-            description: descriptionTextView.text ?? "",
-            avatarURL: profile?.avatarURL,
-            website: websiteTextField.text ?? ""
-        )
-        delegate?.didUpdateProfile(updatedProfile)
+        updateProfile()
         dismiss(animated: true)
+    }
+    
+    private func updateProfile() {
+        guard let currentProfile = profile else { return }
+        
+        let updatedProfile = UserProfile(
+            name: nameTextField.text ?? currentProfile.name,
+            avatar: currentProfile.avatar,
+            description: descriptionTextView.text ?? currentProfile.description,
+            website: websiteTextField.text ?? currentProfile.website,
+            nfts: currentProfile.nfts,
+            likes: currentProfile.likes,
+            id: currentProfile.id
+        )
+        
+        delegate?.didUpdateProfile(updatedProfile)
     }
 
     private func loadProfileData() {
         nameTextField.text = profile?.name
         descriptionTextView.text = profile?.description
         websiteTextField.text = profile?.website
+        
+        if let profile = profile, let avatarURL = URL(string: profile.avatar) {
+            avatarImage.kf.setImage(with: avatarURL)
+        }
     }
     
     //MARK: - setupLayout()

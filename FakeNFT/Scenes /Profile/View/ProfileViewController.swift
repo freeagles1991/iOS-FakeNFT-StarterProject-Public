@@ -72,14 +72,14 @@ final class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: ProfileViewProtocol {
-    func displayProfileData(_ profile: Profile) {
+    func displayProfileData(_ profile: UserProfile) {
         profileView.update(with: profile)
     }
     
 }
 
 extension ProfileViewController: EditProfileDelegate {
-    func didUpdateProfile(_ updatedProfile: Profile) {
+    func didUpdateProfile(_ updatedProfile: UserProfile) {
         presenter?.updateProfileData(updatedProfile)
         profileView.update(with: updatedProfile)
     }

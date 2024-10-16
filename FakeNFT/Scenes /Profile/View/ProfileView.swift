@@ -83,16 +83,17 @@ final class ProfileView: UIView {
     }
     
     
-    func update(with profile: Profile) {
+    func update(with profile: UserProfile) {
         nameLabel.text = profile.name
         descriptionLabel.text = profile.description
         websiteLabel.text = profile.website
-        if let avatarURL = profile.avatarURL, let url = URL(string: avatarURL) {
-            avatarPhoto.kf.setImage(with: url)
+        if let avatarURL = URL(string: profile.avatar) {
+            avatarPhoto.kf.setImage(with: avatarURL)
         } else {
             avatarPhoto.image = UIImage(named: "placeholder")
         }
     }
+
     
     //MARK: - SetupUI
     private func setupUI() {
@@ -164,5 +165,5 @@ extension ProfileView: UITableViewDataSource {
         return cell
     }
     
-    
 }
+
