@@ -41,19 +41,22 @@ final class CartPresenterImpl: CartPresenter {
     
     init(nftService: NftService) {
         self.nftService = nftService
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(cartDidChange), name: CartStore.cartChangedNotification, object: nil)
+        
         //"Добавляем" в корзину nft для тестов
         addNftToCart(nftIDs: testNFTsInCart)
     }
+    
     //MARK: Public
     func viewDidLoad() {
         guard let view else {return}
         view.showLoading()
         loadNfts(byIDs: testNFTs) { [weak self] in
             guard
-                let self,
-                let nfts = self.getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart))
+                let self
             else {return}
-            self.nfts = nfts
+            self.updateNfts()
             view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
             view.updateCollectionView()
             view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
@@ -63,7 +66,6 @@ final class CartPresenterImpl: CartPresenter {
     
     func deleteNftFromCart(with id: String) {
         CartStore.nftsInCart.remove(id)
-        updateNfts()
         print("CartPresenter: удалил \(id)")
     }
     
@@ -80,6 +82,10 @@ final class CartPresenterImpl: CartPresenter {
     }
     
     //MARK: Private
+    @objc private func cartDidChange() {
+        updateNfts()
+    }
+    
     private func updateNfts() {
         guard let nfts = self.getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart)) else { return }
         self.nfts = nfts
@@ -130,5 +136,9 @@ final class CartPresenterImpl: CartPresenter {
     
     private func addNftToCart(nftIDs: [String]) {
         CartStore.nftsInCart.formUnion(nftIDs)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

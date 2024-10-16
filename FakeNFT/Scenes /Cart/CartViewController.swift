@@ -183,7 +183,6 @@ final class CartViewController: UIViewController, CartView{
             navigationController?.navigationBar.scrollEdgeAppearance = appearance
             navigationController?.navigationBar.compactAppearance = appearance
 
-            // Adjust the content inset if needed
             navigationController?.navigationBar.layoutMargins = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
         
         let filterButton = UIBarButtonItem(image: UIImage(named: Constants.filterButtonIcon), style: .done, target: self, action: #selector(filterButtonTapped))
@@ -266,7 +265,6 @@ final class CartViewController: UIViewController, CartView{
     }
     
     
-    
     //MARK: Кнопки
     @objc private func filterButtonTapped() {
         presenter.filterButtonTapped()
@@ -275,8 +273,6 @@ final class CartViewController: UIViewController, CartView{
     @objc private func payButtonTapped() {
         presenter.payButtonTapped()
     }
-    
-    //MARK: Private
 
 }
 
@@ -294,7 +290,6 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
         return cell
     }
     
-    // Set the cell size to match the width of the screen with the aspect ratio of 375:140
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenWidth = view.frame.width
         let paddingSpace = sectionInsets.left + sectionInsets.right + interItemSpacing * (itemsPerRow - 1)
