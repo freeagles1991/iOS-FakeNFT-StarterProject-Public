@@ -19,6 +19,8 @@ final class CartItemCell: UICollectionViewCell {
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
+    private var nftID: String = ""
+    
     private let nftImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -144,11 +146,16 @@ final class CartItemCell: UICollectionViewCell {
         } else {
             nftImageView.image = stubImage
         }
+        nftID = nft.id
         nftNameLabel.text = nft.name
         raitingView.rating = nft.rating
         print(raitingView.rating, nft.rating)
         costLabel.text = CartViewController.Constants.costString
         costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
+    }
+    
+    func getNftID() -> String {
+        nftID
     }
     
     @objc func deleteButtonTapped(_ sender: UIButton) {

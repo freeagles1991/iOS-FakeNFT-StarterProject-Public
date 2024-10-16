@@ -12,6 +12,7 @@ protocol CartPresenter {
     func viewDidLoad()
     func filterButtonTapped()
     func payButtonTapped()
+    func deleteNftFromCart(with id: String)
 }
 
 final class CartPresenterImpl: CartPresenter {
@@ -33,7 +34,6 @@ final class CartPresenterImpl: CartPresenter {
         didSet {
             guard let view else {return}
             view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
-            view.updateCollectionView()
             view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
             
         }
@@ -61,6 +61,12 @@ final class CartPresenterImpl: CartPresenter {
         }
     }
     
+    func deleteNftFromCart(with id: String) {
+        CartStore.nftsInCart.remove(id)
+        updateNfts()
+        print("CartPresenter: удалил \(id)")
+    }
+    
     func getNFTs() -> [Nft]? {
         return nfts
     }
@@ -74,6 +80,11 @@ final class CartPresenterImpl: CartPresenter {
     }
     
     //MARK: Private
+    private func updateNfts() {
+        guard let nfts = self.getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart)) else { return }
+        self.nfts = nfts
+    }
+    
     private func getNFTsInCartByID(nftsInCart: [String]) -> [Nft]? {
         var nfts: [Nft] = []
         for id in nftsInCart {

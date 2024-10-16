@@ -313,10 +313,13 @@ extension CartViewController: CartItemCellDelegate {
         if let indexPath = collectionView.indexPath(for: cell) {
             print("Tapped button in cell at \(indexPath.row)")
             
-            // Обработка удаления элемента
+            let nftID = cell.getNftID()
 
-            // Удаление из данных и обновление представления
-            // ...
+            presenter.deleteNftFromCart(with: nftID)
+            
+            collectionView.performBatchUpdates({
+                collectionView.deleteItems(at: [indexPath])
+            }, completion: nil)
         }
     }
 }
