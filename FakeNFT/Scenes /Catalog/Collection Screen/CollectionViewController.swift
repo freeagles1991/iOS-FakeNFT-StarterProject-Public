@@ -3,22 +3,6 @@
 
 import UIKit
 
-struct GeometricParams {
-    let cellCount: Int
-    let leftInset: CGFloat
-    let rightInset: CGFloat
-    let cellSpacing: CGFloat
-    let paddingWidth: CGFloat
-    
-    init(cellCount: Int, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
-        self.cellCount = cellCount
-        self.leftInset = leftInset
-        self.rightInset = rightInset
-        self.cellSpacing = cellSpacing
-        self.paddingWidth = leftInset + rightInset + CGFloat(cellCount - 1) * cellSpacing
-    }
-}
-
 protocol CollectionViewC: AnyObject {
     func updateUI()
 }
@@ -60,7 +44,6 @@ final class CollectionViewController: UIViewController {
         super.viewDidLoad()
         presenter.viewDidLoad()
         configureUI()
-        
     }
     
     override func viewDidLayoutSubviews() {
@@ -178,16 +161,9 @@ private extension CollectionViewController {
     func configureBackButton() {
         backButton.setImage(UIImage(named: "backButton"), for: .normal)
         backButton.tintColor = UIColor.segmentActive
-        backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.addTarget(self, action: #selector(backButtonDidTapped), for: .touchUpInside)
-        contentView.addSubview(backButton)
-        
-        NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 11),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 9),
-            backButton.heightAnchor.constraint(equalToConstant: 24),
-            backButton.widthAnchor.constraint(equalToConstant: 24)
-        ])
+        let backBarButtonItem = UIBarButtonItem(customView: backButton)
+        navigationItem.leftBarButtonItem = backBarButtonItem
     }
     
     @objc func backButtonDidTapped() {
@@ -209,17 +185,34 @@ private extension CollectionViewController {
     }
     
     func configureCollectionAuthorLabel() {
-        collectionAuthorLabel.text = "Автор коллекции: \(presenter.selectedCollection.author)"
+        collectionAuthorLabel.isUserInteractionEnabled = true
         collectionAuthorLabel.textColor = UIColor.segmentActive
         collectionAuthorLabel.font = UIFont.regular13
         collectionAuthorLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(collectionAuthorLabel)
+        
+        let aythorName = presenter.selectedCollection.author
+        let fullText = "Автор коллекции: \(aythorName)"
+        let attributedString = NSMutableAttributedString(string: fullText)
+        if let range = fullText.range(of: "\(aythorName)") {
+            let nsRange = NSRange(range, in: fullText)
+            attributedString.addAttribute(.foregroundColor, value: UIColor.yaBlueUniversal, range: nsRange)
+        }
+        collectionAuthorLabel.attributedText = attributedString
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openAuthorWebView))
+        collectionAuthorLabel.addGestureRecognizer(tapGesture)
         
         NSLayoutConstraint.activate([
             collectionAuthorLabel.topAnchor.constraint(equalTo: collectionNameLabel.bottomAnchor, constant: 8),
             collectionAuthorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             collectionAuthorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
+    }
+    
+    @objc func openAuthorWebView() {
+        let webViewController = WebViewController()
+        navigationController?.pushViewController(webViewController, animated: true)
     }
     
     func configureCollectionDescriptionTextView() {

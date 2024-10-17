@@ -49,9 +49,9 @@ extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let collectionPresenter: CollectionPresenter = CollectionPresenterImpl(selectedCollection: presenter.dataSource[indexPath.row])
         let collectionVC = CollectionViewController(presenter: collectionPresenter)
-
-        collectionVC.modalPresentationStyle = .fullScreen
-        present(collectionVC, animated: true)
+        let collectionNavigationController = UINavigationController(rootViewController: collectionVC)
+        collectionNavigationController.modalPresentationStyle = .fullScreen
+        present(collectionNavigationController, animated: true)
     }
 }
 
@@ -87,14 +87,8 @@ private extension CatalogViewController {
         sortButton.tintColor = UIColor.segmentActive
         sortButton.translatesAutoresizingMaskIntoConstraints = false
         sortButton.addTarget(self, action: #selector(showCollectionSortedAlert), for: .touchUpInside)
-        view.addSubview(sortButton)
-        
-        NSLayoutConstraint.activate([
-            sortButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 2),
-            sortButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -9),
-            sortButton.heightAnchor.constraint(equalToConstant: 42),
-            sortButton.widthAnchor.constraint(equalToConstant: 42)
-        ])
+        let backBarButtonItem = UIBarButtonItem(customView: sortButton)
+        navigationItem.rightBarButtonItem = backBarButtonItem
     }
     
     @objc func showCollectionSortedAlert() {
@@ -128,7 +122,7 @@ private extension CatalogViewController {
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: sortButton.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
