@@ -47,7 +47,7 @@ final public class StarRatingView: UIView {
     }
     
     private func updateStarImages() {
-        let filledStars = rating / 20
+        let filledStars = rating
         
         for (index, starView) in starViews.enumerated() {
             if index < filledStars {

@@ -10,20 +10,24 @@ import UIKit
 
 final class CartStore {
     private static let cartKey = "nftsInCart"
+    static let cartChangedNotification = Notification.Name("CartStoreCartChanged")
 
-    //Сохраняем и получаем IDшники NFT в корзине
-    static var nftsInCart: [String] {
+    // Сохраняем и получаем IDшники NFT в корзине
+    static var nftsInCart: Set<String> {
         get {
             guard let data = UserDefaults.standard.data(forKey: cartKey),
                   let nftIDs = try? JSONDecoder().decode([String].self, from: data) else {
                 return []
             }
-            return nftIDs
+            return Set(nftIDs)
         }
         set {
-            if let data = try? JSONEncoder().encode(newValue) {
+            let nftArray = Array(newValue)
+            if let data = try? JSONEncoder().encode(nftArray) {
                 UserDefaults.standard.set(data, forKey: cartKey)
             }
+            
+            NotificationCenter.default.post(name: CartStore.cartChangedNotification, object: nil)
         }
     }
 }
