@@ -8,6 +8,7 @@
 import Foundation
 
 protocol CartPresenter {
+    var serviceAssembler: ServicesAssembly { get }
     func getNFTs() -> [Nft]?
     func viewDidLoad()
     func filterButtonTapped()
@@ -17,7 +18,11 @@ protocol CartPresenter {
 
 final class CartPresenterImpl: CartPresenter {
     weak var view: CartView?
+    var serviceAssembler: ServicesAssembly
     private let nftService: NftService
+    
+    //Свичер для моковых nft
+    let isUsingDefaultNFTs: Bool = true
     
     let testNFTs: [String] = [
     "1464520d-1659-4055-8a79-4593b9569e48",
@@ -39,7 +44,8 @@ final class CartPresenterImpl: CartPresenter {
         }
     }
     
-    init(nftService: NftService) {
+    init(nftService: NftService, serviceAssembler: ServicesAssembly) {
+        self.serviceAssembler = serviceAssembler
         self.nftService = nftService
         
         NotificationCenter.default.addObserver(self, selector: #selector(cartDidChange), name: CartStore.cartChangedNotification, object: nil)
@@ -50,17 +56,21 @@ final class CartPresenterImpl: CartPresenter {
     
     //MARK: Public
     func viewDidLoad() {
-        guard let view else {return}
-        view.showLoading()
-        loadNfts(byIDs: testNFTs) { [weak self] in
-            guard
-                let self
-            else {return}
-            self.updateNfts()
-            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
-            view.updateCollectionView()
-            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
-            view.hideLoading()
+        if isUsingDefaultNFTs {
+            nfts.append(Nft())
+        } else {
+            guard let view else {return}
+            view.showLoading()
+            loadNfts(byIDs: testNFTs) { [weak self] in
+                guard
+                    let self
+                else {return}
+                self.updateNfts()
+                view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+                view.updateCollectionView()
+                view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+                view.hideLoading()
+            }
         }
     }
     

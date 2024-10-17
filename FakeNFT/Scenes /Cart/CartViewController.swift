@@ -272,6 +272,20 @@ final class CartViewController: UIViewController, CartView{
     
     @objc private func payButtonTapped() {
         presenter.payButtonTapped()
+        let payAssembly = ChoosePayTypeAssembly(servicesAssembler: presenter.serviceAssembler)
+        
+        let backBarButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backBarButton
+        
+        let payViewController = payAssembly.build()
+        
+        navigationController?.navigationBar.tintColor = UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
+        }
+        
+        payViewController.hidesBottomBarWhenPushed = true
+        
+        navigationController?.pushViewController(payViewController, animated: true)
     }
 
 }
