@@ -8,7 +8,7 @@
 import UIKit
 
 final class FavouritesNFTsViewController: UIViewController {
-    private var favoriteNFTs: [NFT] = []
+    private var favoriteNFTs: [Nft] = []
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     override func viewDidLoad() {

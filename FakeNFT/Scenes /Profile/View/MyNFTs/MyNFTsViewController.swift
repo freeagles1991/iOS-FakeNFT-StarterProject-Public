@@ -14,7 +14,7 @@ final class MyNFTsViewController: UIViewController {
         case rating
     }
     
-    private var nfts: [NFT] = []
+    private var nfts: [Nft] = []
     private let tableView = UITableView()
     
     override func viewDidLoad() {

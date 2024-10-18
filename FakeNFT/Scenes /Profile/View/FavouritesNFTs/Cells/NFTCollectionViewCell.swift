@@ -19,7 +19,7 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         onHeartButtonTapped?()
     }
     
-    func configure(with nft: NFT) {
+    func configure(with nft: Nft) {
         
     }
 }
