@@ -272,7 +272,7 @@ final class CartViewController: UIViewController, CartView{
     
     @objc private func payButtonTapped() {
         presenter.payButtonTapped()
-        let payAssembly = ChoosePayTypeAssembly(servicesAssembler: presenter.serviceAssembler)
+        let payAssembly = ChooseCurrencyAssembly(servicesAssembler: presenter.serviceAssembler)
         
         let backBarButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = backBarButton
