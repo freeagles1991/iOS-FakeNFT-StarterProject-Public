@@ -16,7 +16,9 @@ final class CollectionViewController: UIViewController {
     private lazy var backButton = UIButton(type: .system)
     private lazy var collectionImageView = UIImageView()
     private lazy var collectionNameLabel = UILabel()
+    private lazy var stackViewAuthorLabels = UIStackView()
     private lazy var collectionAuthorLabel = UILabel()
+    private lazy var collectionAuthorNameLinkL = UILabel()
     private lazy var collectionDescriptionTextView = UITextView()
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -185,28 +187,32 @@ private extension CollectionViewController {
     }
     
     func configureCollectionAuthorLabel() {
-        collectionAuthorLabel.isUserInteractionEnabled = true
+        collectionAuthorNameLinkL.isUserInteractionEnabled = true
+        collectionAuthorNameLinkL.textColor = UIColor.yaBlueUniversal
+        collectionAuthorNameLinkL.font = UIFont.regular13
+        collectionAuthorNameLinkL.translatesAutoresizingMaskIntoConstraints = false
+        collectionAuthorNameLinkL.text = presenter.selectedCollection.author
+        
         collectionAuthorLabel.textColor = UIColor.segmentActive
         collectionAuthorLabel.font = UIFont.regular13
         collectionAuthorLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(collectionAuthorLabel)
-        
-        let aythorName = presenter.selectedCollection.author
-        let fullText = "Автор коллекции: \(aythorName)"
-        let attributedString = NSMutableAttributedString(string: fullText)
-        if let range = fullText.range(of: "\(aythorName)") {
-            let nsRange = NSRange(range, in: fullText)
-            attributedString.addAttribute(.foregroundColor, value: UIColor.yaBlueUniversal, range: nsRange)
-        }
-        collectionAuthorLabel.attributedText = attributedString
-        
+        collectionAuthorLabel.text = "Автор коллекции:"
+        collectionAuthorLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openAuthorWebView))
-        collectionAuthorLabel.addGestureRecognizer(tapGesture)
+        collectionAuthorNameLinkL.addGestureRecognizer(tapGesture)
+        
+        stackViewAuthorLabels = UIStackView(arrangedSubviews: [collectionAuthorLabel, collectionAuthorNameLinkL])
+        stackViewAuthorLabels.axis = .horizontal
+        stackViewAuthorLabels.alignment = .leading
+        stackViewAuthorLabels.spacing = 2
+        stackViewAuthorLabels.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(stackViewAuthorLabels)
         
         NSLayoutConstraint.activate([
-            collectionAuthorLabel.topAnchor.constraint(equalTo: collectionNameLabel.bottomAnchor, constant: 8),
-            collectionAuthorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            collectionAuthorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
+            stackViewAuthorLabels.topAnchor.constraint(equalTo: collectionNameLabel.bottomAnchor, constant: 8),
+            stackViewAuthorLabels.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            stackViewAuthorLabels.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
     }
     
@@ -226,7 +232,7 @@ private extension CollectionViewController {
         contentView.addSubview(collectionDescriptionTextView)
         
         NSLayoutConstraint.activate([
-            collectionDescriptionTextView.topAnchor.constraint(equalTo: collectionAuthorLabel.bottomAnchor),
+            collectionDescriptionTextView.topAnchor.constraint(equalTo: stackViewAuthorLabels.bottomAnchor),
             collectionDescriptionTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             collectionDescriptionTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
