@@ -370,11 +370,11 @@
 		C81E2B7D2CB96E1E00441F2C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				C81E2B7F2CB96E4100441F2C /* View */,
+				C81E2B802CB96E4F00441F2C /* Presenter */,
 				C8D031802CC3FA0E009CA8D1 /* EditProfile */,
 				C8D0317F2CC3F9FE009CA8D1 /* MyNFTs */,
 				C8D0317E2CC3F9F3009CA8D1 /* FavouritesNFTs */,
-				C81E2B802CB96E4F00441F2C /* Presenter */,
-				C81E2B7F2CB96E4100441F2C /* View */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -382,7 +382,6 @@
 		C81E2B7F2CB96E4100441F2C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C886C6AC2CBB2AB700D31171 /* EditProfile */,
 				C886C6A92CB9F1A000D31171 /* Cells */,
 				C81E2B872CB9743400441F2C /* ProfileViewController.swift */,
 				C81E2B892CB9764B00441F2C /* ProfileView.swift */,
@@ -404,13 +403,6 @@
 				C886C6AA2CB9F1B700D31171 /* ProfileViewCell.swift */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		C886C6AC2CBB2AB700D31171 /* EditProfile */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = EditProfile;
 			sourceTree = "<group>";
 		};
 		C886C6B42CBB622500D31171 /* Cell */ = {

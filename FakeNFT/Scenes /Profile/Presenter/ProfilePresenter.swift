@@ -37,7 +37,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
             likes: [],
             id: "1"
         )
-        self.currentProfile = profile
+        currentProfile = profile
         view?.displayProfileData(profile)
     }
     
@@ -48,6 +48,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     
     func getCurrentProfile() -> UserProfile? {
-        return currentProfile
+        currentProfile
     }
 }

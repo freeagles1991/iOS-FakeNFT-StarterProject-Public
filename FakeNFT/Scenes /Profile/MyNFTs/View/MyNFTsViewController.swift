@@ -77,16 +77,16 @@ final class MyNFTsViewController: UIViewController {
     @objc private func sortButtonTapped() {
         let alertController = UIAlertController(title: "Сортировка", message: "Выберите способ сортировки", preferredStyle: .actionSheet)
         
-        alertController.addAction(UIAlertAction(title: "По цене", style: .default, handler: { _ in
-            self.sortNFTs(by: .price)
+        alertController.addAction(UIAlertAction(title: "По цене", style: .default, handler: { [weak self] _ in
+            self?.sortNFTs(by: .price)
         }))
         
-        alertController.addAction(UIAlertAction(title: "По названию", style: .default, handler: { _ in
-            self.sortNFTs(by: .name)
+        alertController.addAction(UIAlertAction(title: "По названию", style: .default, handler: { [weak self] _ in
+            self?.sortNFTs(by: .name)
         }))
         
-        alertController.addAction(UIAlertAction(title: "По рейтингу", style: .default, handler: { _ in
-            self.sortNFTs(by: .rating)
+        alertController.addAction(UIAlertAction(title: "По рейтингу", style: .default, handler: { [weak self] _ in
+            self?.sortNFTs(by: .rating)
         }))
         
         alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
@@ -109,7 +109,6 @@ extension MyNFTsViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: NFTTableViewCell.identifier, for: indexPath) as? NFTTableViewCell else {
             return UITableViewCell()
         }
-        
         
         return cell
     }
