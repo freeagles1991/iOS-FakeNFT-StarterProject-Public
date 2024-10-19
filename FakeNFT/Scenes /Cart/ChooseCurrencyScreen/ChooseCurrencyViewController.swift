@@ -10,6 +10,7 @@ import UIKit
 
 protocol ChooseCurrencyViewController: UIViewController, LoadingView {
     func updateCollectionView()
+    func toogleSelectAtCell(at indexPath: IndexPath, isSelected: Bool)
 }
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
@@ -44,6 +45,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     }()
     
     private let cellIdentifier = "CurrencyItemCell"
+    private var lastSelectedCell: IndexPath?
 
     private let itemsPerRow: CGFloat = 2
     private let sectionInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -130,6 +132,11 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     //MARK: Public
     func updateCollectionView() {
         collectionView.reloadData()
+    }
+    
+    func toogleSelectAtCell(at indexPath: IndexPath, isSelected: Bool) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? CurrencyCell else {return}
+        cell.toggleSelectState(isSelected)
     }
     
     //MARK: Верстка
@@ -243,5 +250,15 @@ extension ChooseCurrencyViewControllerImpl: UICollectionViewDataSource, UICollec
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return sectionInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Выбрана ячейка под индексом: \(indexPath.row)")
+        if let lastSelectedCell {
+            toogleSelectAtCell(at: lastSelectedCell, isSelected: false)
+        }
+        presenter.currencyDidSelect(at: indexPath)
+        self.lastSelectedCell = indexPath
+        
     }
 }

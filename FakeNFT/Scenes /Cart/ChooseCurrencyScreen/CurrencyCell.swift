@@ -12,7 +12,7 @@ final class CurrencyCell: UICollectionViewCell {
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
-    private var currencyID: String = ""
+    private var currencyID: String?
     
     private let currencyImageView: UIImageView = {
         let view = UIImageView()
@@ -62,6 +62,11 @@ final class CurrencyCell: UICollectionViewCell {
         contentView.backgroundColor = UIColor { traitCollection in
             return traitCollection.userInterfaceStyle == .dark ? UIColor.yaLightGrayDark : UIColor.yaLightGrayLight
         }
+        
+        contentView.layer.borderColor = UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
+        }.cgColor
+        
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         
@@ -106,5 +111,13 @@ final class CurrencyCell: UICollectionViewCell {
         currencyNamelabel.text = currency.title
         currencyCodelabel.text = currency.name
         self.currencyID = currency.id
+    }
+    
+    func getCurrencyID() -> String? {
+        currencyID
+    }
+    
+    func toggleSelectState(_ isSelected: Bool) {
+        contentView.layer.borderWidth = isSelected ? 1.0 : 0
     }
 }

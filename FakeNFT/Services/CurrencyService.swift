@@ -7,9 +7,11 @@
 import Foundation
 
 typealias CurrenciesCompletion = (Result<[Currency], Error>) -> Void
+typealias SetCurrencyIDCompletion = (Result<SetCurrencyIDResponse, Error>) -> Void
 
 protocol CurrencyService {
     func loadCurrencyList(completion: @escaping CurrenciesCompletion)
+    func setCurrencyIDBeforePayment(_ currencyID: String, completion: @escaping SetCurrencyIDCompletion)
 }
 
 final class CurrencyServiceImpl: CurrencyService {
@@ -28,6 +30,19 @@ final class CurrencyServiceImpl: CurrencyService {
             case .success(let currencies):
                 storage?.saveCurrencies(currencies)
                 completion(.success(currencies))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func setCurrencyIDBeforePayment(_ currencyID: String, completion: @escaping SetCurrencyIDCompletion) {
+        let request = SetCurrencyIDBeforePaymentRequest(id: currencyID)
+        
+        networkClient.send(request: request, type: SetCurrencyIDResponse.self) { result in
+            switch result {
+            case .success(let response):
+                completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
             }

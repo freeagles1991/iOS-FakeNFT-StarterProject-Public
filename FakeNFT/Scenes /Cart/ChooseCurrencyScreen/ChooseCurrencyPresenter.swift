@@ -10,6 +10,7 @@ import Foundation
 protocol ChooseCurrencyPresenter {
     var currencies: [Currency] { get }
     func viewDidLoad()
+    func currencyDidSelect(at indexPath: IndexPath)
 }
 
 final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
@@ -34,6 +35,25 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
             case .failure(let error):
                 print("ChooseCurrencyPresenterImpl: Error while loading currencies \(error)")
             }
+        }
+    }
+    
+    func currencyDidSelect(at indexPath: IndexPath) {
+        guard let view else {return}
+        view.toogleSelectAtCell(at: indexPath, isSelected: true)
+        view.showLoading()
+        currencyService.setCurrencyIDBeforePayment(String(indexPath.row)) { result in
+            switch result {
+            case .success(let response):
+                if response.success {
+                    view.hideLoading()
+                    print("ChooseCurrencyPresenterImpl: Set currency \(response.id) is success: \(response.success)")
+                }
+            case .failure(let error):
+                view.toogleSelectAtCell(at: indexPath, isSelected: false)
+                print("ChooseCurrencyPresenterImpl: Error while set currency \(error)")
+            }
+            
         }
     }
 }
