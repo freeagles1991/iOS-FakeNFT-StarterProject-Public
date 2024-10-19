@@ -13,9 +13,3 @@ struct Currency: Codable {
     let image: String
     let id: String
 }
-
-struct SetCurrencyIDResponse: Codable {
-    let success: Bool
-    let orderId: String
-    let id: String
-}
