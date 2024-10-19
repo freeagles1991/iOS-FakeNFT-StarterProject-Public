@@ -18,6 +18,8 @@ final class WebViewPresenterImpl: WebViewPresenter {
         if let url = URL(string: "https://practicum.yandex.ru") {
             let request = URLRequest(url: url)
             view?.load(request: request)
+        } else {
+            assertionFailure("URL error")
         }
     }
     

@@ -5,8 +5,6 @@ import UIKit
 import WebKit
 
 protocol WebViewControllerProtocol: AnyObject {
-    var presenter: WebViewPresenter { get }
-    
     func load(request: URLRequest)
     func setProgressValue(_ newValue: Float)
     func setProgressHidden(_ isHidden: Bool)
@@ -19,7 +17,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WebViewCo
     private lazy var progressView = UIProgressView()
     private var estimatedProgressObservation: NSKeyValueObservation?
     
-    var presenter: WebViewPresenter
+    private let presenter: WebViewPresenter
     
     // MARK: - Init
     

@@ -67,9 +67,8 @@ extension CatalogViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         catalogCell.selectionStyle = .none
-        let nftsCountInCurrentCollection = presenter.dataSource[indexPath.row].nfts.count
-        catalogCell.configureCell(urlForDownloadImage: URL(fileURLWithPath: ""), header: "\(presenter.dataSource[indexPath.row].name) (\(nftsCountInCurrentCollection))")
         
+        catalogCell.configureCell(urlForDownloadImage: presenter.cellViewModels[indexPath.row].imageURL, header: presenter.cellViewModels[indexPath.row].title)
         return catalogCell
     }
 }
@@ -92,23 +91,8 @@ private extension CatalogViewController {
     }
     
     @objc func showCollectionSortedAlert() {
-        let sortedActionSheet = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
-        
-        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { _ in
-            print("Сортировку сделаю в 3 модуле")
-        }
-        
-        let sortByNftCount = UIAlertAction(title: "По количеству NFT", style: .default) { _ in
-            print("Сортировку сделаю в 3 модуле")
-        }
-        
-        let cancelAction = UIAlertAction(title: "Закрыть", style: .cancel)
-        
-        sortedActionSheet.addAction(sortByNameAction)
-        sortedActionSheet.addAction(sortByNftCount)
-        sortedActionSheet.addAction(cancelAction)
-        
-        present(sortedActionSheet, animated: true)
+        let alertController = presenter.showCollectionSortedAlert().createAlertController()
+        present(alertController, animated: true)
     }
     
     func configureTableView() {

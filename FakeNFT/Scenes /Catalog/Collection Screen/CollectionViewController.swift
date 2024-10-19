@@ -180,7 +180,7 @@ private extension CollectionViewController {
         contentView.addSubview(collectionNameLabel)
         
         NSLayoutConstraint.activate([
-            collectionNameLabel.topAnchor.constraint(equalTo: collectionImageView.bottomAnchor, constant: 16),
+            collectionNameLabel.topAnchor.constraint(equalTo: collectionImageView.bottomAnchor, constant: 13),
             collectionNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             collectionNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
@@ -210,7 +210,7 @@ private extension CollectionViewController {
         contentView.addSubview(stackViewAuthorLabels)
         
         NSLayoutConstraint.activate([
-            stackViewAuthorLabels.topAnchor.constraint(equalTo: collectionNameLabel.bottomAnchor, constant: 8),
+            stackViewAuthorLabels.topAnchor.constraint(equalTo: collectionNameLabel.bottomAnchor, constant: 13),
             stackViewAuthorLabels.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             stackViewAuthorLabels.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16)
         ])
