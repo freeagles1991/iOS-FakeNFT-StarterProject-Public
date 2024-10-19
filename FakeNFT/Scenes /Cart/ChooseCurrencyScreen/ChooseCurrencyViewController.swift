@@ -188,6 +188,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         
         userAgreementPanelView.addSubview(payButton)
         payButton.setTitle(Constants.payButtonText.rawValue, for: .normal)
+        payButton.addTarget(self, action: #selector(didPayButtonTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             payButton.bottomAnchor.constraint(equalTo: userAgreementPanelView.bottomAnchor, constant: -48),
@@ -199,7 +200,6 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         
     }
     //MARK: Private
-    
     private func makeUserAgreementLabelWithLink() -> NSMutableAttributedString {
         let attributedString = NSMutableAttributedString(string: Constants.userAgreementText.rawValue)
         
@@ -216,6 +216,11 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         attributedString.addAttribute(.foregroundColor, value: UIColor.yaBlueUniversal, range: linkRange)
 
         return attributedString
+    }
+    
+    @objc private func didPayButtonTapped() {
+        print("ChooseCurrencyViewControllerImpl: PayButton tapped")
+        presenter.payOrder(with: presenter.nfts)
     }
 }
 

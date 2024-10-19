@@ -8,10 +8,12 @@ import Foundation
 
 typealias CurrenciesCompletion = (Result<[Currency], Error>) -> Void
 typealias SetCurrencyIDCompletion = (Result<SetCurrencyIDResponse, Error>) -> Void
+typealias PutOrderAndPayCompletion = (Result<PutOrderAndPayResponse, Error>) -> Void
 
 protocol CurrencyService {
     func loadCurrencyList(completion: @escaping CurrenciesCompletion)
     func setCurrencyIDBeforePayment(_ currencyID: String, completion: @escaping SetCurrencyIDCompletion)
+    func sendPutOrderAndPayRequest(nfts: [String], completion: @escaping PutOrderAndPayCompletion)
 }
 
 final class CurrencyServiceImpl: CurrencyService {
@@ -44,6 +46,24 @@ final class CurrencyServiceImpl: CurrencyService {
             case .success(let response):
                 completion(.success(response))
             case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func sendPutOrderAndPayRequest(
+        nfts: [String],
+        completion: @escaping PutOrderAndPayCompletion
+    ) {
+        let dto = PutOrderAndPayDtoObject(nfts: nfts)
+        let request = PutOrderAndPayRequest(dto: dto)
+        networkClient.send(request: request, type: PutOrderAndPayResponse.self) { result in
+            switch result {
+            case .success(let putResponse):
+                print("CurrencyServiceImpl: оплачены nft \(putResponse.nfts)")
+                completion(.success(putResponse))
+            case .failure(let error):
+                print("CurrencyServiceImpl: ошибка оплаты \(error)")
                 completion(.failure(error))
             }
         }

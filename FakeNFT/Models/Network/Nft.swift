@@ -9,7 +9,7 @@ struct Nft: Codable {
     let author: String
     let id: String
     
-    init(createdAt: String = "", name: String  = "Default", images: [URL] = [], rating: Int = 5, description: String = "", price: Double = 1.99, author: String = "Default", id: String = "Default") {
+    init(createdAt: String = "", name: String  = "Default", images: [URL] = [], rating: Int = 5, description: String = "", price: Double = 1.99, author: String = "Default", id: String = "1464520d-1659-4055-8a79-4593b9569e48") {
         self.createdAt = createdAt
         self.name = name
         self.images = images
