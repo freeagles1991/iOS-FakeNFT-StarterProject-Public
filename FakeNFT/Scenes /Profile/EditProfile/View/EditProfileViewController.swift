@@ -8,11 +8,18 @@
 import UIKit
 import Kingfisher
 
+protocol EditProfileViewProtocol: AnyObject {
+    func showProfile(_ profile: UserProfile)
+    func didUpdateProfile(_ updatedProfile: UserProfile)
+}
+
 protocol EditProfileDelegate: AnyObject {
     func didUpdateProfile(_ updatedProfile: UserProfile)
 }
 
-final class EditProfileViewController: UIViewController {
+
+final class EditProfileViewController: UIViewController, EditProfileViewProtocol {
+    private var presenter: EditProfilePresenterProtocol?
     weak var delegate: EditProfileDelegate?
     private var profile: UserProfile?
     
@@ -82,11 +89,13 @@ final class EditProfileViewController: UIViewController {
     }()
     
     //MARK: - Init
-    init(profile: UserProfile) {
-        self.profile = profile
+    init(profile: UserProfile, delegate: EditProfileDelegate?) {
         super.init(nibName: nil, bundle: nil)
+        self.presenter = EditProfilePresenter(view: self, profile: profile)
+        self.delegate = delegate
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -96,7 +105,7 @@ final class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         setupLayout()
         setupButton()
-        loadProfileData()
+        presenter?.loadProfileData()
     }
     //MARK: - viewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
@@ -120,29 +129,22 @@ final class EditProfileViewController: UIViewController {
     }
     
     private func updateProfile() {
-        guard let currentProfile = profile else { return }
-        
-        let updatedProfile = UserProfile(
-            name: nameTextField.text ?? currentProfile.name,
-            avatar: currentProfile.avatar,
-            description: descriptionTextView.text ?? currentProfile.description,
-            website: websiteTextField.text ?? currentProfile.website,
-            nfts: currentProfile.nfts,
-            likes: currentProfile.likes,
-            id: currentProfile.id
-        )
-        
-        delegate?.didUpdateProfile(updatedProfile)
+        guard let name = nameTextField.text, let description = descriptionTextView.text, let website = websiteTextField.text else { return }
+        presenter?.saveProfileData(name: name, description: description, website: website)
     }
-
-    private func loadProfileData() {
-        nameTextField.text = profile?.name
-        descriptionTextView.text = profile?.description
-        websiteTextField.text = profile?.website
+    
+    func showProfile(_ profile: UserProfile) {
+        nameTextField.text = profile.name
+        descriptionTextView.text = profile.description
+        websiteTextField.text = profile.website
         
-        if let profile = profile, let avatarURL = URL(string: profile.avatar) {
+        if let avatarURL = URL(string: profile.avatar) {
             avatarImage.kf.setImage(with: avatarURL)
         }
+    }
+    
+    func didUpdateProfile(_ updatedProfile: UserProfile) {
+        delegate?.didUpdateProfile(updatedProfile)
     }
     
     //MARK: - setupLayout()

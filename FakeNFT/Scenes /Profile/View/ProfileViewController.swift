@@ -12,13 +12,16 @@ final class ProfileViewController: UIViewController {
     
     private var presenter: ProfilePresenterProtocol?
     private let profileView = ProfileView()
+    var router: ProfileRouterProtocol?
     
-    init(presenter: ProfilePresenterProtocol) {
+    init(presenter: ProfilePresenterProtocol, router: ProfileRouterProtocol) {
         self.presenter = presenter
+        self.router = router
         super.init(nibName: nil, bundle: nil)
     
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -35,9 +38,7 @@ final class ProfileViewController: UIViewController {
     @objc
     private func editButtonPressed() {
         guard let profile = presenter?.getCurrentProfile() else { return }
-        let editProfileVC = EditProfileViewController(profile: profile)
-        editProfileVC.delegate = self
-        present(editProfileVC, animated: true)
+        router?.navigateToEditProfile(from: self, with: profile)
     }
     
     private func setupUI() {
@@ -89,11 +90,9 @@ extension ProfileViewController: ProfileViewDelegate {
     func didSelectItem(at index: Int) {
         switch index {
         case 0:
-            let myNFTsViewController = MyNFTsViewController()
-            navigationController?.pushViewController(myNFTsViewController, animated: true)
+            router?.navigateToMyNFTs(from: self)
         case 1:
-            let myFavoriteNFTsViewController = FavouritesNFTsViewController()
-            navigationController?.pushViewController(myFavoriteNFTsViewController, animated: true)
+            router?.navigateToFavoritesNFTs(from: self)
         case 2:
             _ = MyNFTsViewController()
         default:
