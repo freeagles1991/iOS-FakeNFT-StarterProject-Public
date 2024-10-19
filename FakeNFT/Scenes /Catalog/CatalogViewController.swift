@@ -3,7 +3,7 @@
 
 import UIKit
 
-protocol CatalogView: AnyObject {
+protocol CatalogViewControllerProtocol: AnyObject {
     func updateUI()
 }
 
@@ -37,7 +37,7 @@ final class CatalogViewController: UIViewController {
 
 // MARK: - CatalogView protocol func
 
-extension CatalogViewController: CatalogView {
+extension CatalogViewController: CatalogViewControllerProtocol {
     func updateUI() {
         
     }

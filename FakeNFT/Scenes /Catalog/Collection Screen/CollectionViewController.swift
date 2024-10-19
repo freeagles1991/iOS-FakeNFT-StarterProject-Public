@@ -3,7 +3,7 @@
 
 import UIKit
 
-protocol CollectionViewC: AnyObject {
+protocol CollectionViewControllerProtocol: AnyObject {
     func updateUI()
 }
 
@@ -217,7 +217,9 @@ private extension CollectionViewController {
     }
     
     @objc func openAuthorWebView() {
-        let webViewController = WebViewController()
+        let webViewPresenter: WebViewPresenter = WebViewPresenterImpl()
+        let webViewController = WebViewController(presenter: webViewPresenter)
+        webViewPresenter.view = webViewController
         navigationController?.pushViewController(webViewController, animated: true)
     }
     

@@ -10,7 +10,7 @@ protocol CollectionPresenter: AnyObject {
 
 final class CollectionPresenterImpl: CollectionPresenter {
     
-    weak var view: CollectionViewC?
+    weak var view: CollectionViewControllerProtocol?
     
     var selectedCollection: NftCollection
     
@@ -19,6 +19,6 @@ final class CollectionPresenterImpl: CollectionPresenter {
     }
     
     func viewDidLoad() {
-        
+        view?.updateUI()
     }
 }

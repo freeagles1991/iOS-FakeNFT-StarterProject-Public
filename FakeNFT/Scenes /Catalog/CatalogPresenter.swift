@@ -10,7 +10,7 @@ protocol CatalogPresenter {
 
 final class CatalogPresenterImpl: CatalogPresenter {
     
-    weak var view: CatalogView?
+    weak var view: CatalogViewControllerProtocol?
     
     var dataSource: [NftCollection] = [] {
         didSet {
