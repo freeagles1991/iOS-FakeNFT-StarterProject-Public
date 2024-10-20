@@ -53,21 +53,6 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         self.userProfileService = userProfileService
     }
     
-//    func loadProfileData() {
-//        //MOCK
-//        let profile = UserProfile(
-//            name: "Joaquin Phoenix",
-//            avatar: "https://gravatar.com/avatar/5ecccac69e3d98d59e95a789c07fef55?s=400&d=robohash&r=x",
-//            description: "Дизайнер из Казани, люблю цифровое искусство и бейглы. В моей коллекции уже 100+ NFT, и еще больше — на моём сайте. Открыт к коллаборациям.",
-//            website: "Joaquin Phoenix.com",
-//            nfts: [],
-//            likes: [],
-//            id: "1"
-//        )
-//        currentProfile = profile
-//        view?.displayProfileData(profile)
-//    }
-    
     func loadProfileData() {
         UIBlockingProgressHUD.show()
         userProfileService.fetchUserProfile { [weak self] result in
