@@ -88,8 +88,16 @@ final class ProfileView: UIView {
         nameLabel.text = profile.name
         descriptionLabel.text = profile.description
         websiteLabel.text = profile.website
-        if let avatarURL = URL(string: profile.avatar) {
-            avatarPhoto.kf.setImage(with: avatarURL)
+        if let avatarURL = URL(string: profile.avatar ) {
+            avatarPhoto.kf.setImage(with: avatarURL) { result in
+                switch result {
+                case .success(let value):
+                    print("Успешно загружено изображение: \(value.source.url?.absoluteString ?? "")")
+                case .failure(let error):
+                    print("Ошибка загрузки изображения: \(error.localizedDescription)")
+                    
+                }
+            }
         } else {
             avatarPhoto.image = UIImage(named: "placeholder")
         }

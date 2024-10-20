@@ -77,22 +77,27 @@ final class MyNFTsViewController: UIViewController {
     @objc private func sortButtonTapped() {
         let alertController = UIAlertController(title: "Сортировка", message: "Выберите способ сортировки", preferredStyle: .actionSheet)
         
-        alertController.addAction(UIAlertAction(title: "По цене", style: .default, handler: { [weak self] _ in
-            self?.sortNFTs(by: .price)
-        }))
+        let sortOptions: [(title: String, type: SortCriterion)] = [
+            ("По цене", .price),
+            ("По названию", .name),
+            ("По рейтингу", .rating)
+        ]
         
-        alertController.addAction(UIAlertAction(title: "По названию", style: .default, handler: { [weak self] _ in
-            self?.sortNFTs(by: .name)
-        }))
-        
-        alertController.addAction(UIAlertAction(title: "По рейтингу", style: .default, handler: { [weak self] _ in
-            self?.sortNFTs(by: .rating)
-        }))
+        for option in sortOptions {
+            alertController.addAction(createSortAction(title: option.title, sortType: option.type))
+        }
         
         alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
         
         present(alertController, animated: true)
     }
+
+    private func createSortAction(title: String, sortType: SortCriterion) -> UIAlertAction {
+        return UIAlertAction(title: title, style: .default) { [weak self] _ in
+            self?.sortNFTs(by: sortType)
+        }
+    }
+
 }
 
 
