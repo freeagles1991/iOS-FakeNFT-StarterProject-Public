@@ -90,11 +90,12 @@ extension ProfileViewController: ProfileViewDelegate {
     func didSelectItem(at index: Int) {
         switch index {
         case 0:
-            router?.navigateToMyNFTs(from: self)
+            guard let profile = presenter?.getCurrentProfile() else { return }
+            router?.navigateToMyNFTs(from: self, with: profile)
         case 1:
             router?.navigateToFavoritesNFTs(from: self)
         case 2:
-            _ = MyNFTsViewController()
+            print("Webview")
         default:
             break
         }

@@ -16,6 +16,19 @@ final class MyNFTsViewController: UIViewController {
     
     private var nfts: [Nft] = []
     private let tableView = UITableView()
+    private let nftService: NftService?
+    private let profile: UserProfile
+    
+    init(nftService: NftService?, profile: UserProfile) {
+        self.nftService = nftService
+        self.profile = profile
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +37,51 @@ final class MyNFTsViewController: UIViewController {
     }
     
     private func fetchNFTs() {
-        if nfts.isEmpty {
-            tableView.setBackgroundView(message: "У вас еще нет NFT.")
-            navigationItem.rightBarButtonItem = nil
-        } else {
-            tableView.setBackgroundView(message: nil)
-            setupNavigationItem()
+        guard let nftService = nftService else {
+            print("nftService равен nil")
+            return
         }
-        tableView.reloadData()
+        
+        guard !profile.nfts.isEmpty else {
+            self.tableView.setBackgroundView(message: "У вас еще нет NFT.")
+            return
+        }
+        
+        let dispatchGroup = DispatchGroup()
+        
+        for nftID in profile.nfts {
+            dispatchGroup.enter()
+            nftService.loadNft(id: nftID) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let nft):
+                    self.nfts.append(nft)
+                    print("Загружено NFT: \(nft)")
+                    
+                case .failure(let error):
+                    print("Ошибка загрузки NFT с ID \(nftID): \(error)")
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            if self.nfts.isEmpty {
+                self.tableView.setBackgroundView(message: "У вас еще нет NFT.")
+                self.navigationItem.rightBarButtonItem = nil
+            } else {
+                self.tableView.setBackgroundView(message: nil)
+                self.setupNavigationItem()
+            }
+            self.tableView.reloadData()
+            print("Всего загружено NFT: \(self.nfts.count)")
+        }
     }
+
+
+
     
     private func sortNFTs(by criterion: SortCriterion) {
         switch criterion {

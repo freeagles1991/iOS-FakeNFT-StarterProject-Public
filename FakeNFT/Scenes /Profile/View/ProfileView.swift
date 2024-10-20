@@ -14,6 +14,7 @@ protocol ProfileViewDelegate: AnyObject {
 
 final class ProfileView: UIView {
     weak var delegate: ProfileViewDelegate?
+    private var profile: UserProfile?
     
     //MARK: - UI
     private lazy var nameLabel: UILabel = {
@@ -85,11 +86,14 @@ final class ProfileView: UIView {
     
     
     func update(with profile: UserProfile) {
+        self.profile = profile
         nameLabel.text = profile.name
         descriptionLabel.text = profile.description
         websiteLabel.text = profile.website
         
         loadAvatar(from: profile.avatar)
+        print(profile.nfts.count)
+        tableView.reloadData()
     }
     
     private func loadAvatar(from urlString: String) {
@@ -170,9 +174,9 @@ extension ProfileView: UITableViewDataSource {
         
         switch indexPath.row {
         case 0:
-            cell.configure(with: "Мои NFT", count: nil)
+            cell.configure(with: "Мои NFT", count: profile?.nfts.count)
         case 1:
-            cell.configure(with: "Избранные NFT", count: nil)
+            cell.configure(with: "Избранные NFT", count: profile?.likes.count)
         case 2:
             cell.configure(with: "О разработчике", count: nil)
         default:
