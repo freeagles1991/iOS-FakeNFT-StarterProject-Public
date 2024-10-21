@@ -448,8 +448,8 @@
 		C8D0317F2CC3F9FE009CA8D1 /* MyNFTs */ = {
 			isa = PBXGroup;
 			children = (
-				C8D0318E2CC5D5FC009CA8D1 /* Presenter */,
 				C8D031822CC3FA17009CA8D1 /* View */,
+				C8D0318E2CC5D5FC009CA8D1 /* Presenter */,
 			);
 			path = MyNFTs;
 			sourceTree = "<group>";
@@ -474,8 +474,8 @@
 		C8D031822CC3FA17009CA8D1 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C886C6B02CBB613C00D31171 /* MyNFTsViewController.swift */,
 				C886C6B42CBB622500D31171 /* Cell */,
+				C886C6B02CBB613C00D31171 /* MyNFTsViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";

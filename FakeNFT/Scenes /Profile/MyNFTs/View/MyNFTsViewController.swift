@@ -46,6 +46,9 @@ final class MyNFTsViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(NFTTableViewCell.self, forCellReuseIdentifier: NFTTableViewCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 140
+        tableView.allowsSelection = false
+        tableView.separatorStyle = .none
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -146,10 +149,9 @@ extension MyNFTsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        //        if let nft = presenter.nft(at: indexPath.row) {
-        //            // Настройка ячейки с данными NFT
-        //            cell.configure(with: nft)
-        //        }
+        if let nft = presenter?.nft(at: indexPath.row) {
+            cell.configure(with: nft)
+        }
         
         return cell
     }
