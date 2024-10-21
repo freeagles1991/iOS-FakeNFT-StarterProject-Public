@@ -16,12 +16,10 @@ final class MyNFTsViewController: UIViewController {
     
     private var nfts: [Nft] = []
     private let tableView = UITableView()
-    private let nftService: NftService?
-    private let profile: UserProfile
+    private(set) var presenter: MyNFTsPresenterProtocol?
     
-    init(nftService: NftService?, profile: UserProfile) {
-        self.nftService = nftService
-        self.profile = profile
+    init(presenter: MyNFTsPresenterProtocol?) {
+        self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -32,67 +30,12 @@ final class MyNFTsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchNFTs()
         setupUI()
+        presenter?.viewDidLoad()
     }
     
-    private func fetchNFTs() {
-        guard let nftService = nftService else {
-            print("nftService равен nil")
-            return
-        }
-        
-        guard !profile.nfts.isEmpty else {
-            self.tableView.setBackgroundView(message: "У вас еще нет NFT.")
-            return
-        }
-        
-        let dispatchGroup = DispatchGroup()
-        
-        for nftID in profile.nfts {
-            dispatchGroup.enter()
-            nftService.loadNft(id: nftID) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let nft):
-                    self.nfts.append(nft)
-                    print("Загружено NFT: \(nft)")
-                    
-                case .failure(let error):
-                    print("Ошибка загрузки NFT с ID \(nftID): \(error)")
-                }
-                dispatchGroup.leave()
-            }
-        }
-        
-        dispatchGroup.notify(queue: .main) { [weak self] in
-            guard let self = self else { return }
-            if self.nfts.isEmpty {
-                self.tableView.setBackgroundView(message: "У вас еще нет NFT.")
-                self.navigationItem.rightBarButtonItem = nil
-            } else {
-                self.tableView.setBackgroundView(message: nil)
-                self.setupNavigationItem()
-            }
-            self.tableView.reloadData()
-            print("Всего загружено NFT: \(self.nfts.count)")
-        }
-    }
-
-
-
-    
-    private func sortNFTs(by criterion: SortCriterion) {
-        switch criterion {
-        case .price:
-            nfts.sort { $0.price < $1.price }
-        case .name:
-            nfts.sort { $0.name < $1.name }
-        case .rating:
-            nfts.sort { $0.rating > $1.rating }
-        }
-        tableView.reloadData()
+    func setPresenter(_ presenter: MyNFTsPresenterProtocol) {
+        self.presenter = presenter
     }
     
     private func setupUI() {
@@ -112,7 +55,29 @@ final class MyNFTsViewController: UIViewController {
         ])
     }
     
-    private func setupNavigationItem() {
+    func setBackgroundView(message: String?) {
+        let messageLabel = UILabel()
+        messageLabel.text = message
+        messageLabel.font = .bold17
+        messageLabel.textColor = .segmentActive
+        messageLabel.textAlignment = .center
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        tableView.backgroundView = message == nil ? nil : messageLabel
+        
+        if message != nil {
+            NSLayoutConstraint.activate([
+                messageLabel.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
+                messageLabel.centerYAnchor.constraint(equalTo: tableView.centerYAnchor)
+            ])
+        }
+    }
+    
+    func reloadData() {
+        tableView.reloadData()
+    }
+    
+    func setupNavigationItem() {
         title = "Мой NFT"
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -121,6 +86,24 @@ final class MyNFTsViewController: UIViewController {
             target: self,
             action: #selector(sortButtonTapped)
         )
+    }
+    
+    func showLoadingIndicator() {
+        let activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
+    }
+    
+    func hideLoadingIndicator() {
+        view.subviews.compactMap { $0 as? UIActivityIndicatorView }.forEach { $0.stopAnimating() }
+    }
+    
+    func showError(message: String) {
+        let alertController = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "ОК", style: .default))
+        present(alertController, animated: true)
     }
     
     @objc private func sortButtonTapped() {
@@ -143,12 +126,11 @@ final class MyNFTsViewController: UIViewController {
 
     private func createSortAction(title: String, sortType: SortCriterion) -> UIAlertAction {
         return UIAlertAction(title: title, style: .default) { [weak self] _ in
-            self?.sortNFTs(by: sortType)
+            self?.presenter?.sortNFTs(by: sortType)
+            self?.reloadData()
         }
     }
-
 }
-
 
 extension MyNFTsViewController: UITableViewDelegate {
     
@@ -156,7 +138,7 @@ extension MyNFTsViewController: UITableViewDelegate {
 
 extension MyNFTsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        nfts.count
+        return presenter?.numberOfNFTs ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -164,26 +146,19 @@ extension MyNFTsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        //        if let nft = presenter.nft(at: indexPath.row) {
+        //            // Настройка ячейки с данными NFT
+        //            cell.configure(with: nft)
+        //        }
+        
         return cell
     }
-    
-    
 }
 
-extension UITableView {
-    func setBackgroundView(message: String?) {
-        let messageLabel = UILabel()
-        messageLabel.text = message
-        messageLabel.font = .bold17
-        messageLabel.textColor = .segmentActive
-        messageLabel.textAlignment = .center
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        backgroundView = messageLabel
-        
-        NSLayoutConstraint.activate([
-            messageLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            messageLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
-        ])
+extension MyNFTsViewController: MyNFTsViewProtocol {
+    func updateRightBarButtonItem(_ item: UIBarButtonItem?) {
+        navigationItem.rightBarButtonItem = item
     }
 }
+
+

@@ -16,11 +16,13 @@ protocol ProfileRouterProtocol: AnyObject {
 final class ProfileRouter: ProfileRouterProtocol {
     
     weak var viewController: UIViewController?
+    private var assemblyBuilder: AssemblyBuilderProfile
     private var nftService: NftService
         
-    init(viewController: UIViewController?, nftService: NftService) {
+    init(viewController: UIViewController?, nftService: NftService, assemblyBuilder: AssemblyBuilderProfile) {
         self.viewController = viewController
         self.nftService = nftService
+        self.assemblyBuilder = assemblyBuilder
     }
     
     func navigateToEditProfile(from view: ProfileViewController, with profile: UserProfile) {
@@ -29,14 +31,12 @@ final class ProfileRouter: ProfileRouterProtocol {
     }
     
     func navigateToMyNFTs(from view: ProfileViewController, with profile: UserProfile) {
-        let myNFTsViewController = MyNFTsViewController(nftService: nftService, profile: profile)
-        if let navigationController = viewController?.navigationController {
+        let myNFTsViewController = assemblyBuilder.createMyNFTsModule(from: view, with: profile)
+        if let navigationController = view.navigationController {
             navigationController.pushViewController(myNFTsViewController, animated: true)
-        } else {
-            print("NavigationController is nil")
         }
-
     }
+
     
     func navigateToFavoritesNFTs(from view: ProfileViewController) {
         let favoritesNFTsViewController = FavouritesNFTsViewController()
