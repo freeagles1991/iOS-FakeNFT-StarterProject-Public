@@ -91,7 +91,8 @@ private extension CatalogViewController {
     }
     
     @objc func showCollectionSortedAlert() {
-        let alertController = presenter.showCollectionSortedAlert().createAlertController()
+        let alertViewModel = presenter.createSortAlertViewModel()
+        let alertController = alertViewModel.createAlertController()
         present(alertController, animated: true)
     }
     

@@ -5,7 +5,7 @@ import UIKit
 
 protocol CatalogPresenter {
     func viewDidLoad()
-    func showCollectionSortedAlert() -> AlertViewModel
+    func createSortAlertViewModel() -> AlertViewModel
     var dataSource: [NftCollection] { get }
     var cellViewModels: [CatalogCellViewModel] { get }
 }
@@ -59,16 +59,18 @@ final class CatalogPresenterImpl: CatalogPresenter {
                                                      id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c")])
     }
     
-    func showCollectionSortedAlert() -> AlertViewModel {
+    func createSortAlertViewModel() -> AlertViewModel {
         let alertViewModel = AlertViewModel(title: "Сортировка",
                                             message: nil,
                                             actions: [
                                                 AlertViewModel.AlertAction(title: "По названию", style: .default) {
                                                     print("Сортировку сделаю в 3 модуле")
                                                 },
+                                                
                                                 AlertViewModel.AlertAction(title: "По количеству NFT", style: .default) {
                                                     print("Сортировку сделаю в 3 модуле")
                                                 },
+                                                
                                                 AlertViewModel.AlertAction(title: "Закрыть", style: .cancel, handler: nil)
                                             ],
                                             preferredStyle: .actionSheet)
