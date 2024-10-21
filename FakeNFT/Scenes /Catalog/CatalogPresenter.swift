@@ -28,35 +28,51 @@ final class CatalogPresenterImpl: CatalogPresenter {
         }
     }
     
+    private let nftCollectionService: NftCollectionsService
+    
+    init(nftCollectionService: NftCollectionsService) {
+        self.nftCollectionService = nftCollectionService
+    }
+    
     func viewDidLoad() {
-        dataSource.append(contentsOf: [NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "Персиковый — как облака над закатным солнцем в океане. В этой коллекции совмещены трогательная нежность и живая игривость сказочных зефирных зверей.",
-                                                     author: "John Doe",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
-                                       NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
-                                                     author: "Lourdes Harper",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
-                                       NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
-                                                     author: "Lourdes Harper",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
-                                       NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
-                                                     author: "Lourdes Harper",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c")])
+        nftCollectionService.loadNftCollection { [weak self] result in
+            self?.view?.showLoading()
+            switch result {
+                case .success(let nftCollections):
+                print(nftCollections)
+                self?.dataSource = nftCollections
+            case .failure(_):
+                print("Не удалось скачать")
+            }
+        }
+//        dataSource.append(contentsOf: [NftCollection(createdAt: "2023 - 11- 21:36",
+//                                                     name: "Peach",
+//                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
+//                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
+//                                                     description: "Персиковый — как облака над закатным солнцем в океане. В этой коллекции совмещены трогательная нежность и живая игривость сказочных зефирных зверей.",
+//                                                     author: "John Doe",
+//                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
+//                                       NftCollection(createdAt: "2023 - 11- 21:36",
+//                                                     name: "Peach",
+//                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
+//                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
+//                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
+//                                                     author: "Lourdes Harper",
+//                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
+//                                       NftCollection(createdAt: "2023 - 11- 21:36",
+//                                                     name: "Peach",
+//                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
+//                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
+//                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
+//                                                     author: "Lourdes Harper",
+//                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
+//                                       NftCollection(createdAt: "2023 - 11- 21:36",
+//                                                     name: "Peach",
+//                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
+//                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
+//                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
+//                                                     author: "Lourdes Harper",
+//                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c")])
     }
     
     func createSortAlertViewModel() -> AlertViewModel {

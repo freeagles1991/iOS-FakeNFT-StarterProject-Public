@@ -2,8 +2,9 @@
 
 
 import UIKit
+import ProgressHUD
 
-protocol CatalogViewControllerProtocol: AnyObject {
+protocol CatalogViewControllerProtocol:  AnyObject, ErrorView, LoadingView {
     func updateUI()
 }
 
@@ -13,6 +14,7 @@ final class CatalogViewController: UIViewController {
     
     private lazy var sortButton = UIButton(type: .system)
     private lazy var tableView = UITableView()
+    var activityIndicator = UIActivityIndicatorView()
     
     // MARK: - Init
     
@@ -38,6 +40,7 @@ final class CatalogViewController: UIViewController {
 // MARK: - CatalogView protocol func
 
 extension CatalogViewController: CatalogViewControllerProtocol {
+    
     func updateUI() {
         
     }
@@ -79,6 +82,8 @@ private extension CatalogViewController {
     func configureUI() {
         configureSortButton()
         configureTableView()
+        view.addSubview(activityIndicator)
+        activityIndicator.constraintCenters(to: view)
     }
     
     func configureSortButton() {
