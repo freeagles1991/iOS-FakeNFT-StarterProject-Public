@@ -50,9 +50,7 @@ final class CartViewController: UIViewController, CartView{
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
-        label.textColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
     
@@ -66,9 +64,7 @@ final class CartViewController: UIViewController, CartView{
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
 
-        view.backgroundColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaLightGrayDark : UIColor.yaLightGrayLight
-        }
+        view.backgroundColor = UIColor.dynamicLightGray
 
         view.layer.cornerRadius = 16
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -79,16 +75,12 @@ final class CartViewController: UIViewController, CartView{
     private let payButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        button.backgroundColor = UIColor.dynamicBlack
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.titleLabel?.font = UIFont.bold17
 
-        button.setTitleColor(UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaWhiteDark : UIColor.yaWhiteLight
-        }, for: .normal)
+        button.setTitleColor(UIColor.dynamicWhite, for: .normal)
 
         return button
     }()
@@ -97,9 +89,7 @@ final class CartViewController: UIViewController, CartView{
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular15
-        label.textColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
     
@@ -186,7 +176,7 @@ final class CartViewController: UIViewController, CartView{
             navigationController?.navigationBar.layoutMargins = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
         
         let filterButton = UIBarButtonItem(image: UIImage(named: Constants.filterButtonIcon), style: .done, target: self, action: #selector(filterButtonTapped))
-        filterButton.tintColor = .black
+        filterButton.tintColor = UIColor.dynamicBlack
         
         navigationItem.rightBarButtonItem = filterButton
     }
@@ -279,9 +269,7 @@ final class CartViewController: UIViewController, CartView{
         
         let payViewController = payAssembly.build()
         
-        navigationController?.navigationBar.tintColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        navigationController?.navigationBar.tintColor = UIColor.dynamicBlack
         
         payViewController.hidesBottomBarWhenPushed = true
         

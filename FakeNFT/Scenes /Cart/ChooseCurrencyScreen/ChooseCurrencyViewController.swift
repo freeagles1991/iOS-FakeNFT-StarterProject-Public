@@ -11,6 +11,8 @@ import UIKit
 protocol ChooseCurrencyViewController: UIViewController, LoadingView {
     func updateCollectionView()
     func toogleSelectAtCell(at indexPath: IndexPath, isSelected: Bool)
+    func updatePayButtonState(_ isCurrencySelected: Bool)
+    func showAlert(_ alert: AlertViewModel)
 }
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
@@ -26,9 +28,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
-        label.textColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
     
@@ -57,9 +57,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
 
-        view.backgroundColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaLightGrayDark : UIColor.yaLightGrayLight
-        }
+        view.backgroundColor = UIColor.dynamicLightGray
 
         view.layer.cornerRadius = 16
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -70,13 +68,12 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     let userAgreementTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.isEditable = false // Отключаем редактирование
-        textView.isSelectable = true // Разрешаем выбор текста
-        textView.isScrollEnabled = false // Отключаем прокрутку
-        textView.backgroundColor = .clear // Убираем фон
+        textView.isEditable = false
+        textView.isSelectable = true
+        textView.isScrollEnabled = false
+        textView.backgroundColor = .clear
 
-        // Важно: Убираем dataDetectorTypes, чтобы избежать автоматической стилизации ссылок
-        textView.dataDetectorTypes = [] // Отключаем автоматическое обнаружение ссылок
+        textView.dataDetectorTypes = []
 
         return textView
     }()
@@ -84,16 +81,12 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     private let payButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        button.backgroundColor = UIColor.dynamicBlack
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.titleLabel?.font = UIFont.bold17
 
-        button.setTitleColor(UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaWhiteDark : UIColor.yaWhiteLight
-        }, for: .normal)
+        button.setTitleColor(UIColor.dynamicWhite, for: .normal)
 
         return button
     }()
@@ -126,6 +119,8 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         setupCollectionView()
         setupButtonPanel()
         
+        updatePayButtonState(false)
+        
         presenter.viewDidLoad()
     }
     
@@ -137,6 +132,16 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     func toogleSelectAtCell(at indexPath: IndexPath, isSelected: Bool) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? CurrencyCell else {return}
         cell.toggleSelectState(isSelected)
+    }
+    
+    func showAlert(_ alert: AlertViewModel) {
+        let alertController = alert.createAlertController()
+        self.present(alertController, animated: true)
+    }
+    
+    func updatePayButtonState(_ isCurrencySelected: Bool) {
+        payButton.isEnabled = isCurrencySelected ? true : false
+        payButton.backgroundColor = isCurrencySelected ? UIColor.dynamicBlack.withAlphaComponent(1.0) : UIColor.dynamicBlack.withAlphaComponent(0.5)
     }
     
     //MARK: Верстка
@@ -208,6 +213,8 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         
         let font = UIFont.regular13
         attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: attributedString.length))
+        
+        attributedString.addAttribute(.foregroundColor, value: UIColor.dynamicBlack, range: NSRange(location: 0, length: attributedString.length))
         
         let linkRange = (Constants.userAgreementText.rawValue as NSString).range(of: "Пользовательского соглашения")
         

@@ -22,6 +22,11 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
     var nfts: [String] = [Nft().id]
     
     var currencies: [Currency] = []
+    var selectedCurrency: IndexPath? {
+        didSet {
+            view?.updatePayButtonState(selectedCurrency != nil)
+        }
+    }
     
     init(currencyService: CurrencyService) {
         self.currencyService = currencyService
@@ -44,6 +49,7 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
     
     func currencyDidSelect(at indexPath: IndexPath) {
         guard let view else {return}
+        self.selectedCurrency = indexPath
         view.toogleSelectAtCell(at: indexPath, isSelected: true)
         view.showLoading()
         currencyService.setCurrencyIDBeforePayment(String(indexPath.row)) { result in
@@ -67,8 +73,36 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
             switch result {
             case .success(_):
                 print("ChooseCurrencyPresenterImpl: оплачено")
+                let action = AlertViewModel.AlertAction(
+                    title: "Окей", 
+                    style: .default,
+                    handler: {
+                        self.view?.navigationController?.popViewController(animated: true)
+                    }
+                )
+                let alert = AlertViewModel(
+                    title: "Ура",
+                    message: "Вы инвестировали в говно",
+                    actions: [action],
+                    preferredStyle: .alert
+                )
+                view.showAlert(alert)
             case .failure(_):
                 print("ChooseCurrencyPresenterImpl: не оплачено")
+                print("ChooseCurrencyPresenterImpl: оплачено")
+                let action = AlertViewModel.AlertAction(
+                    title: "Попробовать снова",
+                    style: .default,
+                    handler: {
+                        self.payOrder(with: nfts)
+                    })
+                let alert = AlertViewModel(
+                    title: ":(",
+                    message: "Оплата не выполнена по неизвестной причине",
+                    actions: [action],
+                    preferredStyle: .alert
+                )
+                view.showAlert(alert)
             }
             view.hideLoading()
         }

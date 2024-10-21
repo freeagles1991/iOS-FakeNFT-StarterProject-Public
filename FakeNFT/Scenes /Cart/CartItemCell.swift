@@ -44,7 +44,7 @@ final class CartItemCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
-        label.textColor = .black
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
     
@@ -58,7 +58,7 @@ final class CartItemCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular13
-        label.textColor = .black
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
     
@@ -66,7 +66,7 @@ final class CartItemCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
-        label.textColor = .black
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
     
@@ -74,6 +74,7 @@ final class CartItemCell: UICollectionViewCell {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: CartViewController.Constants.deleteNftIcon), for: .normal)
+        button.tintColor = UIColor.dynamicBlack
         return button
     }()
 
