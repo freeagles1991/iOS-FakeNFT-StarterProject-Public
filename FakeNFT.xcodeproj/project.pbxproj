@@ -52,7 +52,9 @@
 		AC631D372CC18FC3003AC4ED /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC631D362CC18FC3003AC4ED /* GeometricParams.swift */; };
 		AC6FD4922CC467A900F85CFC /* AlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6FD4912CC467A900F85CFC /* AlertViewModel.swift */; };
 		AC6FD4942CC4697100F85CFC /* morozov_catalog_epicTask.md in Resources */ = {isa = PBXBuildFile; fileRef = AC6FD4932CC4697100F85CFC /* morozov_catalog_epicTask.md */; };
+		AC7663032CC6E27F00CB7992 /* CollectionAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7663022CC6E27F00CB7992 /* CollectionAssembly.swift */; };
 		AC7D0EA32CBEE59100289FC5 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7D0EA22CBEE59100289FC5 /* CollectionViewCell.swift */; };
+		AC8EEB4E2CC845C2009636E1 /* CollectionCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8EEB4D2CC845C2009636E1 /* CollectionCellViewModel.swift */; };
 		AC9084012CBD7B0000ABD51C /* CatalogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9084002CBD7B0000ABD51C /* CatalogTableViewCell.swift */; };
 		AC9084042CBD96E400ABD51C /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9084032CBD96E400ABD51C /* CollectionViewController.swift */; };
 		AC9084062CBD96F200ABD51C /* CollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9084052CBD96F200ABD51C /* CollectionPresenter.swift */; };
@@ -132,7 +134,9 @@
 		AC631D362CC18FC3003AC4ED /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
 		AC6FD4912CC467A900F85CFC /* AlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewModel.swift; sourceTree = "<group>"; };
 		AC6FD4932CC4697100F85CFC /* morozov_catalog_epicTask.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = morozov_catalog_epicTask.md; sourceTree = "<group>"; };
+		AC7663022CC6E27F00CB7992 /* CollectionAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionAssembly.swift; sourceTree = "<group>"; };
 		AC7D0EA22CBEE59100289FC5 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		AC8EEB4D2CC845C2009636E1 /* CollectionCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCellViewModel.swift; sourceTree = "<group>"; };
 		AC9084002CBD7B0000ABD51C /* CatalogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTableViewCell.swift; sourceTree = "<group>"; };
 		AC9084032CBD96E400ABD51C /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		AC9084052CBD96F200ABD51C /* CollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPresenter.swift; sourceTree = "<group>"; };
@@ -339,6 +343,7 @@
 				AC631D362CC18FC3003AC4ED /* GeometricParams.swift */,
 				ACD7C37B2CC3E86F0051CC08 /* CatalogCellViewModel.swift */,
 				AC6FD4912CC467A900F85CFC /* AlertViewModel.swift */,
+				AC8EEB4D2CC845C2009636E1 /* CollectionCellViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -402,6 +407,7 @@
 				AC9084032CBD96E400ABD51C /* CollectionViewController.swift */,
 				AC9084052CBD96F200ABD51C /* CollectionPresenter.swift */,
 				AC7D0EA22CBEE59100289FC5 /* CollectionViewCell.swift */,
+				AC7663022CC6E27F00CB7992 /* CollectionAssembly.swift */,
 			);
 			path = "Collection Screen";
 			sourceTree = "<group>";
@@ -595,9 +601,11 @@
 				0CF2C2DD2A783CE600FDC837 /* ErrorView.swift in Sources */,
 				0C79EE682A76DE0900EE90EA /* NftDetailPresenter.swift in Sources */,
 				3F68069B29CBBAF100B4F915 /* ProductDetailsTableViewController.swift in Sources */,
+				AC7663032CC6E27F00CB7992 /* CollectionAssembly.swift in Sources */,
 				0CFCB7402A78002A0009A829 /* ExamplePutService.swift in Sources */,
 				AC9084062CBD96F200ABD51C /* CollectionPresenter.swift in Sources */,
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
+				AC8EEB4E2CC845C2009636E1 /* CollectionCellViewModel.swift in Sources */,
 				ACF6C5AE2CC6CC4E00B1903C /* NftCollectionsRequest.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
 				AC9084012CBD7B0000ABD51C /* CatalogTableViewCell.swift in Sources */,

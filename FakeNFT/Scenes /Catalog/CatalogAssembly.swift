@@ -12,7 +12,7 @@ public final class CatalogAssembly {
     }
     
     public func build() -> UIViewController {
-        let catalogPresenter = CatalogPresenterImpl(nftCollectionService: servicesAssembler.nftCollectionsService)
+        let catalogPresenter = CatalogPresenterImpl(servicesAssembly: servicesAssembler)
         let cataloViewController = CatalogViewController(presenter: catalogPresenter)
         catalogPresenter.view = cataloViewController
         return cataloViewController

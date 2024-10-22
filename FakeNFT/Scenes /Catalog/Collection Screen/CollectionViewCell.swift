@@ -3,6 +3,11 @@
 
 import UIKit
 
+protocol CollectionViewCellDelegate: AnyObject {
+    func didTapCartButton(in cell: CollectionViewCell)
+    func didTapLikeButton(in cell: CollectionViewCell)
+}
+
 final class CollectionViewCell: UICollectionViewCell {
     static let identifier: String = "CollectionViewCell"
     
@@ -13,6 +18,8 @@ final class CollectionViewCell: UICollectionViewCell {
     private lazy var labelsStackView = UIStackView()
     private lazy var cartButton = UIButton()
     private lazy var likeButton = UIButton()
+    
+    weak var delegate: CollectionViewCellDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,6 +43,16 @@ final class CollectionViewCell: UICollectionViewCell {
             cellImage.heightAnchor.constraint(equalToConstant: cellWidth)
         ])
     }
+    
+    func configureCell(cellViewModel: CollectionCellViewModel) {
+        starRatingView.rating = cellViewModel.rating
+        nameLabel.text = cellViewModel.name
+        currencyLabel.text = "\(cellViewModel.price) ETH"
+        cartButton.setImage(cellViewModel.isAddedToCart ? UIImage(named: "cartIconDellBlack") : UIImage(named: "cartIconAddBlack"), for: .normal)
+        likeButton.setImage(cellViewModel.isFavorited ? UIImage(named: "heartIsActive") : UIImage(named: "headrtNoActive"), for: .normal)
+        guard let url = cellViewModel.image else {return}
+        cellImage.kf.setImage(with: url)
+    }
 }
 
 //MARK: Configure UI
@@ -53,7 +70,6 @@ private extension CollectionViewCell {
         cellImage.contentMode = .scaleAspectFill
         cellImage.clipsToBounds = true
         cellImage.layer.cornerRadius = 12
-        cellImage.image = UIImage(named: "nftImageMock")
         cellImage.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(cellImage)
         
@@ -65,7 +81,6 @@ private extension CollectionViewCell {
     }
     
     func configureLikeButton() {
-        likeButton.setImage(UIImage(named: "heartIsActive"), for: .normal)
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         likeButton.addTarget(self, action: #selector(likeButtonDidTapped), for: .touchUpInside)
         contentView.addSubview(likeButton)
@@ -95,7 +110,6 @@ private extension CollectionViewCell {
     }
     
     func configureLabelsStackView() {
-        nameLabel.text = "Carmine Wooten"
         nameLabel.textAlignment = .left
         nameLabel.textColor = UIColor.segmentActive
         nameLabel.font = UIFont.bold17
@@ -103,7 +117,6 @@ private extension CollectionViewCell {
         nameLabel.adjustsFontSizeToFitWidth = true
         nameLabel.minimumScaleFactor = 0.5
         
-        currencyLabel.text = "2 ETH"
         currencyLabel.textAlignment = .left
         currencyLabel.textColor = UIColor.segmentActive
         currencyLabel.font = UIFont.medium10
@@ -117,7 +130,6 @@ private extension CollectionViewCell {
     }
     
     func configureCartButtonAndStackView() {
-        cartButton.setImage(UIImage(named: "cartIconAddBlack"), for: .normal)
         cartButton.translatesAutoresizingMaskIntoConstraints = false
         cartButton.addTarget(self, action: #selector(cartButtonDidTapped), for: .touchUpInside)
         
@@ -143,6 +155,6 @@ private extension CollectionViewCell {
     }
     
     @objc func cartButtonDidTapped() {
-        
+        delegate?.didTapCartButton(in: self)
     }
 }

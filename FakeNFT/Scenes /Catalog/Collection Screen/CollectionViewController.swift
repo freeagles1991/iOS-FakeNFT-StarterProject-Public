@@ -3,13 +3,16 @@
 
 import UIKit
 
-protocol CollectionViewControllerProtocol: AnyObject {
+protocol CollectionViewControllerProtocol: AnyObject, ErrorView, LoadingView {
     func updateUI()
+    func updateCell(cellIndexPath: IndexPath)
 }
 
 final class CollectionViewController: UIViewController {
     
     private let presenter: CollectionPresenter
+    
+    var activityIndicator = UIActivityIndicatorView()
     
     private lazy var scrollView = UIScrollView()
     private lazy var contentView = UIView()
@@ -48,15 +51,34 @@ final class CollectionViewController: UIViewController {
         configureUI()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        collectionView.layoutIfNeeded()
+    // MARK: - private functions
+    
+}
+
+extension CollectionViewController: CollectionViewControllerProtocol {
+    func updateUI() {
+        collectionView.reloadData()
         let contentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
         collectionView.heightAnchor.constraint(equalToConstant: contentHeight).isActive = true
     }
     
-    // MARK: - private functions
+    func updateCell(cellIndexPath: IndexPath) {
+        collectionView.reloadItems(at: [cellIndexPath])
+    }
+}
+
+//MARK: CollectionViewCellDelegate func cart and like
+
+extension CollectionViewController: CollectionViewCellDelegate {
+    func didTapCartButton(in cell: CollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {return}
+        presenter.didTapCartButton(indexPath: indexPath)
+    }
+    
+    func didTapLikeButton(in cell: CollectionViewCell) {
+        print("Нажали Like")
+    }
+    
     
 }
 
@@ -65,7 +87,7 @@ final class CollectionViewController: UIViewController {
 extension CollectionViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        4
+        presenter.nftArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -73,6 +95,8 @@ extension CollectionViewController: UICollectionViewDataSource {
         guard let collectionCell = cell as? CollectionViewCell else {
             return CollectionViewCell()
         }
+        collectionCell.delegate = self
+        collectionCell.configureCell(cellViewModel: presenter.cellViewModels[indexPath.row])
         return collectionCell
     }
 }
@@ -144,7 +168,6 @@ private extension CollectionViewController {
     }
     
     func configureCollectionImageView() {
-        collectionImageView.image = UIImage(named: "catalogStubImage") ?? UIImage()
         collectionImageView.clipsToBounds = true
         collectionImageView.layer.cornerRadius = 12
         collectionImageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -158,6 +181,9 @@ private extension CollectionViewController {
             collectionImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             collectionImageView.heightAnchor.constraint(equalToConstant: 310)
         ])
+        
+        guard let url = URL(string: presenter.selectedCollection.cover) else {return}
+        collectionImageView.kf.setImage(with: url)
     }
     
     func configureBackButton() {

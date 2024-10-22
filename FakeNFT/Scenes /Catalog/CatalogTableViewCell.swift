@@ -23,8 +23,10 @@ final class CatalogTableViewCell: UITableViewCell {
         super.prepareForReuse()
     }
     
-    func configureCell(urlForDownloadImage: URL?, header: String) {
-        self.cellLabel.text = header
+    func configureCell(catalogCellViewModel: CatalogCellViewModel) {
+        self.cellLabel.text = catalogCellViewModel.title
+        guard let url = catalogCellViewModel.imageURL else {return}
+        cellImageView.kf.setImage(with: url)
     }
 }
 
