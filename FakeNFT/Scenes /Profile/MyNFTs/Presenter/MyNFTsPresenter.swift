@@ -35,6 +35,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
     private let nftService: NftService
     private let profile: UserProfile
     private var nfts: [Nft] = []
+    private let sortKey = "selectedSortCriterion"
     
     init(view: MyNFTsViewProtocol, nftService: NftService, profile: UserProfile) {
         self.view = view
@@ -43,6 +44,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
     }
     
     func viewDidLoad() {
+        applySavedSortOption()
         loadNFTs()
     }
     
@@ -122,7 +124,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         case .rating:
             nfts.sort { $0.rating > $1.rating }
         }
-        view?.reloadData()
+        saveSortOption(criterion)
     }
     
     var numberOfNFTs: Int {
@@ -133,4 +135,43 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         guard index < nfts.count else { return nil }
         return nfts[index]
     }
+}
+
+private extension MyNFTsPresenter {
+    func saveSortOption(_ criterion: MyNFTsViewController.SortCriterion) {
+        let sortValue: String
+        switch criterion {
+        case .price:
+            sortValue = "price"
+        case .name:
+            sortValue = "name"
+        case .rating:
+            sortValue = "rating"
+        }
+        
+        UserDefaults.standard.set(sortValue, forKey: sortKey)
+    }
+    
+    private func applySavedSortOption() {
+        guard let savedSortValue = UserDefaults.standard.string(forKey: sortKey) else {
+            print("Нет сохраненного способа сортировки")
+            return
+        }
+        
+        let savedCriterion: MyNFTsViewController.SortCriterion
+        switch savedSortValue {
+        case "price":
+            savedCriterion = .price
+        case "name":
+            savedCriterion = .name
+        case "rating":
+            savedCriterion = .rating
+        default:
+            return
+        }
+        
+        sortNFTs(by: savedCriterion)
+        view?.reloadData()
+    }
+    
 }
