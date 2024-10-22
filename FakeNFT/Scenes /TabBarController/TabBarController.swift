@@ -25,16 +25,20 @@ final class TabBarController: UITabBarController {
         )
         catalogController.tabBarItem = catalogTabBarItem
         
-        //Конфигурируем вкладку корзины
+        let cartNavigationController = configureCartVC()
+
+        viewControllers = [catalogController, cartNavigationController]
+        view.backgroundColor = .systemBackground
+    }
+    
+    //Конфигурируем вкладку корзины
+    private func configureCartVC() -> UIViewController {
         let cartAssembly = CartAssembly(servicesAssembler: servicesAssembly)
         let cartController = cartAssembly.build()
         let cartNavigationController = UINavigationController(rootViewController: cartController)
         cartNavigationController.modalPresentationStyle = .fullScreen
         cartNavigationController.tabBarItem = cartTabBarItem
-
-        viewControllers = [catalogController, cartNavigationController]
-
-        view.backgroundColor = .systemBackground
+        return cartNavigationController
     }
     
 }
