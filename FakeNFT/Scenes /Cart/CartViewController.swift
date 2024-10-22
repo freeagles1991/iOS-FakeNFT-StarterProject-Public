@@ -14,6 +14,7 @@ protocol CartView: UIViewController, LoadingView {
     func updateCollectionView()
     func configureTotalCost(totalPrice: Double, nftsCount: Int)
     func setupNavigationBarForNextScreen()
+    func showAlert(_ alert: AlertViewModel)
 }
 
 final class CartViewController: UIViewController, CartView{
@@ -161,6 +162,11 @@ final class CartViewController: UIViewController, CartView{
         navigationController?.navigationBar.tintColor = UIColor.dynamicBlack
     }
     
+    func showAlert(_ alert: AlertViewModel) {
+        let alertController = alert.createAlertController()
+        self.present(alertController, animated: true)
+    }
+    
     //MARK: Верстка
     private func setupLoadingView() {
         view.addSubview(activityIndicator)
@@ -306,12 +312,15 @@ extension CartViewController: CartItemCellDelegate {
             print("Tapped button in cell at \(indexPath.row)")
             
             let nftID = cell.getNftID()
-
-            presenter.deleteNftFromCart(with: nftID)
             
+            presenter.removeFromNFTs(at: indexPath.row)
+
             collectionView.performBatchUpdates({
                 collectionView.deleteItems(at: [indexPath])
-            }, completion: nil)
+            }, completion: { [weak self]_ in
+                guard let self else {return}
+                self.presenter.deleteNftFromCart(with: nftID)
+            })
         }
     }
 }

@@ -8,8 +8,8 @@
 import Foundation
 
 protocol CartPresenter {
-    var serviceAssembler: ServicesAssembly { get }
     func getNFTs() -> [Nft]?
+    func removeFromNFTs(at index: Int)
     func viewDidLoad()
     func filterButtonTapped()
     func payButtonTapped()
@@ -56,22 +56,7 @@ final class CartPresenterImpl: CartPresenter {
     
     //MARK: Public
     func viewDidLoad() {
-        if isUsingDefaultNFTs {
-            nfts.append(Nft())
-        } else {
-            guard let view else {return}
-            view.showLoading()
-            loadNfts(byIDs: testNFTs) { [weak self] in
-                guard
-                    let self
-                else {return}
-                self.updateNfts()
-                view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
-                view.updateCollectionView()
-                view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
-                view.hideLoading()
-            }
-        }
+        updateCart()
     }
     
     func deleteNftFromCart(with id: String) {
@@ -81,6 +66,10 @@ final class CartPresenterImpl: CartPresenter {
     
     func getNFTs() -> [Nft]? {
         return nfts
+    }
+    
+    func removeFromNFTs(at index: Int) {
+        nfts.remove(at: index)
     }
     
     func filterButtonTapped() {
@@ -104,27 +93,45 @@ final class CartPresenterImpl: CartPresenter {
     }
     
     private func updateNfts() {
-        guard let nfts = self.getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart)) else { return }
-        self.nfts = nfts
+        getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart),completion: { nfts in
+            self.nfts = nfts
+        } )
     }
     
-    private func getNFTsInCartByID(nftsInCart: [String]) -> [Nft]? {
+    //Здесь мы ассинхронно загружаем nft, которые добавлены в корзину
+    private func getNFTsInCartByID(nftsInCart: [String], completion: @escaping ([Nft]) -> Void) {
         var nfts: [Nft] = []
+        let dispatchGroup = DispatchGroup()
+        
         for id in nftsInCart {
-            nftService.loadNft(id: id) { result in
+            dispatchGroup.enter()
+            
+            nftService.loadNft(id: id) { [weak self] result in
                 switch result {
                 case .success(let nft):
                     nfts.append(nft)
                     print("CartPresenterImpl: Успешно загружен nft \(nft.name), ID = \(nft.id)")
                 case .failure(let error):
                     print("CartPresenterImpl: Ошибка при загрузке nft \(error)")
+                    guard let self, let view = self.view else {return}
+                    
+                    let action = AlertViewModel.AlertAction(title: "Попробовать снова", style: .default) {
+                        self.updateNfts()
+                    }
+                    
+                    let alert = AlertViewModel(title: "Упс", message: "Загрузка не удалась", actions: [action], preferredStyle: .alert)
+                    view.showAlert(alert)
                 }
+                dispatchGroup.leave()
             }
         }
         
-        return nfts
+        dispatchGroup.notify(queue: .main) {
+            completion(nfts)
+        }
     }
     
+    //Этот метод нужен только для тестирования, загружает несколько nft по списку как будто из каталога
     private func loadNfts(byIDs ids: [String], completion: @escaping () -> Void) {
         let dispatchGroup = DispatchGroup()
         
@@ -133,10 +140,8 @@ final class CartPresenterImpl: CartPresenter {
             nftService.loadNft(id: id) { result in
                 switch result {
                 case .success(let nft):
-                    // Handle successful loading of the NFT
                     print("Loaded NFT: \(nft)")
                 case .failure(let error):
-                    // Handle the error
                     print("Failed to load NFT: \(error.localizedDescription)")
                 }
                 dispatchGroup.leave()
@@ -145,6 +150,25 @@ final class CartPresenterImpl: CartPresenter {
         
         dispatchGroup.notify(queue: .main) {
             completion()
+        }
+    }
+    
+    private func updateCart() {
+        if isUsingDefaultNFTs {
+            nfts.append(Nft())
+        } else {
+            guard let view else {return}
+            view.showLoading()
+            loadNfts(byIDs: testNFTs) { [weak self] in
+                guard
+                    let self
+                else {return}
+                self.updateNfts()
+                view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+                view.updateCollectionView()
+                view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+                view.hideLoading()
+            }
         }
     }
     
