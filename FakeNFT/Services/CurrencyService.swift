@@ -26,6 +26,11 @@ final class CurrencyServiceImpl: CurrencyService {
     }
     
     func loadCurrencyList(completion: @escaping CurrenciesCompletion) {
+        if let currencies = storage.getCurrencies() {
+            completion(.success(currencies))
+            return
+        }
+        
         let request = CurrenciesListRequest()
         networkClient.send(request: request, type: [Currency].self) { [weak storage] result in
             switch result {

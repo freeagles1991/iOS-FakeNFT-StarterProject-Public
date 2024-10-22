@@ -11,7 +11,7 @@ protocol CurrencyStorage: AnyObject {
     func saveCurrency(_ Currency: Currency)
     func saveCurrencies(_ currencies: [Currency])
     func getCurrency(with id: String) -> Currency?
-    func getCurrencies() -> [Currency]
+    func getCurrencies() -> [Currency]?
 }
 
 final class CurrencyStorageImpl: CurrencyStorage {
@@ -39,9 +39,10 @@ final class CurrencyStorageImpl: CurrencyStorage {
         }
     }
     
-    func getCurrencies() -> [Currency] {
+    func getCurrencies() -> [Currency]? {
         syncQueue.sync {
-            return Array(storage.values)
+            let currencies = Array(storage.values)
+            return currencies.isEmpty ? nil : currencies
         }
     }
     
