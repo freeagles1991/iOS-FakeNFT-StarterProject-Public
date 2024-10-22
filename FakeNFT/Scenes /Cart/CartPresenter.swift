@@ -104,9 +104,14 @@ final class CartPresenterImpl: CartPresenter {
     private func getNFTsInCartByID(nftsInCart: [String]) -> [Nft]? {
         var nfts: [Nft] = []
         for id in nftsInCart {
-            if let nft = nftService.getNftFromStorageByID(with: id) {
-                nfts.append(nft)
-                print("Добавил \(nft.id)")
+            nftService.loadNft(id: id) { result in
+                switch result {
+                case .success(let nft):
+                    nfts.append(nft)
+                    print("CartPresenterImpl: Успешно загружен nft \(nft.name), ID = \(nft.id)")
+                case .failure(let error):
+                    print("CartPresenterImpl: Ошибка при загрузке nft \(error)")
+                }
             }
         }
         
