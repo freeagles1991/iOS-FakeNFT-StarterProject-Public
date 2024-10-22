@@ -13,6 +13,7 @@ protocol CartView: UIViewController, LoadingView {
     func switchCollectionViewState(isEmptyList: Bool)
     func updateCollectionView()
     func configureTotalCost(totalPrice: Double, nftsCount: Int)
+    func setupNavigationBarForNextScreen()
 }
 
 final class CartViewController: UIViewController, CartView{
@@ -154,6 +155,12 @@ final class CartViewController: UIViewController, CartView{
         collectionView.reloadData()
     }
     
+    func setupNavigationBarForNextScreen() {
+        let backBarButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backBarButton
+        navigationController?.navigationBar.tintColor = UIColor.dynamicBlack
+    }
+    
     //MARK: Верстка
     private func setupLoadingView() {
         view.addSubview(activityIndicator)
@@ -262,18 +269,6 @@ final class CartViewController: UIViewController, CartView{
     
     @objc private func payButtonTapped() {
         presenter.payButtonTapped()
-        let payAssembly = ChooseCurrencyAssembly(servicesAssembler: presenter.serviceAssembler)
-        
-        let backBarButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem = backBarButton
-        
-        let payViewController = payAssembly.build()
-        
-        navigationController?.navigationBar.tintColor = UIColor.dynamicBlack
-        
-        payViewController.hidesBottomBarWhenPushed = true
-        
-        navigationController?.pushViewController(payViewController, animated: true)
     }
 
 }

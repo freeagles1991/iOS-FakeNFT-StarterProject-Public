@@ -89,6 +89,13 @@ final class CartPresenterImpl: CartPresenter {
     
     func payButtonTapped() {
         print("CartPresenter: pay button tapped")
+        let payAssembly = ChooseCurrencyAssembly(servicesAssembler: serviceAssembler)
+        let payViewController = payAssembly.build()
+        payViewController.hidesBottomBarWhenPushed = true
+        
+        guard let view else { return }
+        view.setupNavigationBarForNextScreen()
+        view.navigationController?.pushViewController(payViewController, animated: true)
     }
     
     //MARK: Private
