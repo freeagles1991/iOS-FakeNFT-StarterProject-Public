@@ -111,31 +111,9 @@ final class MyNFTsViewController: UIViewController {
     }
     
     @objc private func sortButtonTapped() {
-        let alertController = UIAlertController(title: "Сортировка", message: "Выберите способ сортировки", preferredStyle: .actionSheet)
-        
-        let sortOptions: [(title: String, type: SortCriterion)] = [
-            ("По цене", .price),
-            ("По названию", .name),
-            ("По рейтингу", .rating)
-        ]
-        
-        for option in sortOptions {
-            alertController.addAction(createSortAction(title: option.title, sortType: option.type))
-        }
-        
-        alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
-        
-        present(alertController, animated: true)
+        presenter?.handleSortSelection()
     }
 
-    private func createSortAction(title: String, sortType: SortCriterion) -> UIAlertAction {
-        return UIAlertAction(title: title, style: .default) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.presenter?.sortNFTs(by: sortType)
-                self?.reloadData()
-            }
-        }
-    }
 }
 
 extension MyNFTsViewController: UITableViewDelegate {
@@ -161,6 +139,11 @@ extension MyNFTsViewController: UITableViewDataSource {
 }
 
 extension MyNFTsViewController: MyNFTsViewProtocol {
+    func showAlert(with viewModel: AlertViewModel) {
+        let alertController = viewModel.createAlertController()
+        present(alertController, animated: true)
+    }
+    
     func updateRightBarButtonItem(_ item: UIBarButtonItem?) {
         navigationItem.rightBarButtonItem = item
     }

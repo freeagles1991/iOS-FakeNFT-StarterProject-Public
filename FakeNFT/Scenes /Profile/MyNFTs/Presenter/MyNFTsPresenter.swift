@@ -18,6 +18,7 @@ protocol MyNFTsViewProtocol: AnyObject {
     func hideLoadingIndicator()
     func showError(message: String)
     func updateRightBarButtonItem(_ item: UIBarButtonItem?)
+    func showAlert(with viewModel: AlertViewModel)
 }
 
 protocol MyNFTsPresenterProtocol {
@@ -26,6 +27,7 @@ protocol MyNFTsPresenterProtocol {
     func sortNFTs(by criterion: MyNFTsViewController.SortCriterion)
     var numberOfNFTs: Int { get }
     func nft(at index: Int) -> Nft?
+    func handleSortSelection()
 }
 
 final class MyNFTsPresenter: MyNFTsPresenterProtocol {
@@ -83,6 +85,32 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
             self.view?.reloadData()
             print("Всего загружено NFT: \(self.nfts.count)")
         }
+    }
+    
+    func handleSortSelection() {
+        let sortOptions: [(title: String, type: MyNFTsViewController.SortCriterion)] = [
+            ("По цене", .price),
+            ("По названию", .name),
+            ("По рейтингу", .rating)
+        ]
+        
+        let alertActions = sortOptions.map { option in
+            AlertViewModel.AlertAction(title: option.title, style: .default) { [weak self] in
+                self?.sortNFTs(by: option.type)
+                self?.view?.reloadData()
+            }
+        }
+        
+        let cancelAction = AlertViewModel.AlertAction(title: "Отменить", style: .cancel, handler: nil)
+        
+        let alertViewModel = AlertViewModel(
+            title: "Сортировка",
+            message: "Выберите способ сортировки",
+            actions: alertActions + [cancelAction],
+            preferredStyle: .actionSheet
+        )
+        
+        view?.showAlert(with: alertViewModel)
     }
     
     func sortNFTs(by criterion: MyNFTsViewController.SortCriterion) {
