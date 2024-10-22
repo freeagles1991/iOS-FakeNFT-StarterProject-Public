@@ -22,7 +22,7 @@ final class CartPresenterImpl: CartPresenter {
     private let nftService: NftService
     
     //Свичер для моковых nft
-    let isUsingDefaultNFTs: Bool = true
+    let isUsingDefaultNFTs: Bool = false
     
     let testNFTs: [String] = [
     "1464520d-1659-4055-8a79-4593b9569e48",

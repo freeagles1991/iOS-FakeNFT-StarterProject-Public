@@ -227,7 +227,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     
     @objc private func didPayButtonTapped() {
         print("ChooseCurrencyViewControllerImpl: PayButton tapped")
-        presenter.payOrder(with: presenter.nfts)
+        presenter.payOrder(with: Array(CartStore.nftsInCart))
     }
 }
 

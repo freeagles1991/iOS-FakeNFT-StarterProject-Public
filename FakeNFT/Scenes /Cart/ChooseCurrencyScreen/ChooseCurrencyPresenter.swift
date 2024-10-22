@@ -9,7 +9,6 @@ import Foundation
 
 protocol ChooseCurrencyPresenter {
     var currencies: [Currency] { get }
-    var nfts: [String] { get }
     func viewDidLoad()
     func currencyDidSelect(at indexPath: IndexPath)
     func payOrder(with nfts: [String])
@@ -18,8 +17,6 @@ protocol ChooseCurrencyPresenter {
 final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
     weak var view: ChooseCurrencyViewController?
     private let currencyService: CurrencyService
-    
-    var nfts: [String] = [Nft().id]
     
     var currencies: [Currency] = []
     var selectedCurrency: IndexPath? {
@@ -82,11 +79,12 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
                 )
                 let alert = AlertViewModel(
                     title: "Ура",
-                    message: "Вы инвестировали в говно",
+                    message: "Вы купили \(CartStore.nftsInCart.count) NFT",
                     actions: [action],
                     preferredStyle: .alert
                 )
                 view.showAlert(alert)
+                CartStore.nftsInCart.removeAll()
             case .failure(_):
                 print("ChooseCurrencyPresenterImpl: не оплачено")
                 print("ChooseCurrencyPresenterImpl: оплачено")
@@ -94,7 +92,7 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
                     title: "Попробовать снова",
                     style: .default,
                     handler: {
-                        self.payOrder(with: nfts)
+                        self.payOrder(with: Array(CartStore.nftsInCart))
                     })
                 let alert = AlertViewModel(
                     title: ":(",
