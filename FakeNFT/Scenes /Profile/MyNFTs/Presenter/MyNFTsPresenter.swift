@@ -94,6 +94,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         case .rating:
             nfts.sort { $0.rating > $1.rating }
         }
+        view?.reloadData()
     }
     
     var numberOfNFTs: Int {

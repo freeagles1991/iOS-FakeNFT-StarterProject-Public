@@ -84,11 +84,12 @@ final class MyNFTsViewController: UIViewController {
         title = "Мой NFT"
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "line.3.horizontal.decrease"),
+            image: UIImage(named: "filterButtonIcon"),
             style: .plain,
             target: self,
             action: #selector(sortButtonTapped)
         )
+        navigationItem.rightBarButtonItem?.tintColor = .segmentActive
     }
     
     func showLoadingIndicator() {
@@ -129,8 +130,10 @@ final class MyNFTsViewController: UIViewController {
 
     private func createSortAction(title: String, sortType: SortCriterion) -> UIAlertAction {
         return UIAlertAction(title: title, style: .default) { [weak self] _ in
-            self?.presenter?.sortNFTs(by: sortType)
-            self?.reloadData()
+            DispatchQueue.main.async {
+                self?.presenter?.sortNFTs(by: sortType)
+                self?.reloadData()
+            }
         }
     }
 }
