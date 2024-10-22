@@ -52,7 +52,6 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         
         view?.showLoadingIndicator()
         let dispatchGroup = DispatchGroup()
-        
         for nftID in profile.nfts {
             dispatchGroup.enter()
             nftService.loadNft(id: nftID) { [weak self] result in

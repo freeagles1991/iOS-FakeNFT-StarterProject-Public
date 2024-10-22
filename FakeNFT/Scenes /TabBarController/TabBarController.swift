@@ -48,13 +48,12 @@ final class TabBarController: UITabBarController {
         )
         catalogController.tabBarItem = catalogTabBarItem
         
-        let presenter = ProfilePresenter(view: nil)
-        let profileController = ProfileViewController(presenter: presenter)
-        presenter.view = profileController
+        let builder = AssemblyBuilderProfile(servicesAssembly: servicesAssembly)
+        
+        let profileController = builder.createProfileModule()
         profileController.tabBarItem = profileTabBarItem
-        let profileNavigationController = UINavigationController(rootViewController: profileController)
-
-        viewControllers = [profileNavigationController, catalogController]
+        
+        viewControllers = [profileController, catalogController]
 
         view.backgroundColor = .systemBackground
     }
