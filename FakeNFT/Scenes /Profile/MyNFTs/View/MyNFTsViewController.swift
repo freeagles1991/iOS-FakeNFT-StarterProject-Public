@@ -9,10 +9,10 @@ import UIKit
 import ProgressHUD
 
 final class MyNFTsViewController: UIViewController {
-    private var nfts: [Nft] = []
     private let tableView = UITableView()
     private var presenter: MyNFTsPresenterProtocol?
     
+    //MARK: - Init
     init(presenter: MyNFTsPresenterProtocol?) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
@@ -23,14 +23,21 @@ final class MyNFTsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         presenter?.viewDidLoad()
     }
     
+    //MARK: - Public Method
     func setPresenter(_ presenter: MyNFTsPresenterProtocol) {
         self.presenter = presenter
+    }
+    
+    //MARK: - Private Method
+    @objc private func sortButtonTapped() {
+        presenter?.handleSortSelection()
     }
     
     private func setupUI() {
@@ -51,15 +58,10 @@ final class MyNFTsViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-    
-    
-    @objc private func sortButtonTapped() {
-        presenter?.handleSortSelection()
-    }
 
 }
 
-
+//MARK: - UITableViewDataSource
 extension MyNFTsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return presenter?.numberOfNFTs ?? 0

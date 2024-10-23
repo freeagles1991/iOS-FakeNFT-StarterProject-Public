@@ -33,7 +33,7 @@ final class NFTTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let raitingView: StarRatingView = {
+    private let ratingView: StarRatingView = {
         let view = StarRatingView()
         return view
     }()
@@ -87,7 +87,7 @@ final class NFTTableViewCell: UITableViewCell {
         nameLabel.text = nft.name
         autorLabel.text = "от \(nft.author)"
         priceValueLabel.text = "\(nft.price) ETH"
-        raitingView.rating = nft.rating
+        ratingView.rating = nft.rating
         if let imageUrl = nft.images.first {
             nftImageView.kf.setImage(with: imageUrl)
         }
@@ -96,17 +96,13 @@ final class NFTTableViewCell: UITableViewCell {
     @objc
     private func likeButtonTapped() {
         let isActive = likeButton.currentImage == UIImage(named: "heartIsActive")
-        
-        if isActive {
-            likeButton.setImage(UIImage(named: "headrtNoActive"), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: "heartIsActive"), for: .normal)
-        }
+        let newImageName = isActive ? "headrtNoActive" : "heartIsActive"
+        likeButton.setImage(UIImage(named: newImageName), for: .normal)
     }
     
     private func setupUI() {
         nameStackView.addArrangedSubview(nameLabel)
-        nameStackView.addArrangedSubview(raitingView)
+        nameStackView.addArrangedSubview(ratingView)
         nameStackView.addArrangedSubview(autorLabel)
         
         priceStackView.addArrangedSubview(priceLabel)

@@ -21,8 +21,6 @@ protocol MyNFTsViewProtocol: AnyObject {
 
 protocol MyNFTsPresenterProtocol {
     func viewDidLoad()
-    func loadNFTs()
-    func sortNFTs(by criterion: SortCriterion)
     var numberOfNFTs: Int { get }
     func nft(at index: Int) -> Nft?
     func handleSortSelection()
@@ -51,7 +49,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
     }
 
     // MARK: - Loading NFTs
-    func loadNFTs() {
+    private func loadNFTs() {
         guard !profile.nfts.isEmpty else {
             view?.setBackgroundView(message: "У вас еще нет NFT.")
             return
@@ -116,7 +114,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         view?.showAlert(with: alertViewModel)
     }
     
-    func sortNFTs(by criterion: SortCriterion) {
+    private func sortNFTs(by criterion: SortCriterion) {
         nfts.sort { $0.compare(with: $1, by: criterion) }
         saveSortOption(criterion)
         view?.reloadData()

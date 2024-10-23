@@ -8,9 +8,25 @@
 import UIKit
 import ProgressHUD
 
+struct GeometricParams {
+    let cellCount: Int
+    let leftInset: CGFloat
+    let rightInset: CGFloat
+    let cellSpacing: CGFloat
+    let paddingWidth: CGFloat
+    
+    init(cellCount: Int, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
+        self.cellCount = cellCount
+        self.leftInset = leftInset
+        self.rightInset = rightInset
+        self.cellSpacing = cellSpacing
+        self.paddingWidth = leftInset + rightInset + CGFloat(cellCount - 1) * cellSpacing
+    }
+}
+
 final class FavouritesNFTsViewController: UIViewController {
-    private var favoriteNFTs: [Nft] = []
     private var presenter : FavouritesNFTsPresenter?
+    private var params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 8)
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
@@ -26,9 +42,8 @@ final class FavouritesNFTsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.viewDidLoad()
         setupUI()
-    
+        presenter?.viewDidLoad()
     }
     
     func setPresenter(_ presenter: FavouritesNFTsPresenter) {
@@ -37,11 +52,12 @@ final class FavouritesNFTsViewController: UIViewController {
     
     private  func setupUI() {
         view.backgroundColor = .systemBackground
+        title = "Избранные NFT"
         setupCollectionView()
     }
     
     private func setupCollectionView() {
-        collectionView.register(NFTCollectionViewCell.self, forCellWithReuseIdentifier: NFTTableViewCell.identifier)
+        collectionView.register(NFTCollectionViewCell.self, forCellWithReuseIdentifier: NFTCollectionViewCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -49,18 +65,19 @@ final class FavouritesNFTsViewController: UIViewController {
         view.addSubview(collectionView)
 
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
 }
 
+//MARK: - UICollectionViewDataSource
 extension FavouritesNFTsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        favoriteNFTs.count
+        presenter?.numberOfNFTs ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -68,22 +85,37 @@ extension FavouritesNFTsViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let nft = favoriteNFTs[indexPath.item]
-        cell.configure(with: nft)
-//        cell.onHeartButtonTapped = { [weak self] in
-//
-//        }
+        if let nft = presenter?.nft(at: indexPath.row) {
+            cell.configure(with: nft)
+        }
         
         return cell
     }
     
-    
 }
 
-extension FavouritesNFTsViewController: UICollectionViewDelegate {
+// MARK: - UICollectionViewDelegateFlowLayout
+extension FavouritesNFTsViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let availableWidth = collectionView.frame.width - params.paddingWidth
+        let cellWidth =  availableWidth / CGFloat(params.cellCount)
+        return CGSize(width: cellWidth, height: 80)
+    }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 16, left: params.leftInset, bottom: 0, right: params.rightInset)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        params.cellSpacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 20
+    }
 }
 
+//MARK: - FavouritesViewProtocol
 extension FavouritesNFTsViewController: FavouritesViewProtocol {
     func showLoadingIndicator() {
         ProgressHUD.show()
@@ -97,14 +129,6 @@ extension FavouritesNFTsViewController: FavouritesViewProtocol {
         let alertController = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "ОК", style: .default))
         present(alertController, animated: true)
-    }
-    
-    func updateRightBarButtonItem(_ item: UIBarButtonItem?) {
-        navigationItem.rightBarButtonItem = item
-    }
-    
-    func setupNavigationItem() {
-        title = "Избранные NFT"
     }
     
     func reloadData() {
@@ -122,6 +146,7 @@ extension FavouritesNFTsViewController: FavouritesViewProtocol {
         collectionView.backgroundView = message == nil ? nil : messageLabel
         
         if message != nil {
+            title = nil
             NSLayoutConstraint.activate([
                 messageLabel.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
                 messageLabel.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor)

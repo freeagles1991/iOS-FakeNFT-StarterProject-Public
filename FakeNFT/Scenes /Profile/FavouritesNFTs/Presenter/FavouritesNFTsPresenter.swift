@@ -12,13 +12,11 @@ protocol FavouritesViewProtocol: AnyObject {
     func showLoadingIndicator()
     func hideLoadingIndicator()
     func showError(message: String)
-    func setupNavigationItem()
     func reloadData()
 }
 
 protocol FavouritesPresenterProtocol {
     func viewDidLoad()
-    func loadNFTsLikes()
     var numberOfNFTs: Int { get }
     func nft(at index: Int) -> Nft?
 }
@@ -40,8 +38,9 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         loadNFTsLikes()
     }
     
-    func loadNFTsLikes() {
-        let likedNfts = profile.nfts.filter {profile.likes.contains($0) }
+    private func loadNFTsLikes() {
+//        let likedNfts = profile.nfts.filter {profile.likes.contains($0) }
+        let likedNfts = profile.nfts + profile.nfts
         
         guard !likedNfts.isEmpty else {
             view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
@@ -83,7 +82,6 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
             view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
         } else {
             view?.setBackgroundView(message: nil)
-            view?.setupNavigationItem()
             view?.reloadData()
         }
     }
