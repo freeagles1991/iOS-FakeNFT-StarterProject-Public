@@ -10,7 +10,7 @@ import UIKit
 protocol ProfileRouterProtocol: AnyObject {
     func navigateToEditProfile(from view: ProfileViewController, with profile: UserProfile)
     func navigateToMyNFTs(from view: ProfileViewController, with profile: UserProfile)
-    func navigateToFavoritesNFTs(from view: ProfileViewController)
+    func navigateToFavoritesNFTs(from view: ProfileViewController, with profile: UserProfile)
 }
 
 final class ProfileRouter: ProfileRouterProtocol {
@@ -38,8 +38,10 @@ final class ProfileRouter: ProfileRouterProtocol {
     }
 
     
-    func navigateToFavoritesNFTs(from view: ProfileViewController) {
-        let favoritesNFTsViewController = FavouritesNFTsViewController(presenter: nil)
-        viewController?.navigationController?.pushViewController(favoritesNFTsViewController, animated: true)
+    func navigateToFavoritesNFTs(from view: ProfileViewController, with profile: UserProfile) {
+        let favoritesNFTsVC = assemblyBuilder.favouritesNFTsModule(from: view, with: profile)
+        if let navigationController = view.navigationController {
+            navigationController.pushViewController(favoritesNFTsVC, animated: true)
+        }
     }
 }

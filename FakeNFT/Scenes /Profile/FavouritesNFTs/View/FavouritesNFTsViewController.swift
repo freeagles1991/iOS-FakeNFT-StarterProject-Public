@@ -26,12 +26,14 @@ final class FavouritesNFTsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(presenter == nil)
         presenter?.viewDidLoad()
         setupUI()
     
     }
     
+    func setPresenter(_ presenter: FavouritesNFTsPresenter) {
+        self.presenter = presenter
+    }
     
     private  func setupUI() {
         view.backgroundColor = .systemBackground

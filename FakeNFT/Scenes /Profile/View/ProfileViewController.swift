@@ -88,12 +88,12 @@ extension ProfileViewController: EditProfileDelegate {
 
 extension ProfileViewController: ProfileViewDelegate {
     func didSelectItem(at index: Int) {
+        guard let profile = presenter?.getCurrentProfile() else { return }
         switch index {
         case 0:
-            guard let profile = presenter?.getCurrentProfile() else { return }
             router?.navigateToMyNFTs(from: self, with: profile)
         case 1:
-            router?.navigateToFavoritesNFTs(from: self)
+            router?.navigateToFavoritesNFTs(from: self, with: profile)
         case 2:
             print("Webview")
         default:
