@@ -12,7 +12,6 @@ protocol EditProfilePresenterProtocol: AnyObject {
     func saveProfileData(name: String, description: String, website: String)
 }
 
-
 final class EditProfilePresenter: EditProfilePresenterProtocol {
     
     private weak var view: EditProfileViewProtocol?

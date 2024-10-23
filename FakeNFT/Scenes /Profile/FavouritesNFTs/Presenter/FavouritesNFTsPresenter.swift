@@ -39,8 +39,7 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
     }
     
     private func loadNFTsLikes() {
-//        let likedNfts = profile.nfts.filter {profile.likes.contains($0) }
-        let likedNfts = profile.nfts + profile.nfts
+        let likedNfts = profile.nfts.filter {profile.likes.contains($0) }
         
         guard !likedNfts.isEmpty else {
             view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
@@ -95,5 +94,5 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
     func nft(at index: Int) -> Nft? {
         return index < nftsLikes.count ? nftsLikes[index] : nil
     }
-
+    
 }
