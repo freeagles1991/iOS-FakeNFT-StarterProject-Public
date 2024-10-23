@@ -53,10 +53,11 @@ final class ProfileViewCell: UITableViewCell {
     }
     
     func configure(with title: String, count: Int?) {
-        if let count = count {
+        if let count = count, count > 0 {
             titleLabel.text = "\(title) (\(count))"
         } else {
             titleLabel.text = title
         }
     }
+
 }

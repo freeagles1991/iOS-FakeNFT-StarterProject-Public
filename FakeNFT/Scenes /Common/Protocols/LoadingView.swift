@@ -9,10 +9,10 @@ protocol LoadingView {
 
 extension LoadingView {
     func showLoading() {
-        activityIndicator.startAnimating()
+        ProgressHUD.show()
     }
 
     func hideLoading() {
-        activityIndicator.stopAnimating()
+        ProgressHUD.dismiss()
     }
 }

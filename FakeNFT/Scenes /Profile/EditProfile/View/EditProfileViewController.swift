@@ -17,7 +17,6 @@ protocol EditProfileDelegate: AnyObject {
     func didUpdateProfile(_ updatedProfile: UserProfile)
 }
 
-
 final class EditProfileViewController: UIViewController, EditProfileViewProtocol {
     private var presenter: EditProfilePresenterProtocol?
     weak var delegate: EditProfileDelegate?
@@ -103,9 +102,9 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter?.loadProfileData()
         setupLayout()
         setupButton()
-        presenter?.loadProfileData()
     }
     //MARK: - viewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
@@ -129,8 +128,20 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
     }
     
     private func updateProfile() {
-        guard let name = nameTextField.text, let description = descriptionTextView.text, let website = websiteTextField.text else { return }
+        guard let name = nameTextField.text,
+              let description = descriptionTextView.text,
+              let website = websiteTextField.text else { return }
         presenter?.saveProfileData(name: name, description: description, website: website)
+    }
+    
+    private func loadAvatar(from urlString: String) {
+        let placeholderImage = UIImage(named: "placeholderAvatar")
+        guard let avatarURL = URL(string: urlString) else {
+            avatarImage.image = placeholderImage
+            return
+        }
+        
+        avatarImage.kf.setImage(with: avatarURL, placeholder: placeholderImage)
     }
     
     func showProfile(_ profile: UserProfile) {
@@ -138,9 +149,7 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         descriptionTextView.text = profile.description
         websiteTextField.text = profile.website
         
-        if let avatarURL = URL(string: profile.avatar) {
-            avatarImage.kf.setImage(with: avatarURL)
-        }
+        loadAvatar(from: profile.avatar)
     }
     
     func didUpdateProfile(_ updatedProfile: UserProfile) {

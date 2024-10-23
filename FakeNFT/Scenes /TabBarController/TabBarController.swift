@@ -1,61 +1,37 @@
 import UIKit
 
-//final class TabBarController: UITabBarController {
-//
-//    var servicesAssembly: ServicesAssembly!
-//
-//    private let catalogTabBarItem = UITabBarItem(
-//        title: NSLocalizedString("Tab.catalog", comment: ""),
-//        image: UIImage(systemName: "square.stack.3d.up.fill"),
-//        tag: 0
-//    )
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//
-//        let catalogController = TestCatalogViewController(
-//            servicesAssembly: servicesAssembly
-//        )
-//        catalogController.tabBarItem = catalogTabBarItem
-//
-//        viewControllers = [catalogController]
-//
-//        view.backgroundColor = .systemBackground
-//    }
-//}
-
 final class TabBarController: UITabBarController {
 
     var servicesAssembly: ServicesAssembly!
 
-    private let profileTabBarItem = UITabBarItem(
-        title: "profile",
-        image: UIImage(systemName: "person.crop.circle.fill"),
-        tag: 0
-    )
-    
-    private let catalogTabBarItem = UITabBarItem(
-        title: NSLocalizedString("Tab.catalog", comment: ""),
-        image: UIImage(systemName: "square.stack.3d.up.fill"),
-        tag: 1
-    )
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let catalogController = TestCatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
-        catalogController.tabBarItem = catalogTabBarItem
-        
-        let presenter = ProfilePresenter(view: nil)
-        let profileController = ProfileViewController(presenter: presenter)
-        presenter.view = profileController
-        profileController.tabBarItem = profileTabBarItem
-        let profileNavigationController = UINavigationController(rootViewController: profileController)
-
-        viewControllers = [profileNavigationController, catalogController]
-
+        setupViewControllers()
         view.backgroundColor = .systemBackground
+    }
+    
+    private func setupViewControllers() {
+        let catalogController = createCatalogModule()
+        let profileController = createProfileModule()
+        
+        viewControllers = [profileController, catalogController]
+    }
+    
+    private func createCatalogModule() -> UIViewController {
+        let catalogController = TestCatalogViewController(servicesAssembly: servicesAssembly)
+        catalogController.tabBarItem = createTabBarItem(title: NSLocalizedString("Tab.catalog", comment: ""), imageName: "square.stack.3d.up.fill", tag: 1)
+        return catalogController
+    }
+    
+    private func createProfileModule() -> UIViewController {
+        let builder = AssemblyBuilderProfile(servicesAssembly: servicesAssembly)
+        let profileController = builder.createProfileModule()
+        profileController.tabBarItem = createTabBarItem(title: "profile", imageName: "person.crop.circle.fill", tag: 0)
+        return profileController
+    }
+    
+    private func createTabBarItem(title: String, imageName: String, tag: Int) -> UITabBarItem {
+        return UITabBarItem(title: title, image: UIImage(systemName: imageName), tag: tag)
     }
 }

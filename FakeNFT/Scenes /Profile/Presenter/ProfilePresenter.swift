@@ -5,32 +5,8 @@
 //  Created by Артур  Арсланов on 11.10.2024.
 //
 import UIKit
-import ProgressHUD
-
-final class UIBlockingProgressHUD {
-    private static var window: UIWindow? {
-        return UIApplication.shared.windows.first
-    }
-    
-    static func show() {
-        window?.isUserInteractionEnabled = false
-        if #available(iOS 18.0, *) {
-            ProgressHUD.animate(.bouncy) {
-                
-            }
-        } else {
-            // Fallback on earlier versions
-        }
-    }
-    
-    static func dismiss() {
-        window?.isUserInteractionEnabled = true
-        ProgressHUD.dismiss()
-    }
-}
-
-
 import Foundation
+import ProgressHUD
 
 protocol ProfileViewProtocol: AnyObject {
     func displayProfileData(_ profile: UserProfile)
@@ -54,16 +30,16 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     }
     
     func loadProfileData() {
-        UIBlockingProgressHUD.show()
+        ProgressHUD.show()
         userProfileService.fetchUserProfile { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let profile):
                 self.currentProfile = profile
                 self.view?.displayProfileData(profile)
-                UIBlockingProgressHUD.dismiss()
+                ProgressHUD.dismiss()
             case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
+                ProgressHUD.dismiss()
                 print("Ошибка при получении профиля: \(error)")
             }
         }
