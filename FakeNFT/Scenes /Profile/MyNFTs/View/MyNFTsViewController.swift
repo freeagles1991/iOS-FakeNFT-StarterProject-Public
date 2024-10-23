@@ -8,12 +8,6 @@
 import UIKit
 
 final class MyNFTsViewController: UIViewController {
-    enum SortCriterion {
-        case price
-        case name
-        case rating
-    }
-    
     private var nfts: [Nft] = []
     private let tableView = UITableView()
     private(set) var presenter: MyNFTsPresenterProtocol?
