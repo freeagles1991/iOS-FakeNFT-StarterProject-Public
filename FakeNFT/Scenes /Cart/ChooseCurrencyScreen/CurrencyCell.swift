@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 final class CurrencyCell: UICollectionViewCell {
+    static let reuseIdentifier =  "CurrencyItemCell"
+    
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
-    
-    private var currencyID: String?
     
     private let currencyImageView: UIImageView = {
         let view = UIImageView()
@@ -34,9 +34,7 @@ final class CurrencyCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular13
-        label.textColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }
+        label.textColor = UIColor.dynamicBlack
         return label
     }()
 
@@ -59,13 +57,9 @@ final class CurrencyCell: UICollectionViewCell {
     }
     
     private func setupView() {
-        contentView.backgroundColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaLightGrayDark : UIColor.yaLightGrayLight
-        }
+        contentView.backgroundColor = UIColor.dynamicLightGray
         
-        contentView.layer.borderColor = UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? UIColor.yaBlackDark : UIColor.yaBlackLight
-        }.cgColor
+        contentView.layer.borderColor = UIColor.dynamicBlack.cgColor
         
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
@@ -110,11 +104,6 @@ final class CurrencyCell: UICollectionViewCell {
         currencyImageView.kf.setImage(with: URL(string: currency.image))
         currencyNamelabel.text = currency.title
         currencyCodelabel.text = currency.name
-        self.currencyID = currency.id
-    }
-    
-    func getCurrencyID() -> String? {
-        currencyID
     }
     
     func toggleSelectState(_ isSelected: Bool) {

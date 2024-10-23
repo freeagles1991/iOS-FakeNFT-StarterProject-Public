@@ -44,7 +44,6 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         return collectionView
     }()
     
-    private let cellIdentifier = "CurrencyItemCell"
     private var lastSelectedCell: IndexPath?
 
     private let itemsPerRow: CGFloat = 2
@@ -159,7 +158,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     }
     
     private func setupCollectionView() {
-        collectionView.register(CurrencyCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        collectionView.register(CurrencyCell.self, forCellWithReuseIdentifier: CurrencyCell.reuseIdentifier)
         
         view.addSubview(collectionView)
         
@@ -238,9 +237,11 @@ extension ChooseCurrencyViewControllerImpl: UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! CurrencyCell
-        cell.configure(with: presenter.currencies[indexPath.row])
-        return cell
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrencyCell.reuseIdentifier, for: indexPath) as? CurrencyCell {
+            cell.configure(with: presenter.currencies[indexPath.row])
+            return cell
+        }
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
