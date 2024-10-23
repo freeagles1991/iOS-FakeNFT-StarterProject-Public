@@ -7,6 +7,10 @@
 
 import Foundation
 
+enum SortCriterion: String {
+    case price, name, rating
+}
+
 extension Nft {
     func compare(with other: Nft, by criterion: SortCriterion) -> Bool {
         switch criterion {
@@ -18,12 +22,6 @@ extension Nft {
             return rating > other.rating
         }
     }
-}
-
-// Файл SortCriterion.swift
-
-enum SortCriterion: String {
-    case price, name, rating
 }
 
 extension SortCriterion {
