@@ -1,14 +1,14 @@
 //
-//  CartAssembly.swift
+//  ChooseCurrencyAssembly.swift
 //  FakeNFT
 //
-//  Created by Дима on 11.10.2024.
+//  Created by Дима on 16.10.2024.
 //
 
 import Foundation
 import UIKit
 
-public final class CartAssembly {
+public final class ChooseCurrencyAssembly {
 
     private let servicesAssembler: ServicesAssembly
 
@@ -17,11 +17,9 @@ public final class CartAssembly {
     }
 
     public func build() -> UIViewController {
-        let presenter = CartPresenterImpl(
-            nftService: servicesAssembler.nftService,
-            serviceAssembler: servicesAssembler
-        )
-        let viewController = CartViewController(presenter: presenter)
+        let presenter = ChooseCurrencyPresenterImpl(currencyService: servicesAssembler.currencyService)
+        
+        let viewController = ChooseCurrencyViewControllerImpl(presenter: presenter)
         presenter.view = viewController
         return viewController
     }
