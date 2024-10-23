@@ -4,14 +4,14 @@ import UIKit
 
 public final class CollectionAssembly {
     
-    private let servicesAssembler: ServicesAssembly
+    private let servicesAssembly: ServicesAssembly
     
     init(servicesAssembler: ServicesAssembly) {
-        self.servicesAssembler = servicesAssembler
+        self.servicesAssembly = servicesAssembler
     }
     
     func build(selectedCollection: NftCollection) -> UIViewController {
-        let collectionPresenter = CollectionPresenterImpl(selectedCollection: selectedCollection, nftService: servicesAssembler.nftService)
+        let collectionPresenter = CollectionPresenterImpl(selectedCollection: selectedCollection, nftService: servicesAssembly.nftService)
         let collectionVC = CollectionViewController(presenter: collectionPresenter)
         collectionPresenter.view = collectionVC
         return collectionVC

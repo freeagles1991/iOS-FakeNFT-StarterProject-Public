@@ -51,7 +51,7 @@ final class CollectionPresenterImpl: CollectionPresenter {
                 case .success(let nft):
                     self?.nftArray.append(nft)
                 case .failure(_):
-                    self?.view?.showError(ErrorModel(message: "Ошибка получения данных", actionText: "Попробовать снова", action: {
+                    self?.view?.showError(ErrorModel(message: "Ошибка получения данных", actionText: "Попробовать снова", action: { [weak self] in
                         self?.loadNfts()
                     }))
                 }
