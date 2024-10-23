@@ -9,19 +9,21 @@ import Foundation
 import UIKit
 
 final class CurrencyCell: UICollectionViewCell {
+    // MARK: - Public Properties
     static let reuseIdentifier =  "CurrencyItemCell"
     
+    // MARK: - Private Properties
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
-    private let currencyImageView: UIImageView = {
+    private lazy var currencyImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFit
         return view
     }()
     
-    private let currencyBackImageView: UIImageView = {
+    private lazy var currencyBackImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.backgroundColor = UIColor.black.cgColor
@@ -30,7 +32,7 @@ final class CurrencyCell: UICollectionViewCell {
         return view
     }()
     
-    private let currencyNamelabel: UILabel = {
+    private lazy var currencyNamelabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular13
@@ -38,7 +40,7 @@ final class CurrencyCell: UICollectionViewCell {
         return label
     }()
 
-    private let currencyCodelabel: UILabel = {
+    private lazy var currencyCodelabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular13
@@ -46,6 +48,7 @@ final class CurrencyCell: UICollectionViewCell {
         return label
     }()
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         multiplierForView = screenWidth / 375.0
@@ -56,6 +59,18 @@ final class CurrencyCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Public Methods
+    func configure(with currency: Currency) {
+        currencyImageView.kf.setImage(with: URL(string: currency.image))
+        currencyNamelabel.text = currency.title
+        currencyCodelabel.text = currency.name
+    }
+    
+    func toggleSelectState(_ isSelected: Bool) {
+        contentView.layer.borderWidth = isSelected ? 1.0 : 0
+    }
+    
+    // MARK: - Private Methods
     private func setupView() {
         contentView.backgroundColor = UIColor.dynamicLightGray
         
@@ -98,15 +113,5 @@ final class CurrencyCell: UICollectionViewCell {
             currencyCodelabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor),
             currencyCodelabel.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 7)
         ])
-    }
-    
-    func configure(with currency: Currency) {
-        currencyImageView.kf.setImage(with: URL(string: currency.image))
-        currencyNamelabel.text = currency.title
-        currencyCodelabel.text = currency.name
-    }
-    
-    func toggleSelectState(_ isSelected: Bool) {
-        contentView.layer.borderWidth = isSelected ? 1.0 : 0
     }
 }

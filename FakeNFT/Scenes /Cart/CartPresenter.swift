@@ -17,20 +17,23 @@ protocol CartPresenter {
 }
 
 final class CartPresenterImpl: CartPresenter {
+    // MARK: - Public Properties
     weak var view: CartView?
     var serviceAssembler: ServicesAssembly
+    
+    // MARK: - Private Properties
     private let nftService: NftService
     
     //Свичер для моковых nft
-    let isUsingDefaultNFTs: Bool = false
+    private let isUsingDefaultNFTs: Bool = false
     
-    let testNFTs: [String] = [
+    private let testNFTs: [String] = [
     "1464520d-1659-4055-8a79-4593b9569e48",
     "b2f44171-7dcd-46d7-a6d3-e2109aacf520",
     "fa03574c-9067-45ad-9379-e3ed2d70df78"
     ]
     
-    let testNFTsInCart: [String] = [
+    private let testNFTsInCart: [String] = [
     "1464520d-1659-4055-8a79-4593b9569e48",
     "b2f44171-7dcd-46d7-a6d3-e2109aacf520"
     ]
@@ -44,6 +47,7 @@ final class CartPresenterImpl: CartPresenter {
         }
     }
     
+    // MARK: - Initializers
     init(nftService: NftService, serviceAssembler: ServicesAssembly) {
         self.serviceAssembler = serviceAssembler
         self.nftService = nftService
@@ -54,7 +58,12 @@ final class CartPresenterImpl: CartPresenter {
         addNftToCart(nftIDs: testNFTsInCart)
     }
     
-    //MARK: Public
+    // MARK: - Actions
+    @objc private func cartDidChange() {
+        updateNfts()
+    }
+    
+    // MARK: - Public Methods
     func viewDidLoad() {
         updateCart()
     }
@@ -88,10 +97,6 @@ final class CartPresenterImpl: CartPresenter {
     }
     
     //MARK: Private
-    @objc private func cartDidChange() {
-        updateNfts()
-    }
-    
     private func updateNfts() {
         getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart),completion: { nfts in
             self.nfts = nfts

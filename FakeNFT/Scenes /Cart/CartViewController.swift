@@ -18,6 +18,7 @@ protocol CartView: UIViewController, LoadingView {
 }
 
 final class CartViewController: UIViewController, CartView{
+    // MARK: - Public Properties
     var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
@@ -26,10 +27,21 @@ final class CartViewController: UIViewController, CartView{
     
     let presenter: CartPresenter
     
+    enum Constants {
+        static let filterButtonIcon = "filterButtonIcon"
+        static let deleteNftIcon = "deleteNftIcon"
+        static let nftStubImage = "nftStubImage"
+        static let costString = "Цена"
+        static let payButtonString = "К оплате"
+        static let emptyCartLabelString = "Корзина пуста"
+    }
+    
+    // MARK: - Private Properties
+    
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .vertical
             layout.minimumInteritemSpacing = 0
@@ -41,14 +53,14 @@ final class CartViewController: UIViewController, CartView{
         return collectionView
     }()
     
-    private let emptyStateView: UIView = {
+    private lazy var emptyStateView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         return view
     }()
     
-    private let emptyCartLabel: UILabel = {
+    private lazy var emptyCartLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
@@ -56,13 +68,12 @@ final class CartViewController: UIViewController, CartView{
         return label
     }()
     
-    private let cellIdentifier = "CartItemCell"
     private let itemsPerRow: CGFloat = 1
     private let sectionInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     private let interItemSpacing: CGFloat = 0
     private var cellHeight: CGFloat = 0
     
-    private let buttonPanelView: UIView = {
+    private lazy var buttonPanelView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -74,7 +85,7 @@ final class CartViewController: UIViewController, CartView{
         return view
     }()
     
-    private let payButton: UIButton = {
+    private lazy var payButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.dynamicBlack
@@ -87,7 +98,7 @@ final class CartViewController: UIViewController, CartView{
         return button
     }()
     
-    private let nftCountLabel: UILabel = {
+    private lazy var nftCountLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular15
@@ -95,23 +106,15 @@ final class CartViewController: UIViewController, CartView{
         return label
     }()
     
-    private let totalCostLabel: UILabel = {
+    private lazy var totalCostLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
         label.textColor = UIColor.yaGreenUniversal
         return label
     }()
-    
-    enum Constants {
-        static let filterButtonIcon = "filterButtonIcon"
-        static let deleteNftIcon = "deleteNftIcon"
-        static let nftStubImage = "nftStubImage"
-        static let costString = "Цена"
-        static let payButtonString = "К оплате"
-        static let emptyCartLabelString = "Корзина пуста"
-    }
 
+    // MARK: - Initializers
     init(presenter: CartPresenter) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
@@ -121,6 +124,7 @@ final class CartViewController: UIViewController, CartView{
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -139,7 +143,16 @@ final class CartViewController: UIViewController, CartView{
         view.backgroundColor = .systemBackground
     }
     
-    //MARK: Public
+    // MARK: - Actions
+    @objc private func filterButtonTapped() {
+        presenter.filterButtonTapped()
+    }
+    
+    @objc private func payButtonTapped() {
+        presenter.payButtonTapped()
+    }
+    
+    // MARK: - Public Methods
     func switchCollectionViewState(isEmptyList: Bool) {
         collectionView.isHidden = isEmptyList
         buttonPanelView.isHidden = isEmptyList
@@ -167,7 +180,7 @@ final class CartViewController: UIViewController, CartView{
         self.present(alertController, animated: true)
     }
     
-    //MARK: Верстка
+    // MARK: - Private Methods - Верстка
     private func setupLoadingView() {
         view.addSubview(activityIndicator)
         
@@ -195,7 +208,7 @@ final class CartViewController: UIViewController, CartView{
     }
 
     private func setupCollectionView() {
-        collectionView.register(CartItemCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        collectionView.register(CartItemCell.self, forCellWithReuseIdentifier: CartItemCell.cellIdentifier)
         
         view.addSubview(collectionView)
         
@@ -266,31 +279,22 @@ final class CartViewController: UIViewController, CartView{
             buttonPanelView.heightAnchor.constraint(equalToConstant: 76)
         ])
     }
-    
-    
-    //MARK: Кнопки
-    @objc private func filterButtonTapped() {
-        presenter.filterButtonTapped()
-    }
-    
-    @objc private func payButtonTapped() {
-        presenter.payButtonTapped()
-    }
-
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension CartViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter.getNFTs()?.count ?? 0 // Sample item count
+        return presenter.getNFTs()?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! CartItemCell
-        guard let nfts = presenter.getNFTs() else {return cell}
-        cell.configure(with: nfts[indexPath.row], stubImage: UIImage(named: Constants.nftStubImage))
-        cell.delegate = self
-        return cell
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CartItemCell.cellIdentifier, for: indexPath) as? CartItemCell {
+            guard let nfts = presenter.getNFTs() else {return cell}
+            cell.configure(with: nfts[indexPath.row], stubImage: UIImage(named: Constants.nftStubImage))
+            cell.delegate = self
+            return cell
+        }
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

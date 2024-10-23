@@ -15,9 +15,8 @@ protocol ChooseCurrencyPresenter {
 }
 
 final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
+    // MARK: - Public Properties
     weak var view: ChooseCurrencyViewController?
-    private let currencyService: CurrencyService
-    
     var currencies: [Currency] = []
     var selectedCurrency: IndexPath? {
         didSet {
@@ -25,10 +24,15 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
         }
     }
     
+    // MARK: - Private Properties
+    private let currencyService: CurrencyService
+    
+    // MARK: - Initializers
     init(currencyService: CurrencyService) {
         self.currencyService = currencyService
     }
     
+    // MARK: - Public Methods
     func viewDidLoad() {
         guard let view else {return}
         view.showLoading()
@@ -87,7 +91,6 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
                 CartStore.nftsInCart.removeAll()
             case .failure(_):
                 print("ChooseCurrencyPresenterImpl: не оплачено")
-                print("ChooseCurrencyPresenterImpl: оплачено")
                 let action = AlertViewModel.AlertAction(
                     title: "Попробовать снова",
                     style: .default,

@@ -16,15 +16,23 @@ protocol ChooseCurrencyViewController: UIViewController, LoadingView {
 }
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
+    // MARK: - Public Properties
     let presenter: ChooseCurrencyPresenter
-    
     var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
-    private let titleLabel: UILabel = {
+    
+    enum Constants: String {
+        case payScreenTitle = "Выбор способа оплаты"
+        case userAgreementText = "Совершая покупку, вы соглашаетесь с условиями Пользовательского соглашения"
+        case payButtonText = "Оплатить"
+    }
+    
+    // MARK: - Private Properties
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
@@ -32,7 +40,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         return label
     }()
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .vertical
             layout.minimumInteritemSpacing = 7
@@ -64,7 +72,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         return view
     }()
     
-    let userAgreementTextView: UITextView = {
+    private lazy var userAgreementTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isEditable = false
@@ -77,7 +85,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         return textView
     }()
     
-    private let payButton: UIButton = {
+    private lazy var payButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.dynamicBlack
@@ -90,12 +98,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         return button
     }()
     
-    enum Constants: String {
-        case payScreenTitle = "Выбор способа оплаты"
-        case userAgreementText = "Совершая покупку, вы соглашаетесь с условиями Пользовательского соглашения"
-        case payButtonText = "Оплатить"
-    }
-    
+    // MARK: - Initializers
     init(presenter: ChooseCurrencyPresenter) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
@@ -105,6 +108,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -123,7 +127,13 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         presenter.viewDidLoad()
     }
     
-    //MARK: Public
+    // MARK: - Actions
+    @objc private func didPayButtonTapped() {
+        print("ChooseCurrencyViewControllerImpl: PayButton tapped")
+        presenter.payOrder(with: Array(CartStore.nftsInCart))
+    }
+    
+    // MARK: - Public Methods
     func updateCollectionView() {
         collectionView.reloadData()
     }
@@ -143,7 +153,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         payButton.backgroundColor = isCurrencySelected ? UIColor.dynamicBlack.withAlphaComponent(1.0) : UIColor.dynamicBlack.withAlphaComponent(0.5)
     }
     
-    //MARK: Верстка
+    // MARK: - Private Methods - Верстка
     private func setupNavigationBarTitle() {
         self.title = Constants.payScreenTitle.rawValue
     }
@@ -203,7 +213,8 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         ])
         
     }
-    //MARK: Private
+    
+    // MARK: - Private Methods
     private func makeUserAgreementLabelWithLink() -> NSMutableAttributedString {
         let attributedString = NSMutableAttributedString(string: Constants.userAgreementText.rawValue)
         
@@ -222,11 +233,6 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         attributedString.addAttribute(.foregroundColor, value: UIColor.yaBlueUniversal, range: linkRange)
 
         return attributedString
-    }
-    
-    @objc private func didPayButtonTapped() {
-        print("ChooseCurrencyViewControllerImpl: PayButton tapped")
-        presenter.payOrder(with: Array(CartStore.nftsInCart))
     }
 }
 

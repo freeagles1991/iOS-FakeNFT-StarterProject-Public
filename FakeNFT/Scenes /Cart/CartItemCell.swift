@@ -14,14 +14,18 @@ protocol CartItemCellDelegate: AnyObject {
 }
 
 final class CartItemCell: UICollectionViewCell {
+    // MARK: - Public Properties
+    static let cellIdentifier = "CartItemCell"
+    
     weak var delegate: CartItemCellDelegate?
     
+    // MARK: - Private Properties
     private let screenWidth = UIScreen.main.bounds.width
     private var multiplierForView: CGFloat = 0
     
     private var nftID: String = ""
     
-    private let nftImageView: UIImageView = {
+    private lazy var nftImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.backgroundColor = UIColor.red.cgColor
@@ -31,16 +35,7 @@ final class CartItemCell: UICollectionViewCell {
         return view
     }()
     
-    private let stackView: UIStackView = {
-        let view = UIStackView()
-        view.axis = .vertical
-        view.alignment = .leading
-        view.spacing = 8
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let nftNameLabel: UILabel = {
+    private lazy var nftNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
@@ -48,13 +43,13 @@ final class CartItemCell: UICollectionViewCell {
         return label
     }()
     
-    private let raitingView: StarRatingView = {
+    private lazy var raitingView: StarRatingView = {
         let view = StarRatingView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private let costLabel: UILabel = {
+    private lazy var costLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.regular13
@@ -62,7 +57,7 @@ final class CartItemCell: UICollectionViewCell {
         return label
     }()
     
-    private let costCounterLabel: UILabel = {
+    private lazy var costCounterLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold17
@@ -70,7 +65,7 @@ final class CartItemCell: UICollectionViewCell {
         return label
     }()
     
-    private let deleteButton: UIButton = {
+    private lazy var deleteButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: CartViewController.Constants.deleteNftIcon), for: .normal)
@@ -78,16 +73,42 @@ final class CartItemCell: UICollectionViewCell {
         return button
     }()
 
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         multiplierForView = screenWidth / 375.0
         setupView()
     }
-
+    // MARK: - Initializers
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Actions
+    @objc func deleteButtonTapped(_ sender: UIButton) {
+        delegate?.didTapButton(in: self)
+    }
+    
+    // MARK: - Public Methods
+    func configure(with nft: Nft, stubImage: UIImage? = UIImage()) {
+        if let imageUrl = nft.images.first {
+            nftImageView.kf.setImage(with: imageUrl, placeholder: stubImage)
+        } else {
+            nftImageView.image = stubImage
+        }
+        nftID = nft.id
+        nftNameLabel.text = nft.name
+        raitingView.rating = nft.rating
+        print(raitingView.rating, nft.rating)
+        costLabel.text = CartViewController.Constants.costString
+        costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
+    }
+    
+    func getNftID() -> String {
+        nftID
+    }
 
+    // MARK: - Private Methods
     private func setupView() {
         contentView.addSubview(nftImageView)
 
@@ -139,27 +160,5 @@ final class CartItemCell: UICollectionViewCell {
             costLabel.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 24)
         ])
 
-    }
-
-    func configure(with nft: Nft, stubImage: UIImage? = UIImage()) {
-        if let imageUrl = nft.images.first {
-            nftImageView.kf.setImage(with: imageUrl, placeholder: stubImage)
-        } else {
-            nftImageView.image = stubImage
-        }
-        nftID = nft.id
-        nftNameLabel.text = nft.name
-        raitingView.rating = nft.rating
-        print(raitingView.rating, nft.rating)
-        costLabel.text = CartViewController.Constants.costString
-        costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
-    }
-    
-    func getNftID() -> String {
-        nftID
-    }
-    
-    @objc func deleteButtonTapped(_ sender: UIButton) {
-        delegate?.didTapButton(in: self)
     }
 }
