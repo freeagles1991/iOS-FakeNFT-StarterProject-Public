@@ -39,7 +39,7 @@ final class ProfileRouter: ProfileRouterProtocol {
 
     
     func navigateToFavoritesNFTs(from view: ProfileViewController) {
-        let favoritesNFTsViewController = FavouritesNFTsViewController()
+        let favoritesNFTsViewController = FavouritesNFTsViewController(presenter: nil)
         viewController?.navigationController?.pushViewController(favoritesNFTsViewController, animated: true)
     }
 }
