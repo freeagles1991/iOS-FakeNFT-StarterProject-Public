@@ -12,8 +12,6 @@ final class CollectionViewController: UIViewController {
     
     private let presenter: CollectionPresenter
     
-    var activityIndicator = UIActivityIndicatorView()
-    
     private lazy var scrollView = UIScrollView()
     private lazy var contentView = UIView()
     private lazy var backButton = UIButton(type: .system)
