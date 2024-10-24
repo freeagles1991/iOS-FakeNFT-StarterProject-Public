@@ -5,14 +5,14 @@ import UIKit
 
 public final class CatalogAssembly {
     
-    private let servicesAssembler: ServicesAssembly
+    private let servicesAssembly: ServicesAssembly
 
-    init(servicesAssembler: ServicesAssembly) {
-        self.servicesAssembler = servicesAssembler
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
     }
     
     public func build() -> UIViewController {
-        let catalogPresenter = CatalogPresenterImpl(servicesAssembly: servicesAssembler)
+        let catalogPresenter = CatalogPresenterImpl(servicesAssembly: servicesAssembly)
         let cataloViewController = CatalogViewController(presenter: catalogPresenter)
         catalogPresenter.view = cataloViewController
         return cataloViewController

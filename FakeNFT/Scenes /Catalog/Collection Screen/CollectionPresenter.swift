@@ -5,7 +5,6 @@ import Foundation
 
 protocol CollectionPresenter: AnyObject {
     var selectedCollection: NftCollection { get }
-    var nftArray: [Nft] { get }
     var cellViewModels: [CollectionCellViewModel] { get }
     
     func viewDidLoad()
@@ -16,8 +15,8 @@ final class CollectionPresenterImpl: CollectionPresenter {
     
     weak var view: CollectionViewControllerProtocol?
     
+    private var nftArray: [Nft] = []
     var selectedCollection: NftCollection
-    var nftArray: [Nft] = []
     var cellViewModels: [CollectionCellViewModel] {
         return nftArray.map { nft in
             let name = nft.name

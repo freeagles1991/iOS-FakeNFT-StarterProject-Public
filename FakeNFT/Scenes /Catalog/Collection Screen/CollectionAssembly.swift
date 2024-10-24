@@ -6,8 +6,8 @@ public final class CollectionAssembly {
     
     private let servicesAssembly: ServicesAssembly
     
-    init(servicesAssembler: ServicesAssembly) {
-        self.servicesAssembly = servicesAssembler
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
     }
     
     func build(selectedCollection: NftCollection) -> UIViewController {

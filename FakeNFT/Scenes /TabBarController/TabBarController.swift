@@ -12,7 +12,7 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let catalogAssembly = CatalogAssembly(servicesAssembler: servicesAssembly)
+        let catalogAssembly = CatalogAssembly(servicesAssembly: servicesAssembly)
         let cataloViewController = catalogAssembly.build()
         let catalogNavigationController = UINavigationController(rootViewController: cataloViewController)
         

@@ -14,7 +14,6 @@ final class CatalogViewController: UIViewController {
     
     private lazy var sortButton = UIButton(type: .system)
     private lazy var tableView = UITableView()
-    var activityIndicator = UIActivityIndicatorView()
     
     // MARK: - Init
     
@@ -50,7 +49,7 @@ extension CatalogViewController: CatalogViewControllerProtocol {
 
 extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let collectionAssembly = CollectionAssembly(servicesAssembler: presenter.getServicesAssembly())
+        let collectionAssembly = CollectionAssembly(servicesAssembly: presenter.getServicesAssembly())
         let collectionViewController = collectionAssembly.build(selectedCollection: presenter.dataSource[indexPath.row])
         let collectionNavigationController = UINavigationController(rootViewController: collectionViewController)
         collectionNavigationController.modalPresentationStyle = .fullScreen
@@ -82,8 +81,6 @@ private extension CatalogViewController {
     func configureUI() {
         configureSortButton()
         configureTableView()
-        view.addSubview(activityIndicator)
-        activityIndicator.constraintCenters(to: view)
     }
     
     func configureSortButton() {
