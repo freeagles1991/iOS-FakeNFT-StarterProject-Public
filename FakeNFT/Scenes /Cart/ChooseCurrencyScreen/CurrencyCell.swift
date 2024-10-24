@@ -13,9 +13,6 @@ final class CurrencyCell: UICollectionViewCell {
     static let reuseIdentifier =  "CurrencyItemCell"
     
     // MARK: - Private Properties
-    private let screenWidth = UIScreen.main.bounds.width
-    private var multiplierForView: CGFloat = 0
-    
     private lazy var currencyImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +48,6 @@ final class CurrencyCell: UICollectionViewCell {
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
-        multiplierForView = screenWidth / 375.0
         setupView()
     }
 
