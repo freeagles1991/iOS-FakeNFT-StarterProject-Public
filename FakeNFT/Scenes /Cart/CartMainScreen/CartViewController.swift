@@ -12,6 +12,7 @@ import ProgressHUD
 protocol CartView: UIViewController, LoadingView {
     func switchCollectionViewState(isEmptyList: Bool)
     func updateCollectionView()
+    func performBatchUpdate(deletionAt indexPath: IndexPath, completion: @escaping () -> Void)
     func configureTotalCost(totalPrice: Double, nftsCount: Int)
     func setupNavigationBarForNextScreen()
     func showAlert(_ alert: AlertViewModel)
@@ -169,6 +170,14 @@ final class CartViewController: UIViewController, CartView{
         collectionView.reloadData()
     }
     
+    func performBatchUpdate(deletionAt indexPath: IndexPath, completion: @escaping () -> Void) {
+        collectionView.performBatchUpdates({
+            self.collectionView.deleteItems(at: [indexPath])
+        }, completion: { _ in
+            completion()
+        })
+    }
+    
     func setupNavigationBarForNextScreen() {
         let backBarButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = backBarButton
@@ -314,32 +323,7 @@ extension CartViewController: CartItemCellDelegate {
     func didTapButton(in cell: CartItemCell) {
         if let indexPath = collectionView.indexPath(for: cell) {
             print("Tapped button in cell at \(indexPath.row)")
-            
-            let removeFromCartAssembly = RemoveFromCartAssembly()
-            guard let removeFromCartVC = removeFromCartAssembly.build() as? RemoveFromCartViewController else { return }
-            removeFromCartVC.modalPresentationStyle = .overFullScreen
-            removeFromCartVC.modalTransitionStyle = .crossDissolve
-            
-            if let nft = presenter.getNFT(by: indexPath.row) {
-                removeFromCartVC.configureScreen(with: nft)
-            }
-            
-            removeFromCartVC.onConfirm = { [weak self] in
-                print("Подтверждено через замыкание!")
-                guard let self else {return}
-                
-                let nftID = cell.getNftID()
-                self.presenter.removeFromNFTs(at: indexPath.row)
-                
-                collectionView.performBatchUpdates({
-                    self.collectionView.deleteItems(at: [indexPath])
-                }, completion: { [weak self]_ in
-                    guard let self else {return}
-                    self.presenter.deleteNftFromCart(with: nftID)
-                })
-            }
-            
-            self.present(removeFromCartVC, animated: true, completion: nil)
+            presenter.removeButtonTapped(at: indexPath)
         }
     }
 }

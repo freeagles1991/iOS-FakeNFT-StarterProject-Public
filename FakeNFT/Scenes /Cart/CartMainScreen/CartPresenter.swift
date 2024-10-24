@@ -9,13 +9,10 @@ import Foundation
 
 protocol CartPresenter {
     func getNFTs() -> [Nft]?
-    func getNFT(by id: Int) -> Nft?
     func viewDidLoad()
     func filterButtonTapped()
     func payButtonTapped()
-    
-    func removeFromNFTs(at index: Int)
-    func deleteNftFromCart(with id: String)
+    func removeButtonTapped(at indexPath: IndexPath)
 }
 
 final class CartPresenterImpl: CartPresenter {
@@ -70,21 +67,8 @@ final class CartPresenterImpl: CartPresenter {
         updateCart()
     }
     
-    func deleteNftFromCart(with id: String) {
-        CartStore.nftsInCart.remove(id)
-        print("CartPresenter: удалил \(id)")
-    }
-    
     func getNFTs() -> [Nft]? {
         return nfts
-    }
-    
-    func getNFT(by id: Int) -> Nft? {
-        return nfts[id]
-    }
-    
-    func removeFromNFTs(at index: Int) {
-        nfts.remove(at: index)
     }
     
     func filterButtonTapped() {
@@ -102,11 +86,47 @@ final class CartPresenterImpl: CartPresenter {
         view.navigationController?.pushViewController(payViewController, animated: true)
     }
     
+    func removeButtonTapped(at indexPath: IndexPath) {
+        guard let view else {return}
+        
+        let removeFromCartAssembly = RemoveFromCartAssembly()
+        guard let removeFromCartVC = removeFromCartAssembly.build() as? RemoveFromCartViewController else { return }
+        removeFromCartVC.modalPresentationStyle = .overFullScreen
+        removeFromCartVC.modalTransitionStyle = .crossDissolve
+        
+        removeFromCartVC.configureScreen(with: self.nfts[indexPath.row])
+
+        removeFromCartVC.onConfirm = { [weak self] in
+            print("Подтверждено через замыкание!")
+            guard let self else {return}
+            
+            let nftID = self.nfts[indexPath.row].id
+            
+            removeFromNFTs(at: indexPath.row)
+            
+            view.performBatchUpdate(deletionAt: indexPath) { [weak self] in
+                guard let self else {return}
+                self.deleteNftFromCart(with: nftID)
+            }
+        }
+        
+        view.present(removeFromCartVC, animated: true, completion: nil)
+    }
+    
     //MARK: Private
     private func updateNfts() {
         getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart),completion: { nfts in
             self.nfts = nfts
         } )
+    }
+    
+    private func removeFromNFTs(at index: Int) {
+        nfts.remove(at: index)
+    }
+    
+    private func deleteNftFromCart(with id: String) {
+        CartStore.nftsInCart.remove(id)
+        print("CartPresenter: удалил \(id)")
     }
     
     //Здесь мы ассинхронно загружаем nft, которые добавлены в корзину
