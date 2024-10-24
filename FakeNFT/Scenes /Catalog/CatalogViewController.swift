@@ -2,8 +2,9 @@
 
 
 import UIKit
+import ProgressHUD
 
-protocol CatalogViewControllerProtocol: AnyObject {
+protocol CatalogViewControllerProtocol:  AnyObject, ErrorView, LoadingView {
     func updateUI()
 }
 
@@ -38,8 +39,9 @@ final class CatalogViewController: UIViewController {
 // MARK: - CatalogView protocol func
 
 extension CatalogViewController: CatalogViewControllerProtocol {
+    
     func updateUI() {
-        
+        tableView.reloadData()
     }
 }
 
@@ -47,9 +49,9 @@ extension CatalogViewController: CatalogViewControllerProtocol {
 
 extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let collectionPresenter: CollectionPresenter = CollectionPresenterImpl(selectedCollection: presenter.dataSource[indexPath.row])
-        let collectionVC = CollectionViewController(presenter: collectionPresenter)
-        let collectionNavigationController = UINavigationController(rootViewController: collectionVC)
+        let collectionAssembly = CollectionAssembly(servicesAssembly: presenter.getServicesAssembly())
+        let collectionViewController = collectionAssembly.build(selectedCollection: presenter.dataSource[indexPath.row])
+        let collectionNavigationController = UINavigationController(rootViewController: collectionViewController)
         collectionNavigationController.modalPresentationStyle = .fullScreen
         present(collectionNavigationController, animated: true)
     }
@@ -68,7 +70,7 @@ extension CatalogViewController: UITableViewDataSource {
         }
         catalogCell.selectionStyle = .none
         
-        catalogCell.configureCell(urlForDownloadImage: presenter.cellViewModels[indexPath.row].imageURL, header: presenter.cellViewModels[indexPath.row].title)
+        catalogCell.configureCell(catalogCellViewModel: presenter.cellViewModels[indexPath.row])
         return catalogCell
     }
 }

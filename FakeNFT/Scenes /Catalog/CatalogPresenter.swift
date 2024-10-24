@@ -4,14 +4,16 @@
 import UIKit
 
 protocol CatalogPresenter {
-    func viewDidLoad()
-    func createSortAlertViewModel() -> AlertViewModel
     var dataSource: [NftCollection] { get }
     var cellViewModels: [CatalogCellViewModel] { get }
+    
+    func viewDidLoad()
+    func createSortAlertViewModel() -> AlertViewModel
+    func getServicesAssembly() -> ServicesAssembly
 }
 
 final class CatalogPresenterImpl: CatalogPresenter {
-    
+
     weak var view: CatalogViewControllerProtocol?
     
     var dataSource: [NftCollection] = [] {
@@ -28,35 +30,29 @@ final class CatalogPresenterImpl: CatalogPresenter {
         }
     }
     
+    private let servicesAssembly: ServicesAssembly
+    
+    init(servicesAssembly: ServicesAssembly) {
+        self.servicesAssembly = servicesAssembly
+    }
+    
     func viewDidLoad() {
-        dataSource.append(contentsOf: [NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "Персиковый — как облака над закатным солнцем в океане. В этой коллекции совмещены трогательная нежность и живая игривость сказочных зефирных зверей.",
-                                                     author: "John Doe",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
-                                       NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
-                                                     author: "Lourdes Harper",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
-                                       NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
-                                                     author: "Lourdes Harper",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c"),
-                                       NftCollection(createdAt: "2023 - 11- 21:36",
-                                                     name: "Peach",
-                                                     cover: "https://code.s3.yandex.net/Mobile/iOS/NFT/Обложки_коллекций/Brown.png",
-                                                     nfts: ["c14cf3bc-7470-4eec-8a42-5eaa65f4053c", "d6a02bd1-1255-46cd-815b-656174c1d9c0"],
-                                                     description: "curabitur feugait a definitiones singulis movet eros aeque mucius evertitur assueverit et eam",
-                                                     author: "Lourdes Harper",
-                                                     id: "d4fea6b6-91f1-45ce-9745-55431e69ef5c")])
+        loadNftCollections()
+    }
+    
+    func loadNftCollections() {
+        view?.showLoading()
+        servicesAssembly.nftCollectionsService.loadNftCollection { [weak self] result in
+            self?.view?.hideLoading()
+            switch result {
+                case .success(let nftCollections):
+                self?.dataSource = nftCollections
+            case .failure(_):
+                self?.view?.showError(ErrorModel(message: "Ошибка получения данных", actionText: "Попробовать снова", action: {
+                    self?.loadNftCollections()
+                }))
+            }
+        }
     }
     
     func createSortAlertViewModel() -> AlertViewModel {
@@ -75,5 +71,9 @@ final class CatalogPresenterImpl: CatalogPresenter {
                                             ],
                                             preferredStyle: .actionSheet)
         return alertViewModel
+    }
+    
+    func getServicesAssembly() -> ServicesAssembly {
+        servicesAssembly
     }
 }
