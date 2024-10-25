@@ -38,10 +38,6 @@ final class CartViewController: UIViewController, CartView{
     }
     
     // MARK: - Private Properties
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    private var multiplierForView: CGFloat = 0
-    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .vertical
@@ -128,8 +124,6 @@ final class CartViewController: UIViewController, CartView{
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        multiplierForView = screenWidth / 375.0
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -258,7 +252,7 @@ final class CartViewController: UIViewController, CartView{
             payButton.bottomAnchor.constraint(equalTo: buttonPanelView.bottomAnchor, constant: -16),
             payButton.leadingAnchor.constraint(greaterThanOrEqualTo: buttonPanelView.leadingAnchor, constant: 16),
             payButton.trailingAnchor.constraint(equalTo: buttonPanelView.trailingAnchor, constant: -16),
-            payButton.widthAnchor.constraint(equalToConstant: 240 * multiplierForView)
+            payButton.widthAnchor.constraint(equalToConstant: 240 * ScreenSizeHelper.getViewMultiplier())
         ])
     
         buttonPanelView.addSubview(nftCountLabel)
