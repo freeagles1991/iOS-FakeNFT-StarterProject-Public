@@ -10,9 +10,9 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
-    private var presenter: ProfilePresenterProtocol?
+    private var presenter: ProfilePresenterProtocol
     private let profileView = ProfileView()
-    var router: ProfileRouterProtocol?
+    var router: ProfileRouterProtocol
     
     // MARK: - Init
     init(presenter: ProfilePresenterProtocol, router: ProfileRouterProtocol) {
@@ -32,7 +32,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         setupNavigationBar()
-        presenter?.loadProfileData()
+        presenter.loadProfileData()
     }
     
     // MARK: - Private Methods
@@ -77,8 +77,8 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func editButtonPressed() {
-        guard let profile = presenter?.getCurrentProfile() else { return }
-        router?.navigateToEditProfile(from: self, with: profile)
+        guard let profile = presenter.getCurrentProfile() else { return }
+        router.navigateToEditProfile(from: self, with: profile)
     }
     
 }
@@ -94,7 +94,7 @@ extension ProfileViewController: ProfileViewProtocol {
 // MARK: - EditProfileDelegate
 extension ProfileViewController: EditProfileDelegate {
     func didUpdateProfile(_ updatedProfile: UserProfile) {
-        presenter?.updateProfileData(updatedProfile)
+        presenter.updateProfileData(updatedProfile)
         profileView.update(with: updatedProfile)
     }
 }
@@ -102,12 +102,12 @@ extension ProfileViewController: EditProfileDelegate {
 // MARK: - ProfileViewDelegate
 extension ProfileViewController: ProfileViewDelegate {
     func didSelectItem(at index: Int) {
-        guard let profile = presenter?.getCurrentProfile() else { return }
+        guard let profile = presenter.getCurrentProfile() else { return }
         switch index {
         case 0:
-            router?.navigateToMyNFTs(from: self, with: profile)
+            router.navigateToMyNFTs(from: self, with: profile)
         case 1:
-            router?.navigateToFavoritesNFTs(from: self, with: profile)
+            router.navigateToFavoritesNFTs(from: self, with: profile)
         case 2:
             print("Webview")
         default:

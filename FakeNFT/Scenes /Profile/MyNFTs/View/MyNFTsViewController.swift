@@ -10,10 +10,10 @@ import ProgressHUD
 
 final class MyNFTsViewController: UIViewController {
     private let tableView = UITableView()
-    private var presenter: MyNFTsPresenterProtocol?
+    private var presenter: MyNFTsPresenterProtocol
     
     //MARK: - Init
-    init(presenter: MyNFTsPresenterProtocol?) {
+    init(presenter: MyNFTsPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -27,7 +27,7 @@ final class MyNFTsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        presenter?.viewDidLoad()
+        presenter.viewDidLoad()
     }
     
     //MARK: - Public Method
@@ -36,8 +36,8 @@ final class MyNFTsViewController: UIViewController {
     }
     
     //MARK: - Private Method
-    @objc private func sortButtonTapped() {
-        presenter?.handleSortSelection()
+    @objc private func didTapSortButton() {
+        presenter.handleSortSelection()
     }
     
     private func setupUI() {
@@ -64,7 +64,7 @@ final class MyNFTsViewController: UIViewController {
 //MARK: - UITableViewDataSource
 extension MyNFTsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter?.numberOfNFTs ?? 0
+        return presenter.numberOfNFTs
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -72,7 +72,7 @@ extension MyNFTsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        if let nft = presenter?.nft(at: indexPath.row) {
+        if let nft = presenter.nft(at: indexPath.row) {
             cell.configure(with: nft)
         }
         
@@ -116,7 +116,7 @@ extension MyNFTsViewController: MyNFTsViewProtocol {
             image: UIImage(named: "filterButtonIcon"),
             style: .plain,
             target: self,
-            action: #selector(sortButtonTapped)
+            action: #selector(didTapSortButton)
         )
         navigationItem.rightBarButtonItem?.tintColor = .segmentActive
     }

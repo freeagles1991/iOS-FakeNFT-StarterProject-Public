@@ -28,7 +28,7 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
     private var nftsLikes: [Nft] = []
     
     // MARK: - Init
-    init(view: FavouritesViewProtocol, nftService: NftService, profile: UserProfile) {
+    init(view: FavouritesViewProtocol?, nftService: NftService, profile: UserProfile) {
         self.view = view
         self.nftService = nftService
         self.profile = profile

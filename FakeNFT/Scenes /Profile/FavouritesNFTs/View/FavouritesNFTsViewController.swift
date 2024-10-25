@@ -25,12 +25,12 @@ struct GeometricParams {
 }
 
 final class FavouritesNFTsViewController: UIViewController {
-    private var presenter : FavouritesNFTsPresenter?
+    private var presenter : FavouritesNFTsPresenter
     private var params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 8)
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    init(presenter: FavouritesNFTsPresenter?) {
+    init(presenter: FavouritesNFTsPresenter) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -43,11 +43,7 @@ final class FavouritesNFTsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        presenter?.viewDidLoad()
-    }
-    
-    func setPresenter(_ presenter: FavouritesNFTsPresenter) {
-        self.presenter = presenter
+        presenter.viewDidLoad()
     }
     
     private  func setupUI() {
@@ -77,7 +73,7 @@ final class FavouritesNFTsViewController: UIViewController {
 //MARK: - UICollectionViewDataSource
 extension FavouritesNFTsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter?.numberOfNFTs ?? 0
+        presenter.numberOfNFTs
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -85,7 +81,7 @@ extension FavouritesNFTsViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        if let nft = presenter?.nft(at: indexPath.row) {
+        if let nft = presenter.nft(at: indexPath.row) {
             cell.configure(with: nft)
         }
         

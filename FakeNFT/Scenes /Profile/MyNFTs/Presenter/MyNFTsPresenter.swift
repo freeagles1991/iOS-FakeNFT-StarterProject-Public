@@ -36,7 +36,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
     private let sortKey = "selectedSortCriterion"
 
     // MARK: - Init
-    init(view: MyNFTsViewProtocol, nftService: NftService, profile: UserProfile) {
+    init(view: MyNFTsViewProtocol?, nftService: NftService, profile: UserProfile) {
         self.view = view
         self.nftService = nftService
         self.profile = profile

@@ -32,9 +32,9 @@ final class AssemblyBuilderProfile {
     func createMyNFTsModule(from view: ProfileViewController, with profile: UserProfile) -> UIViewController {
         let nftService = servicesAssembly.nftService
 
-        let myNFTsViewController = MyNFTsViewController(presenter: nil)
-        let presenter = MyNFTsPresenter(view: myNFTsViewController, nftService: nftService, profile: profile)
-        myNFTsViewController.setPresenter(presenter)
+        let presenter = MyNFTsPresenter(view: nil, nftService: nftService, profile: profile)
+        let myNFTsViewController = MyNFTsViewController(presenter: presenter)
+        presenter.view = myNFTsViewController
 
         return myNFTsViewController
     }
@@ -42,9 +42,9 @@ final class AssemblyBuilderProfile {
     func favouritesNFTsModule(from view: ProfileViewController, with profile: UserProfile) -> UIViewController {
         let nftService = servicesAssembly.nftService
         
-        let favouritesNFTsVC = FavouritesNFTsViewController(presenter: nil)
-        let presenter = FavouritesNFTsPresenter(view: favouritesNFTsVC, nftService: nftService, profile: profile)
-        favouritesNFTsVC.setPresenter(presenter)
+        let presenter = FavouritesNFTsPresenter(view: nil, nftService: nftService, profile: profile)
+        let favouritesNFTsVC = FavouritesNFTsViewController(presenter: presenter)
+        presenter.view = favouritesNFTsVC
         
         return favouritesNFTsVC
     }
