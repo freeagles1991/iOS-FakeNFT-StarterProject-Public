@@ -14,6 +14,8 @@ protocol ProfileViewDelegate: AnyObject {
 
 final class ProfileView: UIView {
     weak var delegate: ProfileViewDelegate?
+    private var profile: UserProfile?
+    private let titles = ["Мои NFT", "Избранные NFT", "О разработчике"]
     
     //MARK: - UI
     private lazy var nameLabel: UILabel = {
@@ -85,32 +87,39 @@ final class ProfileView: UIView {
     
     
     func update(with profile: UserProfile) {
+        self.profile = profile
         nameLabel.text = profile.name
         descriptionLabel.text = profile.description
         websiteLabel.text = profile.website
         
         loadAvatar(from: profile.avatar)
+        tableView.reloadData()
     }
     
     private func loadAvatar(from urlString: String) {
+        let placeholderImage = UIImage(named: "placeholderAvatar")
         guard let avatarURL = URL(string: urlString) else {
-            avatarPhoto.image = UIImage(named: "placeholderAvatar")
+            avatarPhoto.image = placeholderImage
             return
         }
         
-        avatarPhoto.kf.setImage(with: avatarURL) { [weak self] result in
-            switch result {
-            case .success(let value):
-                print("Успешно загружено изображение: \(value.source.url?.absoluteString ?? "")")
-            case .failure(let error):
-                print("Ошибка загрузки изображения: \(error.localizedDescription)")
-                self?.avatarPhoto.image = UIImage(named: "placeholderAvatar")
-            }
-        }
+        avatarPhoto.kf.setImage(with: avatarURL, placeholder: placeholderImage)
     }
-
-
-
+    
+    private func configureCell(_ cell: ProfileViewCell, at index: Int) {
+        guard index < titles.count else { return }
+        
+        let title = titles[index]
+        let count: Int? = {
+            switch index {
+            case 0: return profile?.nfts.count
+            case 1: return profile?.likes.count
+            default: return nil
+            }
+        }()
+        
+        cell.configure(with: title, count: count)
+    }
     
     //MARK: - SetupUI
     private func setupUI() {
@@ -139,11 +148,12 @@ final class ProfileView: UIView {
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: mainStack.bottomAnchor, constant: 40),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+
 }
 //MARK: - UITableViewDelegate
 extension ProfileView: UITableViewDelegate {
@@ -160,7 +170,7 @@ extension ProfileView: UITableViewDelegate {
 //MARK: - UITableViewDataSource
 extension ProfileView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        titles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -168,17 +178,7 @@ extension ProfileView: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        switch indexPath.row {
-        case 0:
-            cell.configure(with: "Мои NFT", count: nil)
-        case 1:
-            cell.configure(with: "Избранные NFT", count: nil)
-        case 2:
-            cell.configure(with: "О разработчике", count: nil)
-        default:
-            break
-        }
-        
+        configureCell(cell, at: indexPath.row)
         return cell
     }
     

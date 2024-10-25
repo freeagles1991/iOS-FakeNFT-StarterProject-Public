@@ -6,54 +6,50 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class MyNFTsViewController: UIViewController {
-    enum SortCriterion {
-        case price
-        case name
-        case rating
+    private let tableView = UITableView()
+    private var presenter: MyNFTsPresenterProtocol
+    
+    //MARK: - Init
+    init(presenter: MyNFTsPresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
     }
     
-    private var nfts: [Nft] = []
-    private let tableView = UITableView()
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchNFTs()
         setupUI()
+        presenter.viewDidLoad()
     }
     
-    private func fetchNFTs() {
-        if nfts.isEmpty {
-            tableView.setBackgroundView(message: "У вас еще нет NFT.")
-            navigationItem.rightBarButtonItem = nil
-        } else {
-            tableView.setBackgroundView(message: nil)
-            setupNavigationItem()
-        }
-        tableView.reloadData()
+    //MARK: - Public Method
+    func setPresenter(_ presenter: MyNFTsPresenterProtocol) {
+        self.presenter = presenter
     }
     
-    private func sortNFTs(by criterion: SortCriterion) {
-        switch criterion {
-        case .price:
-            nfts.sort { $0.price < $1.price }
-        case .name:
-            nfts.sort { $0.name < $1.name }
-        case .rating:
-            nfts.sort { $0.rating > $1.rating }
-        }
-        tableView.reloadData()
+    //MARK: - Private Method
+    @objc private func didTapSortButton() {
+        presenter.handleSortSelection()
     }
     
     private func setupUI() {
         view.backgroundColor = .systemBackground
         view.addSubview(tableView)
         
-        tableView.delegate = self
         tableView.dataSource = self
         tableView.register(NFTTableViewCell.self, forCellReuseIdentifier: NFTTableViewCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 140
+        tableView.allowsSelection = false
+        tableView.separatorStyle = .none
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -62,52 +58,13 @@ final class MyNFTsViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-    
-    private func setupNavigationItem() {
-        title = "Мой NFT"
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "line.3.horizontal.decrease"),
-            style: .plain,
-            target: self,
-            action: #selector(sortButtonTapped)
-        )
-    }
-    
-    @objc private func sortButtonTapped() {
-        let alertController = UIAlertController(title: "Сортировка", message: "Выберите способ сортировки", preferredStyle: .actionSheet)
-        
-        let sortOptions: [(title: String, type: SortCriterion)] = [
-            ("По цене", .price),
-            ("По названию", .name),
-            ("По рейтингу", .rating)
-        ]
-        
-        for option in sortOptions {
-            alertController.addAction(createSortAction(title: option.title, sortType: option.type))
-        }
-        
-        alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel, handler: nil))
-        
-        present(alertController, animated: true)
-    }
-
-    private func createSortAction(title: String, sortType: SortCriterion) -> UIAlertAction {
-        return UIAlertAction(title: title, style: .default) { [weak self] _ in
-            self?.sortNFTs(by: sortType)
-        }
-    }
 
 }
 
-
-extension MyNFTsViewController: UITableViewDelegate {
-    
-}
-
+//MARK: - UITableViewDataSource
 extension MyNFTsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        nfts.count
+        return presenter.numberOfNFTs
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -115,13 +72,55 @@ extension MyNFTsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        if let nft = presenter.nft(at: indexPath.row) {
+            cell.configure(with: nft)
+        }
+        
         return cell
     }
-    
-    
 }
 
-extension UITableView {
+//MARK: - MyNFTsViewProtocol
+extension MyNFTsViewController: MyNFTsViewProtocol {
+    func showAlert(with viewModel: AlertViewModel) {
+        let alertController = viewModel.createAlertController()
+        present(alertController, animated: true)
+    }
+    
+    func updateRightBarButtonItem(_ item: UIBarButtonItem?) {
+        navigationItem.rightBarButtonItem = item
+    }
+    
+    func showLoadingIndicator() {
+        ProgressHUD.show()
+    }
+    
+    func hideLoadingIndicator() {
+        ProgressHUD.dismiss()
+    }
+    
+    func showError(message: String) {
+        let alertController = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "ОК", style: .default))
+        present(alertController, animated: true)
+    }
+    
+    func reloadData() {
+        tableView.reloadData()
+    }
+    
+    func setupNavigationItem() {
+        title = "Мой NFT"
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "filterButtonIcon"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapSortButton)
+        )
+        navigationItem.rightBarButtonItem?.tintColor = .segmentActive
+    }
+    
     func setBackgroundView(message: String?) {
         let messageLabel = UILabel()
         messageLabel.text = message
@@ -130,11 +129,16 @@ extension UITableView {
         messageLabel.textAlignment = .center
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        backgroundView = messageLabel
+        tableView.backgroundView = message == nil ? nil : messageLabel
         
-        NSLayoutConstraint.activate([
-            messageLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            messageLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
-        ])
+        if message != nil {
+            NSLayoutConstraint.activate([
+                messageLabel.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
+                messageLabel.centerYAnchor.constraint(equalTo: tableView.centerYAnchor)
+            ])
+        }
     }
+    
 }
+
+
