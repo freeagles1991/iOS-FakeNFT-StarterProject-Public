@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Kingfisher
 
 protocol CartPresenter {
     func getNFTs() -> [Nft]?
@@ -46,6 +47,8 @@ final class CartPresenterImpl: CartPresenter {
         }
     }
     
+    private var nftLargeImageURL: URL?
+    
     // MARK: - Initializers
     init(nftService: NftService, serviceAssembler: ServicesAssembly) {
         self.serviceAssembler = serviceAssembler
@@ -59,12 +62,18 @@ final class CartPresenterImpl: CartPresenter {
     
     // MARK: - Actions
     @objc private func cartDidChange() {
-        updateNfts()
+        updateNfts() { [weak self] in
+            guard let self, let view else {return}
+            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+            view.updateCollectionView()
+            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+        }
     }
     
     // MARK: - Public Methods
     func viewDidLoad() {
         updateCart()
+        loadNftLargeImage()
     }
     
     func getNFTs() -> [Nft]? {
@@ -78,9 +87,13 @@ final class CartPresenterImpl: CartPresenter {
     func payButtonTapped() {
         print("CartPresenter: pay button tapped")
         let payAssembly = ChooseCurrencyAssembly(servicesAssembler: serviceAssembler)
-        let payViewController = payAssembly.build()
+        guard let payViewController = payAssembly.build() as? ChooseCurrencyViewController else {return}
         payViewController.hidesBottomBarWhenPushed = true
         
+        if let nftLargeImageURL {
+            payViewController.configure(nftLargeImageURL: nftLargeImageURL)
+        }
+
         guard let view else { return }
         view.setupNavigationBarForNextScreen()
         view.navigationController?.pushViewController(payViewController, animated: true)
@@ -114,9 +127,11 @@ final class CartPresenterImpl: CartPresenter {
     }
     
     //MARK: Private
-    private func updateNfts() {
+    private func updateNfts(completion: @escaping ()-> Void) {
         getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart),completion: { nfts in
             self.nfts = nfts
+            print("CartPresenter: получены nft \(nfts)")
+            completion()
         } )
     }
     
@@ -147,7 +162,12 @@ final class CartPresenterImpl: CartPresenter {
                     guard let self, let view = self.view else {return}
                     
                     let action = AlertViewModel.AlertAction(title: "Попробовать снова", style: .default) {
-                        self.updateNfts()
+                        self.updateNfts() { [weak self] in
+                            guard let self else {return}
+                            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+                            view.updateCollectionView()
+                            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+                        }
                     }
                     
                     let alert = AlertViewModel(title: "Упс", message: "Загрузка не удалась", actions: [action], preferredStyle: .alert)
@@ -184,6 +204,13 @@ final class CartPresenterImpl: CartPresenter {
         }
     }
     
+    //Здесь мы ассинхронно загружаем в кэш большую картинку для экрана успешной покупки
+    private func loadNftLargeImage() {
+        guard let imageURL = nfts.first?.images[2] else { return }
+        nftLargeImageURL = imageURL
+        ImagePrefetcher(urls: [imageURL]).start()
+    }
+    
     private func updateCart() {
         if isUsingDefaultNFTs {
             nfts.append(Nft())
@@ -194,11 +221,13 @@ final class CartPresenterImpl: CartPresenter {
                 guard
                     let self
                 else {return}
-                self.updateNfts()
-                view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
-                view.updateCollectionView()
-                view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
-                view.hideLoading()
+                self.updateNfts() { [weak self] in
+                    guard let self else { return }
+                    view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+                    view.updateCollectionView()
+                    view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+                    view.hideLoading()
+                }
             }
         }
     }

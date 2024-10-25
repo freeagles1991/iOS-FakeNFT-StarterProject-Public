@@ -13,11 +13,13 @@ protocol ChooseCurrencyViewController: UIViewController, LoadingView {
     func toogleSelectAtCell(at indexPath: IndexPath, isSelected: Bool)
     func updatePayButtonState(_ isCurrencySelected: Bool)
     func showAlert(_ alert: AlertViewModel)
+    func configure(nftLargeImageURL: URL)
 }
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
+    
     // MARK: - Public Properties
-    let presenter: ChooseCurrencyPresenter
+    var presenter: ChooseCurrencyPresenter
     var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
@@ -134,6 +136,10 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     }
     
     // MARK: - Public Methods
+    func configure(nftLargeImageURL: URL) {
+        presenter.nftLargeImageURL = nftLargeImageURL
+    }
+    
     func updateCollectionView() {
         collectionView.reloadData()
     }

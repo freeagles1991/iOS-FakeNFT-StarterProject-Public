@@ -41,6 +41,9 @@
 		32322FE62CC942BF00B43E3D /* RemoveFromCartPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32322FE52CC942BF00B43E3D /* RemoveFromCartPresenter.swift */; };
 		32322FE82CC95C9E00B43E3D /* ScreenSizeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32322FE72CC95C9E00B43E3D /* ScreenSizeHelper.swift */; };
 		32322FEA2CC9635C00B43E3D /* RemoveFromCartAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32322FE92CC9635C00B43E3D /* RemoveFromCartAssembly.swift */; };
+		32322FED2CCAB76200B43E3D /* SuccessPurchaseViewCotroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32322FEC2CCAB76200B43E3D /* SuccessPurchaseViewCotroller.swift */; };
+		32322FEF2CCAB7AD00B43E3D /* SuccessPurchasePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32322FEE2CCAB7AD00B43E3D /* SuccessPurchasePresenter.swift */; };
+		32322FF12CCAB85600B43E3D /* SuccessPurchaseAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32322FF02CCAB85600B43E3D /* SuccessPurchaseAssembly.swift */; };
 		324E83D92CB94E7600062A4B /* CartStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324E83D82CB94E7600062A4B /* CartStore.swift */; };
 		324E83DD2CB9538800062A4B /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324E83DC2CB9538800062A4B /* CartViewController.swift */; };
 		324E83DF2CB9539800062A4B /* CartPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324E83DE2CB9539800062A4B /* CartPresenter.swift */; };
@@ -127,6 +130,9 @@
 		32322FE52CC942BF00B43E3D /* RemoveFromCartPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFromCartPresenter.swift; sourceTree = "<group>"; };
 		32322FE72CC95C9E00B43E3D /* ScreenSizeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSizeHelper.swift; sourceTree = "<group>"; };
 		32322FE92CC9635C00B43E3D /* RemoveFromCartAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveFromCartAssembly.swift; sourceTree = "<group>"; };
+		32322FEC2CCAB76200B43E3D /* SuccessPurchaseViewCotroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessPurchaseViewCotroller.swift; sourceTree = "<group>"; };
+		32322FEE2CCAB7AD00B43E3D /* SuccessPurchasePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessPurchasePresenter.swift; sourceTree = "<group>"; };
+		32322FF02CCAB85600B43E3D /* SuccessPurchaseAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessPurchaseAssembly.swift; sourceTree = "<group>"; };
 		324E83D82CB94E7600062A4B /* CartStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartStore.swift; sourceTree = "<group>"; };
 		324E83DC2CB9538800062A4B /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
 		324E83DE2CB9539800062A4B /* CartPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartPresenter.swift; sourceTree = "<group>"; };
@@ -298,9 +304,27 @@
 			path = RemoveFromCartScreen;
 			sourceTree = "<group>";
 		};
+		32322FEB2CCAB70D00B43E3D /* SuccessPurchaseScreen */ = {
+			isa = PBXGroup;
+			children = (
+				32322FEC2CCAB76200B43E3D /* SuccessPurchaseViewCotroller.swift */,
+				32322FEE2CCAB7AD00B43E3D /* SuccessPurchasePresenter.swift */,
+				32322FF02CCAB85600B43E3D /* SuccessPurchaseAssembly.swift */,
+			);
+			path = SuccessPurchaseScreen;
+			sourceTree = "<group>";
+		};
+		32322FF22CCC0BC400B43E3D /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		324E83DB2CB9535500062A4B /* Cart */ = {
 			isa = PBXGroup;
 			children = (
+				32322FEB2CCAB70D00B43E3D /* SuccessPurchaseScreen */,
 				32322FE22CC9387600B43E3D /* RemoveFromCartScreen */,
 				32322FE12CC9376F00B43E3D /* CartMainScreen */,
 				32322FC02CC00DDB00B43E3D /* ChooseCurrencyScreen */,
@@ -340,6 +364,7 @@
 		3F68069529CBBAF100B4F915 /* FakeNFT */ = {
 			isa = PBXGroup;
 			children = (
+				32322FF22CCC0BC400B43E3D /* Extension */,
 				3F68069629CBBAF100B4F915 /* AppDelegate.swift */,
 				3F68069829CBBAF100B4F915 /* SceneDelegate.swift */,
 				E1CD40DA2A96BE9B00BE7FE8 /* Resources */,
@@ -666,6 +691,7 @@
 				3F6806D529CBBEC700B4F915 /* NetworkTask.swift in Sources */,
 				32322FD22CC2BE4800B43E3D /* CurrencyRequest.swift in Sources */,
 				0CF2C2DB2A783C1B00FDC837 /* LoadingView.swift in Sources */,
+				32322FED2CCAB76200B43E3D /* SuccessPurchaseViewCotroller.swift in Sources */,
 				558E39E72C68CE0A00FB86AC /* NftService.swift in Sources */,
 				3F68069729CBBAF100B4F915 /* AppDelegate.swift in Sources */,
 				3F68069929CBBAF100B4F915 /* SceneDelegate.swift in Sources */,
@@ -676,6 +702,7 @@
 				3FC8C39129D2453B0081F015 /* ExamplePutRequest.swift in Sources */,
 				0CFCB7462A78064B0009A829 /* NftDetailCellModel.swift in Sources */,
 				32322FD42CC2BF0200B43E3D /* CurrenciesListRequest.swift in Sources */,
+				32322FF12CCAB85600B43E3D /* SuccessPurchaseAssembly.swift in Sources */,
 				32322FEA2CC9635C00B43E3D /* RemoveFromCartAssembly.swift in Sources */,
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				32322FC62CC00FDD00B43E3D /* ChooseCurrencyAssembly.swift in Sources */,
@@ -691,6 +718,7 @@
 				32322FC82CC0156300B43E3D /* CurrencyCell.swift in Sources */,
 				0CFCB7492A7808900009A829 /* TestCatalogController.swift in Sources */,
 				324E83DD2CB9538800062A4B /* CartViewController.swift in Sources */,
+				32322FEF2CCAB7AD00B43E3D /* SuccessPurchasePresenter.swift in Sources */,
 				32322FC42CC00F8000B43E3D /* ChooseCurrencyPresenter.swift in Sources */,
 				3F6806D129CBBE6B00B4F915 /* NetworkClient.swift in Sources */,
 				32322FE62CC942BF00B43E3D /* RemoveFromCartPresenter.swift in Sources */,
