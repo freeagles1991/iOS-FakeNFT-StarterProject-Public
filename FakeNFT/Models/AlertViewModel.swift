@@ -4,6 +4,8 @@
 import UIKit
 
 struct AlertViewModel {
+    weak var sortingDelegate: SortingDelegate?
+    
     let title: String?
     let message: String?
     let actions: [AlertAction]
