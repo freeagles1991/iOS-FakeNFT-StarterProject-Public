@@ -69,7 +69,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     // MARK: - Public Methods
     func viewDidLoad() {
         updateCart()
-        loadNftLargeImage()
     }
     
     func getNFTs() -> [Nft]? {
@@ -243,6 +242,7 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
                 else {return}
                 self.updateNfts() { [weak self] in
                     guard let self else { return }
+                    self.loadNftLargeImage()
                     view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
                     view.updateCollectionView()
                     view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
