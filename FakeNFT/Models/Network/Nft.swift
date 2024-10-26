@@ -20,3 +20,16 @@ struct Nft: Codable {
         self.id = id
     }
 }
+
+extension Nft {
+    func compare(with other: Nft, by criterion: SortingMethod) -> Bool {
+        switch criterion {
+        case .price:
+            return price < other.price
+        case .name:
+            return name < other.name
+        case .rating:
+            return rating > other.rating
+        }
+    }
+}
