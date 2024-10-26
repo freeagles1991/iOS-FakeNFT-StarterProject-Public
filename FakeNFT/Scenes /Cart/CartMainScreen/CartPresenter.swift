@@ -16,7 +16,8 @@ protocol CartPresenter {
     func removeButtonTapped(at indexPath: IndexPath)
 }
 
-final class CartPresenterImpl: CartPresenter {
+final class CartPresenterImpl: CartPresenter, SortingDelegate {
+    
     // MARK: - Public Properties
     weak var view: CartView?
     var serviceAssembler: ServicesAssembly
@@ -82,6 +83,8 @@ final class CartPresenterImpl: CartPresenter {
     
     func filterButtonTapped() {
         print("CartPresenter: filter button tapped")
+        guard let view, let alertViewModel = SortingHelper.makeSortingAlertViewModel(sortingDelegate: self) else {return}
+        view.showAlert(alertViewModel)
     }
     
     func payButtonTapped() {
@@ -124,6 +127,11 @@ final class CartPresenterImpl: CartPresenter {
         }
         
         view.present(removeFromCartVC, animated: true, completion: nil)
+    }
+    
+    func sortNFTs(by sortingMethod: SortingMethod) {
+        nfts.sort { $0.compare(with: $1, by: sortingMethod) }
+        view?.updateCollectionView()
     }
     
     //MARK: Private
