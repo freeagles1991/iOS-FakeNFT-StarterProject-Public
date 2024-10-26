@@ -63,12 +63,7 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     
     // MARK: - Actions
     @objc private func cartDidChange() {
-        updateNfts() { [weak self] in
-            guard let self, let view else {return}
-            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
-            view.updateCollectionView()
-            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
-        }
+        updateCart()
     }
     
     // MARK: - Public Methods
@@ -130,8 +125,25 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     }
     
     func sortNFTs(by sortingMethod: SortingMethod) {
+        let originalData = nfts
+
         nfts.sort { $0.compare(with: $1, by: sortingMethod) }
-        view?.updateCollectionView()
+        
+        var fromIndexPaths: [IndexPath] = []
+        var toIndexPaths: [IndexPath] = []
+        
+        for (newIndex, nft) in nfts.enumerated() {
+            if let oldIndex = originalData.firstIndex(where: { $0.id == nft.id }), oldIndex != newIndex {
+                fromIndexPaths.append(IndexPath(item: oldIndex, section: 0))
+                toIndexPaths.append(IndexPath(item: newIndex, section: 0))
+            }
+        }
+        
+        if fromIndexPaths == toIndexPaths {
+            return
+        }
+        
+        view?.performBatchUpdate(moveFrom: fromIndexPaths, to: toIndexPaths) { }
     }
     
     //MARK: Private

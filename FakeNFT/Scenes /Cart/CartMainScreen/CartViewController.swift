@@ -13,12 +13,14 @@ protocol CartView: UIViewController, LoadingView {
     func switchCollectionViewState(isEmptyList: Bool)
     func updateCollectionView()
     func performBatchUpdate(deletionAt indexPath: IndexPath, completion: @escaping () -> Void)
+    func performBatchUpdate(moveFrom fromIndexPaths: [IndexPath], to toIndexPaths: [IndexPath], completion: @escaping () -> Void)
     func configureTotalCost(totalPrice: Double, nftsCount: Int)
     func setupNavigationBarForNextScreen()
     func showAlert(_ alert: AlertViewModel)
 }
 
 final class CartViewController: UIViewController, CartView{
+    
     // MARK: - Public Properties
     var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
@@ -168,6 +170,18 @@ final class CartViewController: UIViewController, CartView{
         collectionView.performBatchUpdates({
             self.collectionView.deleteItems(at: [indexPath])
         }, completion: { _ in
+            completion()
+        })
+    }
+    
+    func performBatchUpdate(moveFrom fromIndexPaths: [IndexPath], to toIndexPaths: [IndexPath], completion: @escaping () -> Void) {
+        print(fromIndexPaths)
+        print(toIndexPaths)
+        collectionView.performBatchUpdates({
+            for (fromIndexPath, toIndexPath) in zip(fromIndexPaths, toIndexPaths) {
+                self.collectionView.moveItem(at: fromIndexPath, to: toIndexPath)
+            }
+        }, completion: {_ in
             completion()
         })
     }
