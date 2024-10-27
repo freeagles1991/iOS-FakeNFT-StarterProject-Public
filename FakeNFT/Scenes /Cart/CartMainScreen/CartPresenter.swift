@@ -25,20 +25,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     // MARK: - Private Properties
     private let nftService: NftService
     
-    //Свичер для моковых nft
-    private let isUsingDefaultNFTs: Bool = false
-    
-    private let testNFTs: [String] = [
-    "1464520d-1659-4055-8a79-4593b9569e48",
-    "b2f44171-7dcd-46d7-a6d3-e2109aacf520",
-    "fa03574c-9067-45ad-9379-e3ed2d70df78"
-    ]
-    
-    private let testNFTsInCart: [String] = [
-    "1464520d-1659-4055-8a79-4593b9569e48",
-    "b2f44171-7dcd-46d7-a6d3-e2109aacf520"
-    ]
-    
     private var nfts: [Nft] = [] {
         didSet {
             guard let view else {return}
@@ -56,9 +42,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         self.nftService = nftService
         
         NotificationCenter.default.addObserver(self, selector: #selector(cartDidChange), name: CartStore.cartChangedNotification, object: nil)
-        
-        //"Добавляем" в корзину nft для тестов
-        addNftToCart(nftIDs: testNFTsInCart)
     }
     
     // MARK: - Actions
@@ -201,28 +184,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         }
     }
     
-    //Этот метод нужен только для тестирования, загружает несколько nft по списку как будто из каталога
-    private func loadNfts(byIDs ids: [String], completion: @escaping () -> Void) {
-        let dispatchGroup = DispatchGroup()
-        
-        ids.forEach { id in
-            dispatchGroup.enter()
-            nftService.loadNft(id: id) { result in
-                switch result {
-                case .success(let nft):
-                    print("Loaded NFT: \(nft)")
-                case .failure(let error):
-                    print("Failed to load NFT: \(error.localizedDescription)")
-                }
-                dispatchGroup.leave()
-            }
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            completion()
-        }
-    }
-    
     //Здесь мы ассинхронно загружаем в кэш большую картинку для экрана успешной покупки
     private func loadNftLargeImage() {
         guard let imageURL = nfts.first?.images[2] else { return }
@@ -231,24 +192,13 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     }
     
     private func updateCart() {
-        if isUsingDefaultNFTs {
-            nfts.append(Nft())
-        } else {
-            guard let view else {return}
-            view.showLoading()
-            loadNfts(byIDs: testNFTs) { [weak self] in
-                guard
-                    let self
-                else {return}
-                self.updateNfts() { [weak self] in
-                    guard let self else { return }
-                    self.loadNftLargeImage()
-                    view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
-                    view.updateCollectionView()
-                    view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
-                    view.hideLoading()
-                }
-            }
+        self.updateNfts() { [weak self] in
+            guard let self, let view else { return }
+            self.loadNftLargeImage()
+            view.switchCollectionViewState(isEmptyList: nfts.isEmpty)
+            view.updateCollectionView()
+            view.configureTotalCost(totalPrice: getNftsTotalPrice(), nftsCount: self.nfts.count)
+            view.hideLoading()
         }
     }
     
@@ -258,10 +208,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
             price = price + nft.price
         }
         return price
-    }
-    
-    private func addNftToCart(nftIDs: [String]) {
-        CartStore.nftsInCart.formUnion(nftIDs)
     }
     
     deinit {

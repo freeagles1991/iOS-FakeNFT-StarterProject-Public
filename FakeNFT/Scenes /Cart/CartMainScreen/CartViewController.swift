@@ -20,15 +20,18 @@ protocol CartView: UIViewController, LoadingView {
 }
 
 final class CartViewController: UIViewController, CartView{
-    
     // MARK: - Public Properties
+    let presenter: CartPresenter
+    
     var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
-    let presenter: CartPresenter
+    lazy var window: UIWindow? = {
+        return UIApplication.shared.windows.first
+    }()
     
     enum Constants {
         static let filterButtonIcon = "filterButtonIcon"

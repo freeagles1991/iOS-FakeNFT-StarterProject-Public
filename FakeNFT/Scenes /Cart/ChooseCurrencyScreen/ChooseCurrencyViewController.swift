@@ -17,15 +17,18 @@ protocol ChooseCurrencyViewController: UIViewController, LoadingView {
 }
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
-    
     // MARK: - Public Properties
     var presenter: ChooseCurrencyPresenter
-    var activityIndicator: UIActivityIndicatorView = {
+    
+    lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
+    lazy var window: UIWindow? = {
+        return UIApplication.shared.windows.first
+    }()
     
     enum Constants: String {
         case payScreenTitle = "Выбор способа оплаты"

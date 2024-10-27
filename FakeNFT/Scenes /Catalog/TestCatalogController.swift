@@ -1,14 +1,38 @@
 import UIKit
 
-final class TestCatalogViewController: UIViewController {
+final class TestCatalogViewController: UIViewController, LoadingView {
+    lazy var window: UIWindow? = {
+        return UIApplication.shared.windows.first
+    }()
+    
+    
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
 
     let servicesAssembly: ServicesAssembly
     let testNftButton = UIButton()
     let raiting = StarRatingView()
+    
+    private let testNFTs: [String] = [
+    "1464520d-1659-4055-8a79-4593b9569e48",
+    "b2f44171-7dcd-46d7-a6d3-e2109aacf520",
+    "fa03574c-9067-45ad-9379-e3ed2d70df78"
+    ]
+    
+    private let testNFTsInCart: [String] = [
+    "1464520d-1659-4055-8a79-4593b9569e48",
+    "b2f44171-7dcd-46d7-a6d3-e2109aacf520"
+    ]
 
     init(servicesAssembly: ServicesAssembly) {
         self.servicesAssembly = servicesAssembly
         super.init(nibName: nil, bundle: nil)
+        
+        //"Добавляем" в корзину nft для тестов
+        addNftToCart(nftIDs: testNFTsInCart)
     }
 
     required init?(coder: NSCoder) {
@@ -17,6 +41,8 @@ final class TestCatalogViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupLoadingView()
 
         view.backgroundColor = .systemBackground
         raiting.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +57,8 @@ final class TestCatalogViewController: UIViewController {
         testNftButton.setTitle(Constants.openNftTitle, for: .normal)
         testNftButton.addTarget(self, action: #selector(showNft), for: .touchUpInside)
         testNftButton.setTitleColor(.systemBlue, for: .normal)
+        
+        loadTestNfts()
     }
 
     @objc
@@ -39,6 +67,49 @@ final class TestCatalogViewController: UIViewController {
         let nftInput = NftDetailInput(id: Constants.testNftId)
         let nftViewController = assembly.build(with: nftInput)
         present(nftViewController, animated: true)
+    }
+    
+    // MARK: - Private Methods
+    private func setupLoadingView() {
+        view.addSubview(activityIndicator)
+        
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    private func addNftToCart(nftIDs: [String]) {
+        CartStore.nftsInCart.formUnion(nftIDs)
+    }
+    
+    private func loadTestNfts() {
+        showLoading()
+        loadNfts(byIDs: testNFTs) { [weak self] in
+            self?.hideLoading()
+        }
+    }
+    
+    //Этот метод нужен только для тестирования, загружает несколько nft по списку как будто из каталога
+    private func loadNfts(byIDs ids: [String], completion: @escaping () -> Void) {
+        let dispatchGroup = DispatchGroup()
+        
+        ids.forEach { id in
+            dispatchGroup.enter()
+            servicesAssembly.nftService.loadNft(id: id) { result in
+                switch result {
+                case .success(let nft):
+                    print("Loaded NFT: \(nft)")
+                case .failure(let error):
+                    print("Failed to load NFT: \(error.localizedDescription)")
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion()
+        }
     }
 }
 
