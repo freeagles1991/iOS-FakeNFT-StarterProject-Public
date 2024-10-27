@@ -199,7 +199,6 @@
 		0CF2C2D92A783C1600FDC837 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				0CF2C2DF2A784C5600FDC837 /* Views */,
 				0CF2C2DE2A784C4C00FDC837 /* Protocols */,
 			);
 			path = Common;
@@ -409,6 +408,7 @@
 		AC9084022CBD96C800ABD51C /* Collection Screen */ = {
 			isa = PBXGroup;
 			children = (
+				0CF2C2DF2A784C5600FDC837 /* Views */,
 				AC631D332CC174CC003AC4ED /* WebView Screen */,
 				AC9084032CBD96E400ABD51C /* CollectionViewController.swift */,
 				AC9084052CBD96F200ABD51C /* CollectionPresenter.swift */,

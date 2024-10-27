@@ -59,12 +59,14 @@ final class CatalogPresenterImpl: CatalogPresenter {
         let alertViewModel = AlertViewModel(title: "Сортировка",
                                             message: nil,
                                             actions: [
-                                                AlertViewModel.AlertAction(title: "По названию", style: .default) {
-                                                    print("Сортировку сделаю в 3 модуле")
+                                                AlertViewModel.AlertAction(title: "По названию", style: .default) { [weak self] in
+                                                    self?.dataSource.sort(by: {$0.name < $1.name})
+                                                    self?.view?.updateUI()
                                                 },
                                                 
-                                                AlertViewModel.AlertAction(title: "По количеству NFT", style: .default) {
-                                                    print("Сортировку сделаю в 3 модуле")
+                                                AlertViewModel.AlertAction(title: "По количеству NFT", style: .default) { [weak self] in
+                                                    self?.dataSource.sort(by: {$0.nfts.count > $1.nfts.count})
+                                                    self?.view?.updateUI()
                                                 },
                                                 
                                                 AlertViewModel.AlertAction(title: "Закрыть", style: .cancel, handler: nil)
