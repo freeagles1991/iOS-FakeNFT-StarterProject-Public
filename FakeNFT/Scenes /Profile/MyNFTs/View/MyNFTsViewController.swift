@@ -37,7 +37,7 @@ final class MyNFTsViewController: UIViewController {
     
     //MARK: - Private Method
     @objc private func didTapSortButton() {
-        presenter.handleSortSelection()
+        presenter.showSortingAlert()
     }
     
     private func setupUI() {

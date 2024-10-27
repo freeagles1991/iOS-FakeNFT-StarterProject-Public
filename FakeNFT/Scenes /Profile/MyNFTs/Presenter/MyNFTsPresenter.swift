@@ -23,7 +23,7 @@ protocol MyNFTsPresenterProtocol {
     func viewDidLoad()
     var numberOfNFTs: Int { get }
     func nft(at index: Int) -> Nft?
-    func handleSortSelection()
+    func showSortingAlert()
 }
 
 final class MyNFTsPresenter: MyNFTsPresenterProtocol {
@@ -45,7 +45,6 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
     // MARK: - Life Cycle
     func viewDidLoad() {
         loadNFTs()
-        applySavedSortOption()
     }
 
     // MARK: - Loading NFTs
@@ -90,47 +89,13 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
             view?.setBackgroundView(message: "У вас еще нет NFT.")
             view?.updateRightBarButtonItem(nil)
         } else {
+            applySavedSortOption()
             view?.setBackgroundView(message: nil)
             view?.setupNavigationItem()
             view?.reloadData()
         }
     }
-
-    // MARK: - Sorting NFTs
-    func handleSortSelection() {
-        let sortOptions: [SortCriterion] = [.price, .name, .rating]
-        let alertActions = sortOptions.map { criterion in
-            AlertViewModel.AlertAction(title: criterion.displayName, style: .default) { [weak self] in
-                self?.sortNFTs(by: criterion)
-            }
-        }
-        let cancelAction = AlertViewModel.AlertAction(title: "Отменить", style: .cancel, handler: nil)
-        let alertViewModel = AlertViewModel(
-            title: "Сортировка",
-            message: "Выберите способ сортировки",
-            actions: alertActions + [cancelAction],
-            preferredStyle: .actionSheet
-        )
-        view?.showAlert(with: alertViewModel)
-    }
     
-    private func sortNFTs(by criterion: SortCriterion) {
-        nfts.sort { $0.compare(with: $1, by: criterion) }
-        saveSortOption(criterion)
-        view?.reloadData()
-    }
-    
-    // MARK: - Handling Saved Sort Option
-    private func saveSortOption(_ criterion: SortCriterion) {
-        UserDefaults.standard.set(criterion.rawValue, forKey: sortKey)
-    }
-    
-    private func applySavedSortOption() {
-        guard let savedValue = UserDefaults.standard.string(forKey: sortKey),
-              let savedCriterion = SortCriterion(rawValue: savedValue) else { return }
-        sortNFTs(by: savedCriterion)
-    }
-
     // MARK: - NFT Access
     var numberOfNFTs: Int {
         return nfts.count
@@ -139,6 +104,25 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
     func nft(at index: Int) -> Nft? {
         return index < nfts.count ? nfts[index] : nil
     }
+}
+
+//MARK: - SortingDelegate
+extension MyNFTsPresenter: SortingDelegate {
+    func sortNFTs(by criterion: SortingMethod) {
+        nfts.sort { $0.compare(with: $1, by: criterion) }
+        view?.reloadData()
+    }
+    
+    private func applySavedSortOption() {
+        let savedCriterion = SortingHelper.savedSortingMethodInCart
+        sortNFTs(by: savedCriterion)
+    }
+    
+    func showSortingAlert() {
+        guard let alertViewModel = SortingHelper.makeSortingAlertViewModel(sortingDelegate: self) else { return }
+        view?.showAlert(with: alertViewModel)
+    }
+    
 }
 
 
