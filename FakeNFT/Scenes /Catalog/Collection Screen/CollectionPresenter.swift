@@ -117,7 +117,7 @@ final class CollectionPresenterImpl: CollectionPresenter {
         }
         
         let resultString = userProfileLikes.joined(separator: ", ")
-        servicesAssembly.nftCollectionsService.changeLike(newNftLikes: resultString) { [weak self] result in
+        servicesAssembly.userProfileService.changeLike(newNftLikes: resultString) { [weak self] result in
             switch result {
             case .success(let userProfile):
                 self?.userProfile = userProfile
