@@ -1,10 +1,3 @@
-//
-//  CurrencyStorage.swift
-//  FakeNFT
-//
-//  Created by Дима on 18.10.2024.
-//
-
 import Foundation
 
 protocol CurrencyStorage: AnyObject {

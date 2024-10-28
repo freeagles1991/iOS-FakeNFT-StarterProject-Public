@@ -1,10 +1,3 @@
-//
-//  RemoveFromCartViewController.swift
-//  FakeNFT
-//
-//  Created by Дима on 23.10.2024.
-//
-
 import Foundation
 import UIKit
 
@@ -115,12 +108,10 @@ final class RemoveFromCartViewControllerImpl: UIViewController, RemoveFromCartVi
     // MARK: - Actions
 
     @objc private func didCancelButtonTapped(_ sender: UIButton) {
-        print("Cancel button tapped")
         dismiss(animated: true)
     }
     
     @objc private func didRemoveButtonTapped(_ sender: UIButton) {
-        print("Remove button tapped")
         onConfirm?()
         dismiss(animated: true)
     }

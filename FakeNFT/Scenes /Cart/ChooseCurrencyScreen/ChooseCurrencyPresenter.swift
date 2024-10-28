@@ -1,10 +1,3 @@
-//
-//  ChooseCurrencyPresenter.swift
-//  FakeNFT
-//
-//  Created by Дима on 16.10.2024.
-//
-
 import Foundation
 
 protocol ChooseCurrencyPresenter {

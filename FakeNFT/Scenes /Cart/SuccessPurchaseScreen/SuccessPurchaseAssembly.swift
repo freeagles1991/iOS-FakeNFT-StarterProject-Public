@@ -1,10 +1,3 @@
-//
-//  SuccessPurchaseAssembly.swift
-//  FakeNFT
-//
-//  Created by Дима on 24.10.2024.
-//
-
 import Foundation
 import UIKit
 

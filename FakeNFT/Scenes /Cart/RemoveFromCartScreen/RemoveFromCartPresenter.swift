@@ -1,10 +1,3 @@
-//
-//  RemoveFromCartPresenter.swift
-//  FakeNFT
-//
-//  Created by Дима on 23.10.2024.
-//
-
 import Foundation
 import UIKit
 

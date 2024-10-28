@@ -1,10 +1,3 @@
-//
-//  CartItemCell.swift
-//  FakeNFT
-//
-//  Created by Дима on 11.10.2024.
-//
-
 import Foundation
 import UIKit
 import Kingfisher
@@ -95,7 +88,6 @@ final class CartItemCell: UICollectionViewCell {
         nftID = nft.id
         nftNameLabel.text = nft.name
         raitingView.rating = nft.rating
-        print(raitingView.rating, nft.rating)
         costLabel.text = CartViewController.Constants.costString
         costCounterLabel.text = "\(String(format: "%.2f", nft.price)) ETH"
     }
@@ -131,7 +123,7 @@ final class CartItemCell: UICollectionViewCell {
             nftNameLabel.leadingAnchor.constraint(equalTo: nftImageView.trailingAnchor, constant: 20),
             nftNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 24),
             nftNameLabel.trailingAnchor.constraint(lessThanOrEqualTo: deleteButton.leadingAnchor),
-            nftNameLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -24) // New bottom constraint to ensure vertical position
+            nftNameLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -24)
         ])
         
         contentView.addSubview(raitingView)

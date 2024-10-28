@@ -1,10 +1,3 @@
-//
-//  CartViewController.swift
-//  FakeNFT
-//
-//  Created by Дима on 11.10.2024.
-//
-
 import Foundation
 import UIKit
 import ProgressHUD
@@ -178,8 +171,6 @@ final class CartViewController: UIViewController, CartView{
     }
     
     func performBatchUpdate(moveFrom fromIndexPaths: [IndexPath], to toIndexPaths: [IndexPath], completion: @escaping () -> Void) {
-        print(fromIndexPaths)
-        print(toIndexPaths)
         collectionView.performBatchUpdates({
             for (fromIndexPath, toIndexPath) in zip(fromIndexPaths, toIndexPaths) {
                 self.collectionView.moveItem(at: fromIndexPath, to: toIndexPath)
@@ -324,7 +315,6 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
         let widthPerItem = availableWidth / itemsPerRow
         let heightPerItem = widthPerItem * (140 / 375)
         cellHeight = heightPerItem
-        print(cellHeight, widthPerItem)
         return CGSize(width: widthPerItem, height: heightPerItem)
     }
 }
@@ -333,7 +323,6 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
 extension CartViewController: CartItemCellDelegate {
     func didTapButton(in cell: CartItemCell) {
         if let indexPath = collectionView.indexPath(for: cell) {
-            print("Tapped button in cell at \(indexPath.row)")
             presenter.removeButtonTapped(at: indexPath)
         }
     }

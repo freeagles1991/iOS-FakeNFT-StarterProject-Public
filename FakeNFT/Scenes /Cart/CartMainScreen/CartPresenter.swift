@@ -1,10 +1,3 @@
-//
-//  CartPresenter.swift
-//  FakeNFT
-//
-//  Created by Дима on 11.10.2024.
-//
-
 import Foundation
 import Kingfisher
 
@@ -59,13 +52,11 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     }
     
     func filterButtonTapped() {
-        print("CartPresenter: filter button tapped")
         guard let view, let alertViewModel = SortingHelper.makeSortingAlertViewModel(sortingDelegate: self) else {return}
         view.showAlert(alertViewModel)
     }
     
     func payButtonTapped() {
-        print("CartPresenter: pay button tapped")
         let payAssembly = ChooseCurrencyAssembly(servicesAssembler: serviceAssembler)
         guard let payViewController = payAssembly.build() as? ChooseCurrencyViewController else {return}
         payViewController.hidesBottomBarWhenPushed = true
@@ -90,7 +81,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         removeFromCartVC.configureScreen(with: self.nfts[indexPath.row])
 
         removeFromCartVC.onConfirm = { [weak self] in
-            print("Подтверждено через замыкание!")
             guard let self else {return}
             
             let nftID = self.nfts[indexPath.row].id
@@ -132,7 +122,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     private func updateNfts(completion: @escaping ()-> Void) {
         getNFTsInCartByID(nftsInCart: Array(CartStore.nftsInCart),completion: { nfts in
             self.nfts = nfts
-            print("CartPresenter: получены nft \(nfts)")
             completion()
         } )
     }
@@ -143,10 +132,8 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     
     private func deleteNftFromCart(with id: String) {
         CartStore.nftsInCart.remove(id)
-        print("CartPresenter: удалил \(id)")
     }
     
-    //Здесь мы ассинхронно загружаем nft, которые добавлены в корзину
     private func getNFTsInCartByID(nftsInCart: [String], completion: @escaping ([Nft]) -> Void) {
         var nfts: [Nft] = []
         let dispatchGroup = DispatchGroup()
@@ -184,7 +171,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         }
     }
     
-    //Здесь мы ассинхронно загружаем в кэш большую картинку для экрана успешной покупки
     private func loadNftLargeImage() {
         guard let imageUrlLight = nfts.first?.images[2],
               let imageUrlDark = nfts.first?.images[1]

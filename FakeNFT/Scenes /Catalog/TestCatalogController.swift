@@ -99,7 +99,7 @@ final class TestCatalogViewController: UIViewController, LoadingView {
             servicesAssembly.nftService.loadNft(id: id) { result in
                 switch result {
                 case .success(let nft):
-                    print("Loaded NFT: \(nft)")
+                    print("Loaded NFT: \(nft.name)")
                 case .failure(let error):
                     print("Failed to load NFT: \(error.localizedDescription)")
                 }

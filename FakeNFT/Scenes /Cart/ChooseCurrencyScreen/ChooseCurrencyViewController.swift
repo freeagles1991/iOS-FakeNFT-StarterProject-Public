@@ -1,10 +1,3 @@
-//
-//  ChooseCurrencyViewController.swift
-//  FakeNFT
-//
-//  Created by Дима on 16.10.2024.
-//
-
 import Foundation
 import UIKit
 
@@ -134,7 +127,6 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     
     // MARK: - Actions
     @objc private func didPayButtonTapped() {
-        print("ChooseCurrencyViewControllerImpl: PayButton tapped")
         presenter.payOrder(with: Array(CartStore.nftsInCart))
     }
     

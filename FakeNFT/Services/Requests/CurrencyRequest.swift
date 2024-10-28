@@ -1,10 +1,3 @@
-//
-//  CurrencyRequest.swift
-//  FakeNFT
-//
-//  Created by Дима on 18.10.2024.
-//
-
 import Foundation
 
 struct CurrencyRequest: NetworkRequest {

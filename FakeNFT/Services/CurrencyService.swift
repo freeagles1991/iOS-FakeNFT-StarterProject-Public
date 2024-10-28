@@ -1,9 +1,3 @@
-//
-//  CurrencyService.swift
-//  FakeNFT
-//
-//  Created by Дима on 18.10.2024.
-//
 import Foundation
 
 typealias CurrenciesCompletion = (Result<[Currency], Error>) -> Void

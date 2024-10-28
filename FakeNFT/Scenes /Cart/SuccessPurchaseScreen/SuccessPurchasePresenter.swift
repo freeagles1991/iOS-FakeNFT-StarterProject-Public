@@ -1,10 +1,3 @@
-//
-//  SuccessPurchasePresenter.swift
-//  FakeNFT
-//
-//  Created by Дима on 24.10.2024.
-//
-
 import Foundation
 
 protocol SuccessPurchasePresenter {

@@ -1,10 +1,3 @@
-//
-//  SuccessPurchaseViewCotroller.swift
-//  FakeNFT
-//
-//  Created by Дима on 24.10.2024.
-//
-
 import Foundation
 import UIKit
 import Kingfisher
@@ -84,7 +77,6 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     }
     // MARK: - Actions
     @objc private func didDoneButtonTapped() {
-        print("SuccessPurchaseViewControllerImpl: done button tapped")
         onConfirm?()
         navigationController?.popToRootViewController(animated: true)
     }
@@ -142,14 +134,12 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
             switch result {
             case .success(let value):
                 if let image = value.image {
-                    // Если изображение уже в кэше, показываем его
                     self.nftImageView.image = image
                 } else {
-                    // Если нет, загружаем его с сервера
                     self.nftImageView.kf.setImage(with: self.nftLargeImageURL)
                 }
             case .failure(let error):
-                print("Ошибка загрузки изображения: \(error)")
+                print("SuccessPurchaseViewControllerImpl: Ошибка загрузки изображения: \(error)")
             }
         }
     }
