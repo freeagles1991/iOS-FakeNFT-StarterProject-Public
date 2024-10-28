@@ -11,7 +11,7 @@ public final class CollectionAssembly {
     }
     
     func build(selectedCollection: NftCollection) -> UIViewController {
-        let collectionPresenter = CollectionPresenterImpl(selectedCollection: selectedCollection, nftService: servicesAssembly.nftService)
+        let collectionPresenter = CollectionPresenterImpl(selectedCollection: selectedCollection, servicesAssembly: servicesAssembly)
         let collectionVC = CollectionViewController(presenter: collectionPresenter)
         collectionPresenter.view = collectionVC
         return collectionVC

@@ -1,0 +1,24 @@
+import ProgressHUD
+import UIKit
+
+protocol LoadingView {
+<<<<<<< HEAD
+=======
+    var activityIndicator: UIActivityIndicatorView { get }
+    var window: UIWindow? { get }
+>>>>>>> develop
+    func showLoading()
+    func hideLoading()
+}
+
+extension LoadingView {
+    func showLoading() {
+        window?.isUserInteractionEnabled = false
+        ProgressHUD.show()
+    }
+
+    func hideLoading() {
+        window?.isUserInteractionEnabled = true
+        ProgressHUD.dismiss()
+    }
+}
