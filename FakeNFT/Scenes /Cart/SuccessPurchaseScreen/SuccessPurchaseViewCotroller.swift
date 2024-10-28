@@ -1,9 +1,10 @@
 import Foundation
 import UIKit
-import Kingfisher
 
 protocol SuccessPurchaseViewCotroller: UIViewController {
     var onConfirm: (() -> Void)? { get set }
+    func updateNftImage(_ image: UIImage?)
+    func loadNftImage(_ url: URL?)
 }
 
 final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchaseViewCotroller {
@@ -68,18 +69,25 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
         setupTextLabel()
         setupDoneButton()
         
-        loadNftImage()
+        presenter.loadNftImage()
         
         view.backgroundColor = .systemBackground
     }
     // MARK: - Actions
     @objc private func didDoneButtonTapped() {
         onConfirm?()
-        navigationController?.popToRootViewController(animated: true)
+        presenter.onDoneButtonTapped()
     }
     
     
     // MARK: - Public Methods
+    func updateNftImage(_ image: UIImage?) {
+        nftImageView.image = image
+    }
+    
+    func loadNftImage(_ url: URL?) {
+        nftImageView.kf.setImage(with: url)
+    }
     
     // MARK: - Private Methods
     private func addSubview() {
@@ -117,22 +125,5 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16 * ScreenSizeHelper.getViewMultiplier()),
             doneButton.heightAnchor.constraint(equalToConstant: 60 * ScreenSizeHelper.getViewMultiplier())
         ])
-    }
-    
-    private func loadNftImage() {
-        let cache = ImageCache.default
-        guard let imageURLString = CartStore.nftLargeImageURL?.absoluteString else {return}
-        cache.retrieveImage(forKey: imageURLString) { result in
-            switch result {
-            case .success(let value):
-                if let image = value.image {
-                    self.nftImageView.image = image
-                } else {
-                    self.nftImageView.kf.setImage(with: CartStore.nftLargeImageURL)
-                }
-            case .failure(let error):
-                print("SuccessPurchaseViewControllerImpl: Ошибка загрузки изображения: \(error)")
-            }
-        }
     }
 }
