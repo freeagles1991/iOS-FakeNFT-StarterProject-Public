@@ -16,10 +16,12 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
     
     private weak var view: EditProfileViewProtocol?
     private var profile: UserProfile
+    private let userProfileService: UserProfileServiceProtocol
     
-    init(view: EditProfileViewProtocol, profile: UserProfile) {
+    init(view: EditProfileViewProtocol, profile: UserProfile, userProfileService: UserProfileServiceProtocol) {
         self.view = view
         self.profile = profile
+        self.userProfileService = userProfileService
     }
     
     func loadProfileData() {
@@ -37,6 +39,18 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
             id: profile.id
         )
         
-        view?.didUpdateProfile(updatedProfile)
+//        view?.didUpdateProfile(updatedProfile)
+        userProfileService.updateUserProfile(updatedProfile) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                print("Профиль успешно обновлен.")
+                self.profile = updatedProfile
+                self.view?.didUpdateProfile(updatedProfile)
+            case .failure(let error):
+                print("Ошибка обновления профиля: \(error.localizedDescription)")
+                self.view?.showProfile(self.profile)
+            }
+        }
     }
 }

@@ -88,9 +88,9 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
     }()
     
     //MARK: - Init
-    init(profile: UserProfile, delegate: EditProfileDelegate?) {
+    init(profile: UserProfile, delegate: EditProfileDelegate?, userProfileService: UserProfileServiceProtocol) {
         super.init(nibName: nil, bundle: nil)
-        self.presenter = EditProfilePresenter(view: self, profile: profile)
+        self.presenter = EditProfilePresenter(view: self, profile: profile, userProfileService: userProfileService)
         self.delegate = delegate
     }
     

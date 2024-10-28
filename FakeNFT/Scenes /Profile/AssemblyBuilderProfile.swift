@@ -28,7 +28,12 @@ final class AssemblyBuilderProfile {
 
         return UINavigationController(rootViewController: profileViewController)
     }
-
+    
+    func createEditProfileModule(profile: UserProfile, delegate: EditProfileDelegate?) -> EditProfileViewController {
+        let userProfileService = servicesAssembly.userProfileService
+        return EditProfileViewController(profile: profile, delegate: delegate, userProfileService: userProfileService)
+    }
+    
     func createMyNFTsModule(from view: ProfileViewController, with profile: UserProfile) -> UIViewController {
         let nftService = servicesAssembly.nftService
 

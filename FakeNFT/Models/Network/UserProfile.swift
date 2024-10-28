@@ -8,3 +8,13 @@ struct UserProfile: Codable {
     let nfts, likes: [String]
     let id: String
 }
+
+extension UserProfile: Dto {
+    func asDictionary() -> [String: String] {
+        return [
+            "name": name,
+            "description": description,
+            "website": website,
+        ]
+    }
+}

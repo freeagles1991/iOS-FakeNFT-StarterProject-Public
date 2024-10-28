@@ -9,6 +9,7 @@ import Foundation
 
 protocol UserProfileServiceProtocol {
     func fetchUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void)
+    func updateUserProfile(_ profile: UserProfile, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 final class UserProfileService: UserProfileServiceProtocol {
@@ -30,6 +31,18 @@ final class UserProfileService: UserProfileServiceProtocol {
                 } catch {
                     completion(.failure(NetworkClientError.parsingError))
                 }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func updateUserProfile(_ profile: UserProfile, completion: @escaping (Result<Void, Error>) -> Void) {
+        let request = UpdateUserProfileRequest(dto: profile)
+        networkClient.send(request: request) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
