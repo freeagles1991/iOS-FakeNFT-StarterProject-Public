@@ -186,7 +186,12 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
     
     //Здесь мы ассинхронно загружаем в кэш большую картинку для экрана успешной покупки
     private func loadNftLargeImage() {
-        guard let imageURL = nfts.first?.images[2] else { return }
+        guard let imageUrlLight = nfts.first?.images[2],
+              let imageUrlDark = nfts.first?.images[1]
+        else { return }
+        
+        let imageURL = view?.traitCollection.userInterfaceStyle == .dark ? imageUrlDark : imageUrlLight
+        
         nftLargeImageURL = imageURL
         ImagePrefetcher(urls: [imageURL]).start()
     }

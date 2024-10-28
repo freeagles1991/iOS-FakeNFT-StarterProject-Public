@@ -29,7 +29,6 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     private lazy var nftImageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.backgroundColor = UIColor.red.cgColor
         view.contentMode = .scaleAspectFill
         return view
     }()
