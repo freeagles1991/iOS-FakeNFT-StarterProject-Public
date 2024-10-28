@@ -4,7 +4,6 @@ import Kingfisher
 
 protocol SuccessPurchaseViewCotroller: UIViewController {
     var onConfirm: (() -> Void)? { get set }
-    func configure(nftLargeImageURL: URL)
 }
 
 final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchaseViewCotroller {
@@ -49,8 +48,6 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
         return label
     }()
     
-    private var nftLargeImageURL: URL?
-    
     // MARK: - Initializers
     init(presenter: SuccessPurchasePresenter) {
         self.presenter = presenter
@@ -83,11 +80,6 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     
     
     // MARK: - Public Methods
-
-    func configure(nftLargeImageURL: URL) {
-        self.nftLargeImageURL = nftLargeImageURL
-        
-    }
     
     // MARK: - Private Methods
     private func addSubview() {
@@ -129,14 +121,14 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     
     private func loadNftImage() {
         let cache = ImageCache.default
-        guard let imageURLString = nftLargeImageURL?.absoluteString else {return}
+        guard let imageURLString = CartStore.nftLargeImageURL?.absoluteString else {return}
         cache.retrieveImage(forKey: imageURLString) { result in
             switch result {
             case .success(let value):
                 if let image = value.image {
                     self.nftImageView.image = image
                 } else {
-                    self.nftImageView.kf.setImage(with: self.nftLargeImageURL)
+                    self.nftImageView.kf.setImage(with: CartStore.nftLargeImageURL)
                 }
             case .failure(let error):
                 print("SuccessPurchaseViewControllerImpl: Ошибка загрузки изображения: \(error)")

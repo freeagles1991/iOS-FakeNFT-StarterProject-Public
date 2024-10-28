@@ -27,8 +27,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         }
     }
     
-    private var nftLargeImageURL: URL?
-    
     // MARK: - Initializers
     init(nftService: NftService, serviceAssembler: ServicesAssembly) {
         self.serviceAssembler = serviceAssembler
@@ -60,10 +58,6 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         let payAssembly = ChooseCurrencyAssembly(servicesAssembler: serviceAssembler)
         guard let payViewController = payAssembly.build() as? ChooseCurrencyViewController else {return}
         payViewController.hidesBottomBarWhenPushed = true
-        
-        if let nftLargeImageURL {
-            payViewController.configure(nftLargeImageURL: nftLargeImageURL)
-        }
 
         guard let view else { return }
         view.setupNavigationBarForNextScreen()
@@ -178,7 +172,7 @@ final class CartPresenterImpl: CartPresenter, SortingDelegate {
         
         let imageURL = view?.traitCollection.userInterfaceStyle == .dark ? imageUrlDark : imageUrlLight
         
-        nftLargeImageURL = imageURL
+        CartStore.nftLargeImageURL = imageURL
         ImagePrefetcher(urls: [imageURL]).start()
     }
     

@@ -6,7 +6,6 @@ protocol ChooseCurrencyViewController: UIViewController, LoadingView {
     func toogleSelectAtCell(at indexPath: IndexPath, isSelected: Bool)
     func updatePayButtonState(_ isCurrencySelected: Bool)
     func showAlert(_ alert: AlertViewModel)
-    func configure(nftLargeImageURL: URL)
 }
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
@@ -131,10 +130,6 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     }
     
     // MARK: - Public Methods
-    func configure(nftLargeImageURL: URL) {
-        presenter.nftLargeImageURL = nftLargeImageURL
-    }
-    
     func updateCollectionView() {
         collectionView.reloadData()
     }

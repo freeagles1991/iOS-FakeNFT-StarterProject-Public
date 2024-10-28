@@ -2,7 +2,6 @@ import Foundation
 
 protocol ChooseCurrencyPresenter {
     var currencies: [Currency] { get }
-    var nftLargeImageURL: URL? { get set }
     func viewDidLoad()
     func currencyDidSelect(at indexPath: IndexPath)
     func payOrder(with nfts: [String])
@@ -12,7 +11,6 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
     // MARK: - Public Properties
     weak var view: ChooseCurrencyViewController?
     var currencies: [Currency] = []
-    var nftLargeImageURL: URL?
     
     // MARK: - Private Properties
     private let currencyService: CurrencyService
@@ -74,9 +72,6 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
                 if let successPurchaseVC = successPurchaseAssembly.build() as? SuccessPurchaseViewCotroller {
                     successPurchaseVC.modalPresentationStyle = .overFullScreen
                     successPurchaseVC.modalTransitionStyle = .crossDissolve
-                    if let self, let nftLargeImageURL = self.nftLargeImageURL {
-                        successPurchaseVC.configure(nftLargeImageURL: nftLargeImageURL)
-                    }
                     
                     view.navigationController?.pushViewController(successPurchaseVC, animated: true)
                 }
