@@ -7,6 +7,7 @@ typealias NftCollectionCompletion = (Result<[NftCollection], Error>) -> Void
 
 protocol NftCollectionsService {
     func loadNftCollection(completion: @escaping NftCollectionCompletion)
+    func changeLike(newNftLikes: String, completion: @escaping (Result<UserProfile, Error>) -> Void)
 }
 
 final class NftCollectionsServiceImpl: NftCollectionsService {
@@ -29,5 +30,17 @@ final class NftCollectionsServiceImpl: NftCollectionsService {
         }
     }
     
+    func changeLike(newNftLikes: String, completion: @escaping (Result<UserProfile, Error>) -> Void) {
+        let dto = ChangeLikeDtoObject(likes: newNftLikes)
+        let request = SetLikePutRequest(dto: dto)
+        networkClient.send(request: request, type: UserProfile.self) { result in
+            switch result {
+            case .success(let userProfile):
+                completion(.success(userProfile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
     
 }

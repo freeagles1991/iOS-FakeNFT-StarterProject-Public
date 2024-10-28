@@ -9,6 +9,7 @@ protocol CollectionPresenter: AnyObject {
     
     func viewDidLoad()
     func didTapCartButton(indexPath: IndexPath)
+    func didTapLikeButton(indexPath: IndexPath)
 }
 
 final class CollectionPresenterImpl: CollectionPresenter {
@@ -50,7 +51,6 @@ final class CollectionPresenterImpl: CollectionPresenter {
         loadProfile(with: dispatchGroup)
         
         dispatchGroup.notify(queue: .main) {
-            print(self.userProfile)
             self.view?.updateUI()
             self.view?.hideLoading()
         }
@@ -78,10 +78,8 @@ final class CollectionPresenterImpl: CollectionPresenter {
         servicesAssembly.userProfileService.fetchUserProfile { [weak self] result in
             switch result {
             case .success(let userProfile):
-                print(22222)
                 self?.userProfile = userProfile
             case .failure(_):
-                print(11111)
                 self?.view?.showError(ErrorModel(message: "Ошибка получения данных", actionText: "Попробовать снова", action: { [weak self] in
                     self?.loadData()
                 }))
@@ -99,7 +97,36 @@ final class CollectionPresenterImpl: CollectionPresenter {
         } else {
             CartStore.nftsInCart.insert(currentNft.id)
         }
-        view?.updateCell(cellIndexPath: indexPath)
         
+        view?.updateCell(cellIndexPath: indexPath)
+    }
+    
+    func didTapLikeButton(indexPath: IndexPath) {
+        guard indexPath.row < nftArray.count,
+        let userProfile = userProfile else {
+            return
+        }
+        let currentNft = nftArray[indexPath.row]
+        let isLiked = userProfile.likes.contains(currentNft.id)
+        var userProfileLikes = userProfile.likes
+        
+        if isLiked {
+            userProfileLikes.removeAll {$0 == currentNft.id}
+        } else {
+            userProfileLikes.append(currentNft.id)
+        }
+        
+        let resultString = userProfileLikes.joined(separator: ", ")
+        servicesAssembly.nftCollectionsService.changeLike(newNftLikes: resultString) { [weak self] result in
+            switch result {
+            case .success(let userProfile):
+                self?.userProfile = userProfile
+                self?.view?.updateCell(cellIndexPath: indexPath)
+            case .failure(_):
+                self?.view?.showError(ErrorModel(message: "Ошибка получения данных", actionText: "Я понял(", action: {
+        
+                }))
+            }
+        }
     }
 }

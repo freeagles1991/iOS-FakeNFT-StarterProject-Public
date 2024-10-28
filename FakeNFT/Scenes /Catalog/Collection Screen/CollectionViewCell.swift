@@ -94,7 +94,7 @@ private extension CollectionViewCell {
     }
     
     @objc func likeButtonDidTapped() {
-        
+        delegate?.didTapLikeButton(in: self)
     }
     
     func configureStarRatingView() {
