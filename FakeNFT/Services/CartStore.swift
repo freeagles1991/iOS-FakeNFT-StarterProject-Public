@@ -22,4 +22,6 @@ final class CartStore {
             NotificationCenter.default.post(name: CartStore.cartChangedNotification, object: nil)
         }
     }
+    
+    static var nftLargeImageURL: URL?
 }
