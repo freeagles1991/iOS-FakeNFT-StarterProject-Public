@@ -23,11 +23,8 @@ final class ServicesAssembly {
             networkClient: networkClient
         )
     }
-<<<<<<< HEAD
-=======
     
     var nftCollectionsService: NftCollectionsService {
         NftCollectionsServiceImpl(networkClient: networkClient)
     }
->>>>>>> develop
 }
