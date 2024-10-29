@@ -13,6 +13,7 @@ protocol FavouritesViewProtocol: AnyObject {
     func hideLoadingIndicator()
     func showError(message: String)
     func reloadData()
+    var collectionView: UICollectionView { get }
 }
 
 protocol FavouritesPresenterProtocol {
@@ -43,35 +44,49 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         
         let nft = nftsLikes[indexPath.row]
         let isLiked = profile.likes.contains(nft.id)
+        updateLikes(isLiked: isLiked, nftID: nft.id, at: indexPath)
+    }
+
+    private func updateLikes(isLiked: Bool, nftID: String, at indexPath: IndexPath) {
         var newLikes = profile.likes
 
         if isLiked {
-            newLikes.removeAll(where: { $0 == nft.id })
-            nftsLikes.remove(at: indexPath.row)
-            print("Удаляем NFT, новое nftsLikes.count: \(nftsLikes.count)")
+            newLikes.removeAll(where: { $0 == nftID })
         } else {
-            newLikes.append(nft.id)
+            newLikes.append(nftID)
         }
 
-        let resultString: String = newLikes.isEmpty ? "null" : newLikes.joined(separator: ", ")
-        print("Отправляемые лайки: \(resultString)")
-
+        let resultString = newLikes.isEmpty ? "null" : newLikes.joined(separator: ", ")
+        
         servicesAssembly.userProfileService.changeLike(newNftLikes: resultString) { [weak self] result in
             DispatchQueue.main.async {
-                switch result {
-                case .success(let userProfile):
-                    self?.profile = userProfile
-                    self?.loadNFTsLikes()
-                    self?.view?.reloadData()
-                    print("Лайк изменен, новое nftsLikes.count: \(self?.nftsLikes.count ?? 0)")
-                case .failure(let error):
-                    self?.view?.showError(message: "Не удалось изменить лайки")
-                    print("Ошибка при изменении лайка: \(error.localizedDescription)")
-                }
+                self?.handleLikeChangeResult(result, isLiked: isLiked, at: indexPath)
             }
         }
     }
 
+    private func handleLikeChangeResult(_ result: Result<UserProfile, Error>, isLiked: Bool, at indexPath: IndexPath) {
+        switch result {
+        case .success(let userProfile):
+            self.profile = userProfile
+            if isLiked {
+                self.nftsLikes.remove(at: indexPath.row)
+                handleNFTRemoval(at: indexPath)
+            }
+        case .failure(let error):
+            self.view?.showError(message: "Не удалось изменить лайки: \(error.localizedDescription)")
+        }
+    }
+    
+    private func handleNFTRemoval(at indexPath: IndexPath) {
+        view?.collectionView.performBatchUpdates({
+            view?.collectionView.deleteItems(at: [indexPath])
+        }, completion: { [weak self] _ in
+            if self?.nftsLikes.isEmpty == true {
+                self?.setEmptyStateMessage()
+            }
+        })
+    }
 
     func isLikedNFT(_ nftID: String) -> Bool {
         return profile.likes.contains(nftID)
@@ -81,15 +96,15 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         let likedNfts = profile.likes
         
         guard !likedNfts.isEmpty else {
-            view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
+            setEmptyStateMessage()
             return
         }
         
         nftsLikes.removeAll()
         view?.showLoadingIndicator()
         
-        fetchNFTsLikes(from: likedNfts) {
-            self.handleLoadedNFTs()
+        fetchNFTsLikes(from: likedNfts) { [weak self] in
+            self?.handleLoadedNFTs()
         }
     }
     
@@ -119,22 +134,24 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
     private func handleLoadedNFTs() {
         view?.hideLoadingIndicator()
         if nftsLikes.isEmpty {
-            view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
+            setEmptyStateMessage()
         } else {
             view?.setBackgroundView(message: nil)
             view?.reloadData()
-            print("presenter.numberOfNFTs: \(self.numberOfNFTs)")
         }
+    }
+
+    private func setEmptyStateMessage() {
+        view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
     }
     
     // MARK: - NFT Access
     var numberOfNFTs: Int {
-        print(#function, nftsLikes.count)
         return nftsLikes.count
     }
     
     func nft(at index: Int) -> Nft? {
         return index < nftsLikes.count ? nftsLikes[index] : nil
     }
-    
 }
+

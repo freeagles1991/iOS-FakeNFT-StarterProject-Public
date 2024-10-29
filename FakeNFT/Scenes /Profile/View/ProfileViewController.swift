@@ -32,6 +32,10 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         setupNavigationBar()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         presenter.loadProfileData()
     }
     

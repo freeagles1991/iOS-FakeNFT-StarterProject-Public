@@ -28,7 +28,7 @@ final class FavouritesNFTsViewController: UIViewController {
     private var presenter : FavouritesNFTsPresenter
     private var params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 8)
     
-    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    internal let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     init(presenter: FavouritesNFTsPresenter) {
         self.presenter = presenter
@@ -44,11 +44,6 @@ final class FavouritesNFTsViewController: UIViewController {
         super.viewDidLoad()
         presenter.viewDidLoad()
         setupUI()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        presenter.viewDidLoad()
     }
     
     private  func setupUI() {
@@ -78,8 +73,7 @@ final class FavouritesNFTsViewController: UIViewController {
 //MARK: - UICollectionViewDataSource
 extension FavouritesNFTsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("presenter.numberOfNFTs: \(presenter.numberOfNFTs)")
-        return presenter.numberOfNFTs
+        presenter.numberOfNFTs
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
