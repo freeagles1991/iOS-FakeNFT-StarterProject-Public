@@ -30,15 +30,15 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
 
     // MARK: - Properties
     weak var view: MyNFTsViewProtocol?
-    private let nftService: NftService
+    private let servicesAssembly: ServicesAssembly
     private let profile: UserProfile
     private var nfts: [Nft] = []
     private let sortKey = "selectedSortCriterion"
 
     // MARK: - Init
-    init(view: MyNFTsViewProtocol?, nftService: NftService, profile: UserProfile) {
+    init(view: MyNFTsViewProtocol?, servicesAssembly: ServicesAssembly, profile: UserProfile) {
         self.view = view
-        self.nftService = nftService
+        self.servicesAssembly = servicesAssembly
         self.profile = profile
     }
 
@@ -65,7 +65,7 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         
         for nftID in profile.nfts {
             dispatchGroup.enter()
-            nftService.loadNft(id: nftID) { [weak self] result in
+            servicesAssembly.nftService.loadNft(id: nftID) { [weak self] result in
                 self?.handleNFTLoadResult(result, id: nftID)
                 dispatchGroup.leave()
             }

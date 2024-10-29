@@ -46,6 +46,11 @@ final class FavouritesNFTsViewController: UIViewController {
         setupUI()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter.viewDidLoad()
+    }
+    
     private  func setupUI() {
         view.backgroundColor = .systemBackground
         title = "Избранные NFT"
@@ -73,7 +78,8 @@ final class FavouritesNFTsViewController: UIViewController {
 //MARK: - UICollectionViewDataSource
 extension FavouritesNFTsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter.numberOfNFTs
+        print("presenter.numberOfNFTs: \(presenter.numberOfNFTs)")
+        return presenter.numberOfNFTs
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -82,9 +88,11 @@ extension FavouritesNFTsViewController: UICollectionViewDataSource {
         }
         
         if let nft = presenter.nft(at: indexPath.row) {
-            cell.configure(with: nft)
+            let isLiked = presenter.isLikedNFT(nft.id)
+            cell.configure(with: nft, isLiked: isLiked)
         }
         
+        cell.delegate = self
         return cell
     }
     
@@ -108,6 +116,14 @@ extension FavouritesNFTsViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 20
+    }
+}
+
+//MARK: - NFTCollectionViewCellDelegate
+extension FavouritesNFTsViewController: NFTCollectionViewCellDelegate {
+    func didTapLikeButton(in cell: NFTCollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        presenter.didTapLikeButton(at: indexPath)
     }
 }
 

@@ -23,19 +23,58 @@ protocol FavouritesPresenterProtocol {
 
 final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
     weak var view: FavouritesViewProtocol?
-    private let nftService: NftService
-    private let profile: UserProfile
+    private let servicesAssembly: ServicesAssembly
+    private var profile: UserProfile
     private var nftsLikes: [Nft] = []
     
     // MARK: - Init
-    init(view: FavouritesViewProtocol?, nftService: NftService, profile: UserProfile) {
+    init(view: FavouritesViewProtocol?, servicesAssembly: ServicesAssembly, profile: UserProfile) {
         self.view = view
-        self.nftService = nftService
+        self.servicesAssembly = servicesAssembly
         self.profile = profile
     }
     
     func viewDidLoad() {
         loadNFTsLikes()
+    }
+    
+    func didTapLikeButton(at indexPath: IndexPath) {
+        guard indexPath.row < nftsLikes.count else { return }
+        
+        let nft = nftsLikes[indexPath.row]
+        let isLiked = profile.likes.contains(nft.id)
+        var newLikes = profile.likes
+
+        if isLiked {
+            newLikes.removeAll(where: { $0 == nft.id })
+            nftsLikes.remove(at: indexPath.row)
+            print("Удаляем NFT, новое nftsLikes.count: \(nftsLikes.count)")
+        } else {
+            newLikes.append(nft.id)
+        }
+
+        let resultString: String = newLikes.isEmpty ? "null" : newLikes.joined(separator: ", ")
+        print("Отправляемые лайки: \(resultString)")
+
+        servicesAssembly.userProfileService.changeLike(newNftLikes: resultString) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let userProfile):
+                    self?.profile = userProfile
+                    self?.loadNFTsLikes()
+                    self?.view?.reloadData()
+                    print("Лайк изменен, новое nftsLikes.count: \(self?.nftsLikes.count ?? 0)")
+                case .failure(let error):
+                    self?.view?.showError(message: "Не удалось изменить лайки")
+                    print("Ошибка при изменении лайка: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+
+    func isLikedNFT(_ nftID: String) -> Bool {
+        return profile.likes.contains(nftID)
     }
     
     private func loadNFTsLikes() {
@@ -46,7 +85,9 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
             return
         }
         
+        nftsLikes.removeAll()
         view?.showLoadingIndicator()
+        
         fetchNFTsLikes(from: likedNfts) {
             self.handleLoadedNFTs()
         }
@@ -57,7 +98,7 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         
         for nftID in nftIDs {
             dispatchGroup.enter()
-            nftService.loadNft(id: nftID) { [weak self] result in
+            servicesAssembly.nftService.loadNft(id: nftID) { [weak self] result in
                 self?.handleNFTLoadResult(result, id: nftID)
                 dispatchGroup.leave()
             }
@@ -82,12 +123,13 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         } else {
             view?.setBackgroundView(message: nil)
             view?.reloadData()
+            print("presenter.numberOfNFTs: \(self.numberOfNFTs)")
         }
     }
     
-    
     // MARK: - NFT Access
     var numberOfNFTs: Int {
+        print(#function, nftsLikes.count)
         return nftsLikes.count
     }
     

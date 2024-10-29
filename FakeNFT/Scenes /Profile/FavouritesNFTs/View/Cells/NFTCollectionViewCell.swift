@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol NFTCollectionViewCellDelegate: AnyObject {
+    func didTapLikeButton(in cell: NFTCollectionViewCell)
+}
+
 final class NFTCollectionViewCell: UICollectionViewCell {
     static let identifier = "NFTCollectionViewCell"
+    
+    weak var delegate: NFTCollectionViewCellDelegate?
     
     private let nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -109,12 +115,13 @@ final class NFTCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func likeButtonTapped() {
-        let isActive = likeButton.currentImage == UIImage(named: "heartIsActive")
-        let newImageName = isActive ? "headrtNoActive" : "heartIsActive"
-        likeButton.setImage(UIImage(named: newImageName), for: .normal)
+//        let isActive = likeButton.currentImage == UIImage(named: "heartIsActive")
+//        let newImageName = isActive ? "headrtNoActive" : "heartIsActive"
+//        likeButton.setImage(UIImage(named: newImageName), for: .normal)
+        delegate?.didTapLikeButton(in: self)
     }
     
-    func configure(with nft: Nft, isLiked: Bool = true) {
+    func configure(with nft: Nft, isLiked: Bool) {
         let shortName = nft.name.split(separator: " ").first.map(String.init)
         nameLabel.text = shortName
         priceValueLabel.text = "\(nft.price) ETH"
