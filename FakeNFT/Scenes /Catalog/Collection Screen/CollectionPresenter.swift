@@ -103,7 +103,7 @@ final class CollectionPresenterImpl: CollectionPresenter {
     
     func didTapLikeButton(indexPath: IndexPath) {
         guard indexPath.row < nftArray.count,
-        let userProfile = userProfile else {
+              let userProfile = userProfile else {
             return
         }
         let currentNft = nftArray[indexPath.row]
@@ -124,7 +124,7 @@ final class CollectionPresenterImpl: CollectionPresenter {
                 self?.view?.updateCell(cellIndexPath: indexPath)
             case .failure(_):
                 self?.view?.showError(ErrorModel(message: "Ошибка получения данных", actionText: "Я понял(", action: {
-        
+                    
                 }))
             }
         }
