@@ -24,10 +24,7 @@ final class ServicesAssembly {
         )
     }
     
-<<<<<<< HEAD
-=======
     var nftCollectionsService: NftCollectionsService {
         NftCollectionsServiceImpl(networkClient: networkClient)
     }
->>>>>>> Arslanov/Profile
 }

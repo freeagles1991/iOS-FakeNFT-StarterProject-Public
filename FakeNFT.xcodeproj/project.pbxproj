@@ -52,16 +52,12 @@
 		C81E2B842CB9724100441F2C /* ProfilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81E2B832CB9724100441F2C /* ProfilePresenter.swift */; };
 		C81E2B882CB9743400441F2C /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81E2B872CB9743400441F2C /* ProfileViewController.swift */; };
 		C81E2B8A2CB9764B00441F2C /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81E2B892CB9764B00441F2C /* ProfileView.swift */; };
-<<<<<<< HEAD
-		C8598B462CD0439E006BDCD2 /* UpdateUserProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8598B452CD0439E006BDCD2 /* UpdateUserProfileRequest.swift */; };
-=======
 		C83854042CCE601B0016A5EA /* UserProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83854032CCE601B0016A5EA /* UserProfileService.swift */; };
 		C83854062CCE603F0016A5EA /* UserProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83854052CCE603F0016A5EA /* UserProfileRequest.swift */; };
 		C8746FE62CD06B6E00E6CCCA /* UpdateUserProfileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8746FE52CD06B6E00E6CCCA /* UpdateUserProfileRequest.swift */; };
 		C8746FE82CD06D3B00E6CCCA /* SetLikePutRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8746FE72CD06D3B00E6CCCA /* SetLikePutRequest.swift */; };
 		C8746FEA2CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8746FE92CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift */; };
 		C8746FEC2CD06DD200E6CCCA /* NftCollectionsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8746FEB2CD06DD200E6CCCA /* NftCollectionsRequest.swift */; };
->>>>>>> Arslanov/Profile
 		C886C6AB2CB9F1B700D31171 /* ProfileViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C886C6AA2CB9F1B700D31171 /* ProfileViewCell.swift */; };
 		C886C6AE2CBB2AD200D31171 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C886C6AD2CBB2AD200D31171 /* EditProfileViewController.swift */; };
 		C886C6B12CBB613C00D31171 /* MyNFTsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C886C6B02CBB613C00D31171 /* MyNFTsViewController.swift */; };
@@ -144,16 +140,12 @@
 		C81E2B832CB9724100441F2C /* ProfilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePresenter.swift; sourceTree = "<group>"; };
 		C81E2B872CB9743400441F2C /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		C81E2B892CB9764B00441F2C /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-<<<<<<< HEAD
-		C8598B452CD0439E006BDCD2 /* UpdateUserProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUserProfileRequest.swift; sourceTree = "<group>"; };
-=======
 		C83854032CCE601B0016A5EA /* UserProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileService.swift; sourceTree = "<group>"; };
 		C83854052CCE603F0016A5EA /* UserProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileRequest.swift; sourceTree = "<group>"; };
 		C8746FE52CD06B6E00E6CCCA /* UpdateUserProfileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUserProfileRequest.swift; sourceTree = "<group>"; };
 		C8746FE72CD06D3B00E6CCCA /* SetLikePutRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetLikePutRequest.swift; sourceTree = "<group>"; };
 		C8746FE92CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollectionsServiceImpl.swift; sourceTree = "<group>"; };
 		C8746FEB2CD06DD200E6CCCA /* NftCollectionsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollectionsRequest.swift; sourceTree = "<group>"; };
->>>>>>> Arslanov/Profile
 		C886C6AA2CB9F1B700D31171 /* ProfileViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewCell.swift; sourceTree = "<group>"; };
 		C886C6AD2CBB2AD200D31171 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		C886C6B02CBB613C00D31171 /* MyNFTsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTsViewController.swift; sourceTree = "<group>"; };
@@ -406,16 +398,11 @@
 				0C79EE622A76DD1900EE90EA /* RequestConstants.swift */,
 				3FC8C39029D2453B0081F015 /* ExamplePutRequest.swift */,
 				0C79EE602A76DCD600EE90EA /* NftByIdRequest.swift */,
-<<<<<<< HEAD
-				C8D0318C2CC59F51009CA8D1 /* UserProfileRequest.swift */,
-				C8598B452CD0439E006BDCD2 /* UpdateUserProfileRequest.swift */,
-=======
 				C83854052CCE603F0016A5EA /* UserProfileRequest.swift */,
 				C8746FE52CD06B6E00E6CCCA /* UpdateUserProfileRequest.swift */,
 				C8746FE72CD06D3B00E6CCCA /* SetLikePutRequest.swift */,
 				C8746FE92CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift */,
 				C8746FEB2CD06DD200E6CCCA /* NftCollectionsRequest.swift */,
->>>>>>> Arslanov/Profile
 			);
 			path = Requests;
 			sourceTree = "<group>";

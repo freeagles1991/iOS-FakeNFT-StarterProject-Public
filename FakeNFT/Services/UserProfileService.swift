@@ -10,10 +10,7 @@ import Foundation
 protocol UserProfileServiceProtocol {
     func fetchUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void)
     func updateUserProfile(_ profile: UserProfile, completion: @escaping (Result<Void, Error>) -> Void)
-<<<<<<< HEAD
-=======
     func changeLike(newNftLikes: String, completion: @escaping (Result<UserProfile, Error>) -> Void)
->>>>>>> Arslanov/Profile
 }
 
 final class UserProfileService: UserProfileServiceProtocol {
@@ -52,8 +49,6 @@ final class UserProfileService: UserProfileServiceProtocol {
             }
         }
     }
-<<<<<<< HEAD
-=======
     
     func changeLike(newNftLikes: String, completion: @escaping (Result<UserProfile, Error>) -> Void) {
         let dto = ChangeLikeDtoObject(likes: newNftLikes)
@@ -67,5 +62,4 @@ final class UserProfileService: UserProfileServiceProtocol {
             }
         }
     }
->>>>>>> Arslanov/Profile
 }

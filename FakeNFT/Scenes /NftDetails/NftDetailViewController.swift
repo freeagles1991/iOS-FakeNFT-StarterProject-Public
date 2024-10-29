@@ -36,6 +36,7 @@ final class NftDetailViewController: UIViewController {
     internal lazy var activityIndicator = UIActivityIndicatorView()
 
     private var cellModels: [NftDetailCellModel] = []
+    var window: UIWindow?
 
     // MARK: - Init
 
