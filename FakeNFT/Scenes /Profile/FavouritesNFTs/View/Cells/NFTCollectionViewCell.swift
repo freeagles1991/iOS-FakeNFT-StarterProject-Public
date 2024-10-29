@@ -114,7 +114,7 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         likeButton.setImage(UIImage(named: newImageName), for: .normal)
     }
     
-    func configure(with nft: Nft) {
+    func configure(with nft: Nft, isLiked: Bool = true) {
         let shortName = nft.name.split(separator: " ").first.map(String.init)
         nameLabel.text = shortName
         priceValueLabel.text = "\(nft.price) ETH"
@@ -122,5 +122,8 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         if let imageUrl = nft.images.first {
             nftImageView.kf.setImage(with: imageUrl)
         }
+        
+        let likeImageName = isLiked ? "heartIsActive" : "headrtNoActive"
+        likeButton.setImage(UIImage(named: likeImageName), for: .normal)
     }
 }

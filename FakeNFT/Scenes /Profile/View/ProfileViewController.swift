@@ -109,7 +109,7 @@ extension ProfileViewController: ProfileViewDelegate {
         case 1:
             router.navigateToFavoritesNFTs(from: self, with: profile)
         case 2:
-            print("Webview")
+            print("User card selected")
         default:
             break
         }

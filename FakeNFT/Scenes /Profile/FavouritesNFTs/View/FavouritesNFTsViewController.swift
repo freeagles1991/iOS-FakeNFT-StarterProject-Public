@@ -42,8 +42,8 @@ final class FavouritesNFTsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         presenter.viewDidLoad()
+        setupUI()
     }
     
     private  func setupUI() {
