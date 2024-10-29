@@ -2,7 +2,7 @@
 //  UserProfileRequest.swift
 //  FakeNFT
 //
-//  Created by Артур  Арсланов on 21.10.2024.
+//  Created by Артур  Арсланов on 27.10.2024.
 //
 
 import Foundation
@@ -19,4 +19,3 @@ struct UserProfileRequest: NetworkRequest {
     }
     
 }
-
