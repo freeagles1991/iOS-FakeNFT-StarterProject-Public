@@ -10,6 +10,7 @@ import Foundation
 protocol UserProfileServiceProtocol {
     func fetchUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void)
     func updateUserProfile(_ profile: UserProfile, completion: @escaping (Result<Void, Error>) -> Void)
+    func changeLike(newNftLikes: String, completion: @escaping (Result<UserProfile, Error>) -> Void)
 }
 
 final class UserProfileService: UserProfileServiceProtocol {
@@ -43,6 +44,19 @@ final class UserProfileService: UserProfileServiceProtocol {
             switch result {
             case .success:
                 completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func changeLike(newNftLikes: String, completion: @escaping (Result<UserProfile, Error>) -> Void) {
+        let dto = ChangeLikeDtoObject(likes: newNftLikes)
+        let request = SetLikePutRequest(dto: dto)
+        networkClient.send(request: request, type: UserProfile.self) { result in
+            switch result {
+            case .success(let userProfile):
+                completion(.success(userProfile))
             case .failure(let error):
                 completion(.failure(error))
             }
