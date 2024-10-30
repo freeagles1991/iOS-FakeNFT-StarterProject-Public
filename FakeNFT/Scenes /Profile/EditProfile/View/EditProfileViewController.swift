@@ -64,6 +64,7 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         textField.placeholder = "Введите имя"
         textField.font = .regular17
         textField.textColor = .segmentActive
+        textField.setPadding(left: 16, right: 16)
         return textField
     }()
     
@@ -99,6 +100,7 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         textField.placeholder = "Введите Вебсайт"
         textField.font = .regular17
         textField.textColor = .segmentActive
+        textField.setPadding(left: 16, right: 16)
         return textField
     }()
     
