@@ -19,21 +19,16 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         let catalogAssembly = CatalogAssembly(servicesAssembly: servicesAssembly)
         let cataloViewController = catalogAssembly.build()
         let catalogNavigationController = UINavigationController(rootViewController: cataloViewController)
         
         catalogNavigationController.tabBarItem = catalogTabBarItem
-
-        let catalogController = TestCatalogViewController(
-            servicesAssembly: servicesAssembly
-        )
-        catalogController.tabBarItem = catalogTabBarItem
         
         let cartNavigationController = configureCartVC()
 
-        viewControllers = [catalogController, cartNavigationController]
-        viewControllers = [catalogNavigationController]
+        viewControllers = [catalogNavigationController, cartNavigationController]
         view.backgroundColor = .systemBackground
     }
     
