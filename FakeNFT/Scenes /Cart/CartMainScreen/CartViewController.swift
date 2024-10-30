@@ -1,10 +1,3 @@
-//
-//  CartViewController.swift
-//  FakeNFT
-//
-//  Created by Дима on 11.10.2024.
-//
-
 import Foundation
 import UIKit
 import ProgressHUD
@@ -12,6 +5,8 @@ import ProgressHUD
 protocol CartView: UIViewController, LoadingView {
     func switchCollectionViewState(isEmptyList: Bool)
     func updateCollectionView()
+    func performBatchUpdate(deletionAt indexPath: IndexPath, completion: @escaping () -> Void)
+    func performBatchUpdate(moveFrom fromIndexPaths: [IndexPath], to toIndexPaths: [IndexPath], completion: @escaping () -> Void)
     func configureTotalCost(totalPrice: Double, nftsCount: Int)
     func setupNavigationBarForNextScreen()
     func showAlert(_ alert: AlertViewModel)
@@ -19,13 +14,17 @@ protocol CartView: UIViewController, LoadingView {
 
 final class CartViewController: UIViewController, CartView{
     // MARK: - Public Properties
+    let presenter: CartPresenter
+    
     var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
-    let presenter: CartPresenter
+    lazy var window: UIWindow? = {
+        return UIApplication.shared.windows.first
+    }()
     
     enum Constants {
         static let filterButtonIcon = "filterButtonIcon"
@@ -37,10 +36,6 @@ final class CartViewController: UIViewController, CartView{
     }
     
     // MARK: - Private Properties
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    private var multiplierForView: CGFloat = 0
-    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .vertical
@@ -128,8 +123,6 @@ final class CartViewController: UIViewController, CartView{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        multiplierForView = screenWidth / 375.0
-        
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -167,6 +160,24 @@ final class CartViewController: UIViewController, CartView{
     
     func updateCollectionView() {
         collectionView.reloadData()
+    }
+    
+    func performBatchUpdate(deletionAt indexPath: IndexPath, completion: @escaping () -> Void) {
+        collectionView.performBatchUpdates({
+            self.collectionView.deleteItems(at: [indexPath])
+        }, completion: { _ in
+            completion()
+        })
+    }
+    
+    func performBatchUpdate(moveFrom fromIndexPaths: [IndexPath], to toIndexPaths: [IndexPath], completion: @escaping () -> Void) {
+        collectionView.performBatchUpdates({
+            for (fromIndexPath, toIndexPath) in zip(fromIndexPaths, toIndexPaths) {
+                self.collectionView.moveItem(at: fromIndexPath, to: toIndexPath)
+            }
+        }, completion: {_ in
+            completion()
+        })
     }
     
     func setupNavigationBarForNextScreen() {
@@ -249,7 +260,7 @@ final class CartViewController: UIViewController, CartView{
             payButton.bottomAnchor.constraint(equalTo: buttonPanelView.bottomAnchor, constant: -16),
             payButton.leadingAnchor.constraint(greaterThanOrEqualTo: buttonPanelView.leadingAnchor, constant: 16),
             payButton.trailingAnchor.constraint(equalTo: buttonPanelView.trailingAnchor, constant: -16),
-            payButton.widthAnchor.constraint(equalToConstant: 240 * multiplierForView)
+            payButton.widthAnchor.constraint(equalToConstant: 240 * ScreenSizeHelper.getViewMultiplier())
         ])
     
         buttonPanelView.addSubview(nftCountLabel)
@@ -304,7 +315,6 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
         let widthPerItem = availableWidth / itemsPerRow
         let heightPerItem = widthPerItem * (140 / 375)
         cellHeight = heightPerItem
-        print(cellHeight, widthPerItem)
         return CGSize(width: widthPerItem, height: heightPerItem)
     }
 }
@@ -313,18 +323,7 @@ extension CartViewController: UICollectionViewDataSource, UICollectionViewDelega
 extension CartViewController: CartItemCellDelegate {
     func didTapButton(in cell: CartItemCell) {
         if let indexPath = collectionView.indexPath(for: cell) {
-            print("Tapped button in cell at \(indexPath.row)")
-            
-            let nftID = cell.getNftID()
-            
-            presenter.removeFromNFTs(at: indexPath.row)
-
-            collectionView.performBatchUpdates({
-                collectionView.deleteItems(at: [indexPath])
-            }, completion: { [weak self]_ in
-                guard let self else {return}
-                self.presenter.deleteNftFromCart(with: nftID)
-            })
+            presenter.removeButtonTapped(at: indexPath)
         }
     }
 }

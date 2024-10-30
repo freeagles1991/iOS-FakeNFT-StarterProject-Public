@@ -1,10 +1,3 @@
-//
-//  ChooseCurrencyAssembly.swift
-//  FakeNFT
-//
-//  Created by Дима on 16.10.2024.
-//
-
 import Foundation
 import UIKit
 

@@ -1,10 +1,3 @@
-//
-//  CartAssembly.swift
-//  FakeNFT
-//
-//  Created by Дима on 11.10.2024.
-//
-
 import Foundation
 import UIKit
 

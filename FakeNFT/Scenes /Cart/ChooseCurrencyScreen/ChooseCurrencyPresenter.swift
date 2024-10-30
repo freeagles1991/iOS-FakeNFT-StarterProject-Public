@@ -1,10 +1,3 @@
-//
-//  ChooseCurrencyPresenter.swift
-//  FakeNFT
-//
-//  Created by Дима on 16.10.2024.
-//
-
 import Foundation
 
 protocol ChooseCurrencyPresenter {
@@ -18,14 +11,15 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
     // MARK: - Public Properties
     weak var view: ChooseCurrencyViewController?
     var currencies: [Currency] = []
-    var selectedCurrency: IndexPath? {
+    
+    // MARK: - Private Properties
+    private let currencyService: CurrencyService
+    
+    private var selectedCurrency: IndexPath? {
         didSet {
             view?.updatePayButtonState(selectedCurrency != nil)
         }
     }
-    
-    // MARK: - Private Properties
-    private let currencyService: CurrencyService
     
     // MARK: - Initializers
     init(currencyService: CurrencyService) {
@@ -70,24 +64,17 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
     func payOrder(with nfts: [String]) {
         guard let view else {return}
         view.showLoading()
-        currencyService.sendPutOrderAndPayRequest(nfts: nfts) { result in
+        currencyService.sendPutOrderAndPayRequest(nfts: nfts) { [weak self] result in
             switch result {
             case .success(_):
                 print("ChooseCurrencyPresenterImpl: оплачено")
-                let action = AlertViewModel.AlertAction(
-                    title: "Окей", 
-                    style: .default,
-                    handler: {
-                        self.view?.navigationController?.popViewController(animated: true)
-                    }
-                )
-                let alert = AlertViewModel(
-                    title: "Ура",
-                    message: "Вы купили \(CartStore.nftsInCart.count) NFT",
-                    actions: [action],
-                    preferredStyle: .alert
-                )
-                view.showAlert(alert)
+                let successPurchaseAssembly = SuccessPurchaseAssembly()
+                if let successPurchaseVC = successPurchaseAssembly.build() as? SuccessPurchaseViewCotroller {
+                    successPurchaseVC.modalPresentationStyle = .overFullScreen
+                    successPurchaseVC.modalTransitionStyle = .crossDissolve
+                    
+                    view.navigationController?.pushViewController(successPurchaseVC, animated: true)
+                }
                 CartStore.nftsInCart.removeAll()
             case .failure(_):
                 print("ChooseCurrencyPresenterImpl: не оплачено")
@@ -95,6 +82,7 @@ final class ChooseCurrencyPresenterImpl: ChooseCurrencyPresenter {
                     title: "Попробовать снова",
                     style: .default,
                     handler: {
+                        guard let self else {return}
                         self.payOrder(with: Array(CartStore.nftsInCart))
                     })
                 let alert = AlertViewModel(

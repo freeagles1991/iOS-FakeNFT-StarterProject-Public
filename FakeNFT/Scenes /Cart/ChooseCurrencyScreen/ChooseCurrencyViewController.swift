@@ -1,10 +1,3 @@
-//
-//  ChooseCurrencyViewController.swift
-//  FakeNFT
-//
-//  Created by Дима on 16.10.2024.
-//
-
 import Foundation
 import UIKit
 
@@ -17,13 +10,17 @@ protocol ChooseCurrencyViewController: UIViewController, LoadingView {
 
 final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyViewController {
     // MARK: - Public Properties
-    let presenter: ChooseCurrencyPresenter
-    var activityIndicator: UIActivityIndicatorView = {
+    var presenter: ChooseCurrencyPresenter
+    
+    lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
     }()
     
+    lazy var window: UIWindow? = {
+        return UIApplication.shared.windows.first
+    }()
     
     enum Constants: String {
         case payScreenTitle = "Выбор способа оплаты"
@@ -129,7 +126,6 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     
     // MARK: - Actions
     @objc private func didPayButtonTapped() {
-        print("ChooseCurrencyViewControllerImpl: PayButton tapped")
         presenter.payOrder(with: Array(CartStore.nftsInCart))
     }
     
