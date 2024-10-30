@@ -7,6 +7,7 @@ protocol SortingDelegate: AnyObject {
 
 final class SortingHelper {
     private static let sortingMethodKey = "savedSortingMethodInCart"
+    private static let sortingMethodKeyForMyNFTs = "savedSortingMethodInMyNFTs"
     
     enum Constants: String {
         case cancelButtonString = "Отменить"
@@ -24,6 +25,20 @@ final class SortingHelper {
         
         set {
             UserDefaults.standard.setValue(newValue.rawValue, forKey: sortingMethodKey)
+        }
+    }
+    
+    static var savedSortingMethodInMyNFTs: SortingMethod {
+        get {
+            if let rawValue = UserDefaults.standard.string(forKey: sortingMethodKeyForMyNFTs),
+               let method = SortingMethod(rawValue: rawValue) {
+                return method
+            }
+            return .name
+        }
+        
+        set {
+            UserDefaults.standard.setValue(newValue.rawValue, forKey: sortingMethodKeyForMyNFTs)
         }
     }
     
