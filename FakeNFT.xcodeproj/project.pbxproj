@@ -56,6 +56,7 @@
 		C8746FEA2CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8746FE92CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift */; };
 		C8746FEC2CD06DD200E6CCCA /* NftCollectionsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8746FEB2CD06DD200E6CCCA /* NftCollectionsRequest.swift */; };
 		C8C1F7D12CD2445C00F6902A /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C1F7D02CD2445C00F6902A /* GeometricParams.swift */; };
+		C8C1F7D32CD24D3000F6902A /* UITextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C1F7D22CD24D3000F6902A /* UITextFieldExtension.swift */; };
 		C8D0319A2CC8916D009CA8D1 /* Nft+Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D031992CC8916D009CA8D1 /* Nft+Sorting.swift */; };
 		E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */; };
 		E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */; };
@@ -131,6 +132,7 @@
 		C8746FE92CD06DA800E6CCCA /* NftCollectionsServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollectionsServiceImpl.swift; sourceTree = "<group>"; };
 		C8746FEB2CD06DD200E6CCCA /* NftCollectionsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftCollectionsRequest.swift; sourceTree = "<group>"; };
 		C8C1F7D02CD2445C00F6902A /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
+		C8C1F7D22CD24D3000F6902A /* UITextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldExtension.swift; sourceTree = "<group>"; };
 		C8D031992CC8916D009CA8D1 /* Nft+Sorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Nft+Sorting.swift"; sourceTree = "<group>"; };
 		E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 			children = (
 				C8D031992CC8916D009CA8D1 /* Nft+Sorting.swift */,
 				C8C1F7D02CD2445C00F6902A /* GeometricParams.swift */,
+				C8C1F7D22CD24D3000F6902A /* UITextFieldExtension.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -587,6 +590,7 @@
 				0CFCB74B2A780EA80009A829 /* UIView+Constraints.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
+				C8C1F7D32CD24D3000F6902A /* UITextFieldExtension.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,
 				0CF2C2E12A784C7000FDC837 /* LinePageControl.swift in Sources */,
 				C8746FE82CD06D3B00E6CCCA /* SetLikePutRequest.swift in Sources */,
