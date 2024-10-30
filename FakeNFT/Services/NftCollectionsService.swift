@@ -28,6 +28,4 @@ final class NftCollectionsServiceImpl: NftCollectionsService {
             }
         }
     }
-    
-    
 }

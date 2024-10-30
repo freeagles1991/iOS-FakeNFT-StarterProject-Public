@@ -74,10 +74,9 @@ extension CollectionViewController: CollectionViewCellDelegate {
     }
     
     func didTapLikeButton(in cell: CollectionViewCell) {
-        print("Нажали Like")
+        guard let indexPath = collectionView.indexPath(for: cell) else {return}
+        presenter.didTapLikeButton(indexPath: indexPath)
     }
-    
-    
 }
 
 // MARK: - UICollectionViewDataSource func
