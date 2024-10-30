@@ -7,8 +7,8 @@ final class TabBarController: UITabBarController {
 
     private let catalogTabBarItem = UITabBarItem(
         title: NSLocalizedString("Tab.catalog", comment: ""),
-        image: UIImage(systemName: "square.stack.3d.up.fill"),
-        tag: 0
+        image: UIImage(named: "catalogTabBarIcon_nonactive"),
+        selectedImage: UIImage(named: "catalogTabBarIcon_active")
     )
     
     private let cartTabBarItem = UITabBarItem(
@@ -19,6 +19,11 @@ final class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let catalogAssembly = CatalogAssembly(servicesAssembly: servicesAssembly)
+        let cataloViewController = catalogAssembly.build()
+        let catalogNavigationController = UINavigationController(rootViewController: cataloViewController)
+        
+        catalogNavigationController.tabBarItem = catalogTabBarItem
 
         let catalogController = TestCatalogViewController(
             servicesAssembly: servicesAssembly
@@ -28,6 +33,7 @@ final class TabBarController: UITabBarController {
         let cartNavigationController = configureCartVC()
 
         viewControllers = [catalogController, cartNavigationController]
+        viewControllers = [catalogNavigationController]
         view.backgroundColor = .systemBackground
     }
     
