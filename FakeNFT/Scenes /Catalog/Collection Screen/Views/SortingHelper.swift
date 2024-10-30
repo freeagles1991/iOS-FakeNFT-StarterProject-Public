@@ -1,10 +1,3 @@
-//
-//  FilterHelper.swift
-//  FakeNFT
-//
-//  Created by Дима on 26.10.2024.
-//
-
 import Foundation
 import UIKit
 
