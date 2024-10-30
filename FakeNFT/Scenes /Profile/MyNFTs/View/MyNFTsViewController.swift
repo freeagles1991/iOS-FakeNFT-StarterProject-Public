@@ -83,13 +83,12 @@ extension MyNFTsViewController: UITableViewDataSource {
     }
 }
 
-
+//MARK: - NFTTableViewCellDelegate
 extension MyNFTsViewController: NFTTableViewCellDelegate {
     func didTapLikeButton(in cell: NFTTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         presenter.didTapLikeButton(at: indexPath)
     }
-    
     
 }
 
@@ -99,7 +98,6 @@ extension MyNFTsViewController: MyNFTsViewProtocol {
         tableView.reloadRows(at: [cellIndexPath], with: .automatic)
     }
 
-    
     func showAlert(with viewModel: AlertViewModel) {
         let alertController = viewModel.createAlertController()
         present(alertController, animated: true)

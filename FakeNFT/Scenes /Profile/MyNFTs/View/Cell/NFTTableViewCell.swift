@@ -80,6 +80,7 @@ final class NFTTableViewCell: UITableViewCell {
         return stackView
     }()
     
+    //MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -103,6 +104,7 @@ final class NFTTableViewCell: UITableViewCell {
         likeButton.setImage(UIImage(named: likeImageName), for: .normal)
     }
     
+    //MARK: - Private Methods
     @objc
     private func likeButtonTapped() {
         delegate?.didTapLikeButton(in: self)

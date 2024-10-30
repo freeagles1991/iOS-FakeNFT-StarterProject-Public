@@ -35,8 +35,13 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         self.profile = profile
     }
     
+    //MARK: - Public Methods
     func viewDidLoad() {
         loadNFTsLikes()
+    }
+    
+    func isLikedNFT(_ nftID: String) -> Bool {
+        return profile.likes.contains(nftID)
     }
     
     func didTapLikeButton(at indexPath: IndexPath) {
@@ -46,7 +51,17 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         let isLiked = profile.likes.contains(nft.id)
         updateLikes(isLiked: isLiked, nftID: nft.id, at: indexPath)
     }
+    
+    // MARK: - NFT Access
+    var numberOfNFTs: Int {
+        return nftsLikes.count
+    }
+    
+    func nft(at index: Int) -> Nft? {
+        return index < nftsLikes.count ? nftsLikes[index] : nil
+    }
 
+    //MARK: - Private Methods
     private func updateLikes(isLiked: Bool, nftID: String, at indexPath: IndexPath) {
         var newLikes = profile.likes
 
@@ -86,10 +101,6 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
                 self?.setEmptyStateMessage()
             }
         })
-    }
-
-    func isLikedNFT(_ nftID: String) -> Bool {
-        return profile.likes.contains(nftID)
     }
     
     private func loadNFTsLikes() {
@@ -145,13 +156,5 @@ final class FavouritesNFTsPresenter: FavouritesPresenterProtocol {
         view?.setBackgroundView(message: "У Вас ещё нет избранных NFT")
     }
     
-    // MARK: - NFT Access
-    var numberOfNFTs: Int {
-        return nftsLikes.count
-    }
-    
-    func nft(at index: Int) -> Nft? {
-        return index < nftsLikes.count ? nftsLikes[index] : nil
-    }
 }
 

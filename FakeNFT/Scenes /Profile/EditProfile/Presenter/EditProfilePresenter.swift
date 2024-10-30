@@ -14,7 +14,6 @@ protocol EditProfilePresenterProtocol: AnyObject {
 }
 
 final class EditProfilePresenter: EditProfilePresenterProtocol {
-    
     private weak var view: EditProfileViewProtocol?
     private var profile: UserProfile
     private let userProfileService: UserProfileServiceProtocol

@@ -38,7 +38,6 @@ final class ProfileRouter: ProfileRouterProtocol {
         }
     }
 
-    
     func navigateToFavoritesNFTs(from view: ProfileViewController, with profile: UserProfile) {
         let favoritesNFTsVC = assemblyBuilder.favouritesNFTsModule(from: view, with: profile)
         if let navigationController = view.navigationController {

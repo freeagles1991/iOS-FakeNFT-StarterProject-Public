@@ -57,7 +57,7 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -66,12 +66,6 @@ final class NFTCollectionViewCell: UICollectionViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    @objc
-    private func likeButtonTapped() {
-        delegate?.didTapLikeButton(in: self)
     }
     
     func configure(with nft: Nft, isLiked: Bool) {
@@ -87,6 +81,12 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         likeButton.setImage(UIImage(named: likeImageName), for: .normal)
     }
     
+    //MARK: - Private Methods0
+    @objc
+    private func likeButtonTapped() {
+        delegate?.didTapLikeButton(in: self)
+    }
+    
     private func setupUI() {
         contentView.addSubview(nftImageView)
         contentView.addSubview(likeButton)
@@ -95,7 +95,6 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         infoContainerView.addSubview(nameLabel)
         infoContainerView.addSubview(ratingView)
         infoContainerView.addSubview(priceValueLabel)
-        
         
         [nftImageView, likeButton, infoContainerView, nameLabel, ratingView,priceValueLabel].forEach { $0.translatesAutoresizingMaskIntoConstraints = false
         }

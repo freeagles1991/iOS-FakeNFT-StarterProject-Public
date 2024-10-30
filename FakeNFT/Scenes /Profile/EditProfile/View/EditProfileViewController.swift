@@ -102,8 +102,6 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         return textField
     }()
     
-    private var urlAvatarString: String?
-    
     //MARK: - Init
     init(profile: UserProfile, delegate: EditProfileDelegate?, userProfileService: UserProfileServiceProtocol) {
         super.init(nibName: nil, bundle: nil)
@@ -127,6 +125,18 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         updateProfile()
+    }
+    
+    //MARK: - Public Methods
+    func showProfile(_ profile: UserProfile) {
+        nameTextField.text = profile.name
+        descriptionTextView.text = profile.description
+        websiteTextField.text = profile.website
+        loadAvatar(from: profile.avatar)
+    }
+    
+    func didUpdateProfile(_ updatedProfile: UserProfile) {
+        delegate?.didUpdateProfile(updatedProfile)
     }
     
     //MARK: - Private Methods
@@ -154,18 +164,6 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         }
         
         avatarImage.kf.setImage(with: avatarURL, placeholder: placeholderImage)
-    }
-    
-    func showProfile(_ profile: UserProfile) {
-        nameTextField.text = profile.name
-        descriptionTextView.text = profile.description
-        websiteTextField.text = profile.website
-        
-        loadAvatar(from: profile.avatar)
-    }
-    
-    func didUpdateProfile(_ updatedProfile: UserProfile) {
-        delegate?.didUpdateProfile(updatedProfile)
     }
     
     //MARK: - Objc Methods

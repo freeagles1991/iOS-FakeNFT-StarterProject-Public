@@ -43,12 +43,55 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         self.profile = profile
     }
 
-    // MARK: - Life Cycle
+    // MARK: - Public Methods
     func viewDidLoad() {
         loadNFTs()
     }
+    
+    func isLikedNFT(_ nftID: String) -> Bool {
+        return profile.likes.contains(nftID)
+    }
+    
+    private func handleLoadedNFTs() {
+        view?.hideLoadingIndicator()
+        if nfts.isEmpty {
+            view?.setBackgroundView(message: "У вас еще нет NFT.")
+            view?.updateRightBarButtonItem(nil)
+        } else {
+            applySavedSortOption()
+            view?.setBackgroundView(message: nil)
+            view?.setupNavigationItem()
+            view?.reloadData()
+        }
+    }
+    
+    func didTapLikeButton(at index: IndexPath) {
+        guard index.row < nfts.count else { return }
+        
+        let currentNft = nfts[index.row]
+        let isLiked = profile.likes.contains(currentNft.id)
+        
+        let updatedLikes = isLiked ? profile.likes.filter { $0 != currentNft.id } : profile.likes + [currentNft.id]
+        let likesString = updatedLikes.isEmpty ? "null" : updatedLikes.joined(separator: ", ")
+        
+        servicesAssembly.userProfileService.changeLike(newNftLikes: likesString) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.handleLikeChangeResult(result, for: index)
+            }
+        }
+    }
+    
+    //MARK: - NFT Access
+    var numberOfNFTs: Int {
+        return nfts.count
+    }
 
-    // MARK: - Loading NFTs
+    func nft(at index: Int) -> Nft? {
+        return index < nfts.count ? nfts[index] : nil
+    }
+    
+    //MARK: - Private Methods
+    //  Loading NFTs
     private func loadNFTs() {
         guard !profile.nfts.isEmpty else {
             view?.setBackgroundView(message: "У вас еще нет NFT.")
@@ -84,35 +127,6 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         }
     }
 
-    private func handleLoadedNFTs() {
-        view?.hideLoadingIndicator()
-        if nfts.isEmpty {
-            view?.setBackgroundView(message: "У вас еще нет NFT.")
-            view?.updateRightBarButtonItem(nil)
-        } else {
-            applySavedSortOption()
-            view?.setBackgroundView(message: nil)
-            view?.setupNavigationItem()
-            view?.reloadData()
-        }
-    }
-
-    func didTapLikeButton(at index: IndexPath) {
-        guard index.row < nfts.count else { return }
-
-        let currentNft = nfts[index.row]
-        let isLiked = profile.likes.contains(currentNft.id)
-
-        let updatedLikes = isLiked ? profile.likes.filter { $0 != currentNft.id } : profile.likes + [currentNft.id]
-        let likesString = updatedLikes.isEmpty ? "null" : updatedLikes.joined(separator: ", ")
-
-        servicesAssembly.userProfileService.changeLike(newNftLikes: likesString) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.handleLikeChangeResult(result, for: index)
-            }
-        }
-    }
-
     private func handleLikeChangeResult(_ result: Result<UserProfile, Error>, for index: IndexPath) {
         switch result {
         case .success(let updatedProfile):
@@ -124,18 +138,6 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
         }
     }
 
-    func isLikedNFT(_ nftID: String) -> Bool {
-        return profile.likes.contains(nftID)
-    }
-
-    // MARK: - NFT Access
-    var numberOfNFTs: Int {
-        return nfts.count
-    }
-
-    func nft(at index: Int) -> Nft? {
-        return index < nfts.count ? nfts[index] : nil
-    }
 }
 
 // MARK: - SortingDelegate
