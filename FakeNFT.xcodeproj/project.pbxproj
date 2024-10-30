@@ -69,6 +69,8 @@
 		C8D031902CC5D60E009CA8D1 /* MyNFTsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D0318F2CC5D60E009CA8D1 /* MyNFTsPresenter.swift */; };
 		C8D031922CC5DFCF009CA8D1 /* AssemblyBuilderProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D031912CC5DFCF009CA8D1 /* AssemblyBuilderProfile.swift */; };
 		C8D031952CC88ABA009CA8D1 /* FavouritesNFTsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D031942CC88ABA009CA8D1 /* FavouritesNFTsPresenter.swift */; };
+		C8C1F7D12CD2445C00F6902A /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C1F7D02CD2445C00F6902A /* GeometricParams.swift */; };
+		C8C1F7D32CD24D3000F6902A /* UITextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C1F7D22CD24D3000F6902A /* UITextFieldExtension.swift */; };
 		C8D0319A2CC8916D009CA8D1 /* Nft+Sorting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D031992CC8916D009CA8D1 /* Nft+Sorting.swift */; };
 		E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19CD5AA2A98B56600CA39A5 /* NftImageCollectionViewCell.swift */; };
 		E1A1B9DA2AA01CE400C3AFBC /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A1B9D92AA01CE400C3AFBC /* TabBarController.swift */; };
@@ -159,6 +161,8 @@
 		C8D0318F2CC5D60E009CA8D1 /* MyNFTsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyNFTsPresenter.swift; sourceTree = "<group>"; };
 		C8D031912CC5DFCF009CA8D1 /* AssemblyBuilderProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblyBuilderProfile.swift; sourceTree = "<group>"; };
 		C8D031942CC88ABA009CA8D1 /* FavouritesNFTsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesNFTsPresenter.swift; sourceTree = "<group>"; };
+		C8C1F7D02CD2445C00F6902A /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
+		C8C1F7D22CD24D3000F6902A /* UITextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextFieldExtension.swift; sourceTree = "<group>"; };
 		C8D031992CC8916D009CA8D1 /* Nft+Sorting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Nft+Sorting.swift"; sourceTree = "<group>"; };
 		C8DFE0172CC0671400C3B014 /* CartDecomposition.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CartDecomposition.md; sourceTree = "<group>"; };
 		C8DFE01A2CC067B400C3B014 /* DecompositionProfilee.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DecompositionProfilee.md; sourceTree = "<group>"; };
@@ -561,6 +565,8 @@
 			isa = PBXGroup;
 			children = (
 				C8D031992CC8916D009CA8D1 /* Nft+Sorting.swift */,
+				C8C1F7D02CD2445C00F6902A /* GeometricParams.swift */,
+				C8C1F7D22CD24D3000F6902A /* UITextFieldExtension.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -790,6 +796,7 @@
 				C886C6AE2CBB2AD200D31171 /* EditProfileViewController.swift in Sources */,
 				3F6806D729CBC50A00B4F915 /* CellsReusingUtils.swift in Sources */,
 				0C79EE612A76DCD600EE90EA /* NftByIdRequest.swift in Sources */,
+				C8C1F7D32CD24D3000F6902A /* UITextFieldExtension.swift in Sources */,
 				E19CD5AB2A98B56600CA39A5 /* NftImageCollectionViewCell.swift in Sources */,
 				C81E2B8A2CB9764B00441F2C /* ProfileView.swift in Sources */,
 				0CF2C2E12A784C7000FDC837 /* LinePageControl.swift in Sources */,
@@ -800,6 +807,7 @@
 				C81E2B882CB9743400441F2C /* ProfileViewController.swift in Sources */,
 				C886C6B62CBB623100D31171 /* NFTTableViewCell.swift in Sources */,
 				0CFCB7442A7802440009A829 /* NftDetailInput.swift in Sources */,
+				C8C1F7D12CD2445C00F6902A /* GeometricParams.swift in Sources */,
 				32322FFA2CCD444F00B43E3D /* SortingHelper.swift in Sources */,
 				0C79EE632A76DD1900EE90EA /* RequestConstants.swift in Sources */,
 			);
