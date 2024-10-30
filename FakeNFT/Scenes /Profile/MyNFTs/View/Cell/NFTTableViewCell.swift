@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol NFTTableViewCellDelegate: AnyObject {
+    func didTapLikeButton(in cell: NFTTableViewCell)
+}
+
 final class NFTTableViewCell: UITableViewCell {
     static let identifier = "NFTCell"
+    
+    weak var delegate: NFTTableViewCellDelegate?
     
     private let nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -84,7 +90,7 @@ final class NFTTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with nft: Nft) {
+    func configure(with nft: Nft, isLiked: Bool) {
         nameLabel.text = nft.name
         autorLabel.text = "от \(nft.author)"
         priceValueLabel.text = "\(nft.price) ETH"
@@ -92,13 +98,14 @@ final class NFTTableViewCell: UITableViewCell {
         if let imageUrl = nft.images.first {
             nftImageView.kf.setImage(with: imageUrl)
         }
+        
+        let likeImageName = isLiked ? "heartIsActive" : "headrtNoActive"
+        likeButton.setImage(UIImage(named: likeImageName), for: .normal)
     }
     
     @objc
     private func likeButtonTapped() {
-        let isActive = likeButton.currentImage == UIImage(named: "heartIsActive")
-        let newImageName = isActive ? "headrtNoActive" : "heartIsActive"
-        likeButton.setImage(UIImage(named: newImageName), for: .normal)
+        delegate?.didTapLikeButton(in: self)
     }
     
     private func setupUI() {

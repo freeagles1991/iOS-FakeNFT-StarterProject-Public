@@ -68,6 +68,25 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    @objc
+    private func likeButtonTapped() {
+        delegate?.didTapLikeButton(in: self)
+    }
+    
+    func configure(with nft: Nft, isLiked: Bool) {
+        let shortName = nft.name.split(separator: " ").first.map(String.init)
+        nameLabel.text = shortName
+        priceValueLabel.text = "\(nft.price) ETH"
+        ratingView.rating = nft.rating
+        if let imageUrl = nft.images.first {
+            nftImageView.kf.setImage(with: imageUrl)
+        }
+        
+        let likeImageName = isLiked ? "heartIsActive" : "headrtNoActive"
+        likeButton.setImage(UIImage(named: likeImageName), for: .normal)
+    }
+    
     private func setupUI() {
         contentView.addSubview(nftImageView)
         contentView.addSubview(likeButton)
@@ -111,26 +130,5 @@ final class NFTCollectionViewCell: UICollectionViewCell {
             priceValueLabel.bottomAnchor.constraint(equalTo: infoContainerView.bottomAnchor)
             
         ])
-    }
-    
-    @objc
-    private func likeButtonTapped() {
-//        let isActive = likeButton.currentImage == UIImage(named: "heartIsActive")
-//        let newImageName = isActive ? "headrtNoActive" : "heartIsActive"
-//        likeButton.setImage(UIImage(named: newImageName), for: .normal)
-        delegate?.didTapLikeButton(in: self)
-    }
-    
-    func configure(with nft: Nft, isLiked: Bool) {
-        let shortName = nft.name.split(separator: " ").first.map(String.init)
-        nameLabel.text = shortName
-        priceValueLabel.text = "\(nft.price) ETH"
-        ratingView.rating = nft.rating
-        if let imageUrl = nft.images.first {
-            nftImageView.kf.setImage(with: imageUrl)
-        }
-        
-        let likeImageName = isLiked ? "heartIsActive" : "headrtNoActive"
-        likeButton.setImage(UIImage(named: likeImageName), for: .normal)
     }
 }
