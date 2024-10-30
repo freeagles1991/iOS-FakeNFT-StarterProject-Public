@@ -18,13 +18,11 @@ final class ServicesAssembly {
         )
     }
     
-    var userProfileService: UserProfileServiceProtocol {
-        UserProfileService (
-            networkClient: networkClient
-        )
-    }
-    
     var nftCollectionsService: NftCollectionsService {
         NftCollectionsServiceImpl(networkClient: networkClient)
+    }
+    
+    var userProfileService: UserProfileServiceProtocol {
+        UserProfileService(networkClient: networkClient)
     }
 }

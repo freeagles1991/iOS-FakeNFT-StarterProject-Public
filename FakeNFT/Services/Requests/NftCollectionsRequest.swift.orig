@@ -4,7 +4,11 @@
 import Foundation
 
 struct NftCollectionsRequest: NetworkRequest {
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> develop
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/collections")
     }

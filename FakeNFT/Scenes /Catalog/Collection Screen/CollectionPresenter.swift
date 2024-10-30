@@ -15,7 +15,6 @@ protocol CollectionPresenter: AnyObject {
 final class CollectionPresenterImpl: CollectionPresenter {
     
     weak var view: CollectionViewControllerProtocol?
-    
     private var nftArray: [Nft] = []
     private var userProfile: UserProfile?
     var selectedCollection: NftCollection
