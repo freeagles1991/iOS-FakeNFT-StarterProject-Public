@@ -10,6 +10,7 @@ import Foundation
 protocol EditProfilePresenterProtocol: AnyObject {
     func loadProfileData()
     func saveProfileData(name: String, description: String, website: String)
+    func updateAvatarURL(_ url: String)
 }
 
 final class EditProfilePresenter: EditProfilePresenterProtocol {
@@ -39,7 +40,6 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
             id: profile.id
         )
         
-//        view?.didUpdateProfile(updatedProfile)
         userProfileService.updateUserProfile(updatedProfile) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -50,6 +50,30 @@ final class EditProfilePresenter: EditProfilePresenterProtocol {
             case .failure(let error):
                 print("Ошибка обновления профиля: \(error.localizedDescription)")
                 self.view?.showProfile(self.profile)
+            }
+        }
+    }
+    
+    func updateAvatarURL(_ url: String) {
+        let updatedProfile = UserProfile(
+            name: profile.name,
+            avatar: url,
+            description: profile.description,
+            website: profile.website,
+            nfts: profile.nfts,
+            likes: profile.likes,
+            id: profile.id
+        )
+        
+        userProfileService.updateUserProfile(updatedProfile) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.profile = updatedProfile
+                self.view?.didUpdateProfile(updatedProfile)
+                self.view?.showProfile(updatedProfile)
+            case .failure(let error):
+                print("Ошибка обновления профиля: \(error.localizedDescription)")
             }
         }
     }

@@ -15,6 +15,7 @@ extension UserProfile: Dto {
             "name": name,
             "description": description,
             "website": website,
+            "avatar": avatar,
         ]
     }
 }

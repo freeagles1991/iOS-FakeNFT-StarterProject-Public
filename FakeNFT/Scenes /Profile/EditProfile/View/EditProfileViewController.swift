@@ -31,9 +31,24 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
     private lazy var avatarImage: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 35
+        imageView.layer.masksToBounds = true
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
         return imageView
+    }()
+    
+    private lazy var changeAvatarButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Сменить фото", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        button.layer.cornerRadius = 35
+        button.titleLabel?.font = .medium10
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.numberOfLines = 2
+        button.addTarget(self, action: #selector(changeAvatarTapped), for: .touchUpInside)
+        return button
     }()
     
     private lazy var nameLabel: UILabel = {
@@ -87,6 +102,8 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         return textField
     }()
     
+    private var urlAvatarString: String?
+    
     //MARK: - Init
     init(profile: UserProfile, delegate: EditProfileDelegate?, userProfileService: UserProfileServiceProtocol) {
         super.init(nibName: nil, bundle: nil)
@@ -119,12 +136,7 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         
         closeButton.setImage(pencilImage, for: .normal)
         closeButton.tintColor = .segmentActive
-        closeButton.addTarget(self, action: #selector(saveButtonPressed), for: .touchUpInside)
-    }
-    
-    @objc private func saveButtonPressed() {
-        updateProfile()
-        dismiss(animated: true)
+        closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
     }
     
     private func updateProfile() {
@@ -156,12 +168,35 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         delegate?.didUpdateProfile(updatedProfile)
     }
     
+    //MARK: - Objc Methods
+    @objc private func closeButtonPressed() {
+        dismiss(animated: true)
+    }
+    
+    @objc private func changeAvatarTapped() {
+        let alert = UIAlertController(title: "Изменить ссылку на изображение", message: "Введите новую ссылку на изображение", preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.placeholder = "https://example.com/image.jpg"
+            textField.keyboardType = .URL
+        }
+        let saveAction = UIAlertAction(title: "Сохранить", style: .default) { [weak self] _ in
+            guard let self = self,
+                  let urlString = alert.textFields?.first?.text,
+                  !urlString.isEmpty else { return }
+            
+            self.avatarImage.kf.setImage(with: URL(string: urlString))
+            
+            self.presenter?.updateAvatarURL(urlString)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
+    }
+    
     //MARK: - setupLayout()
     private func setupLayout() {
-        let avatarStack = UIStackView(arrangedSubviews: [avatarImage])
-        avatarStack.alignment = .center
-        avatarStack.translatesAutoresizingMaskIntoConstraints = false
-        
         let nameStack = UIStackView(arrangedSubviews: [nameLabel, nameTextField])
         nameStack.axis = .vertical
         nameStack.spacing = 8
@@ -177,7 +212,7 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         websiteStack.spacing = 8
         websiteStack.translatesAutoresizingMaskIntoConstraints = false
         
-        let mainStack = UIStackView(arrangedSubviews: [avatarStack, nameStack, descriptionStack, websiteStack])
+        let mainStack = UIStackView(arrangedSubviews: [nameStack, descriptionStack, websiteStack])
         mainStack.axis = .vertical
         mainStack.spacing = 20
         mainStack.alignment = .fill
@@ -189,18 +224,30 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
         }
         
         view.backgroundColor = .systemBackground
+        view.addSubview(avatarImage)
         view.addSubview(closeButton)
         view.addSubview(mainStack)
+        
+        avatarImage.addSubview(changeAvatarButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
+        avatarImage.translatesAutoresizingMaskIntoConstraints = false
+        changeAvatarButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            avatarImage.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 22),
+            avatarImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             avatarImage.widthAnchor.constraint(equalToConstant: 70),
             avatarImage.heightAnchor.constraint(equalToConstant: 70),
+            
+            changeAvatarButton.widthAnchor.constraint(equalTo: avatarImage.widthAnchor),
+            changeAvatarButton.heightAnchor.constraint(equalTo: avatarImage.heightAnchor),
+            changeAvatarButton.centerXAnchor.constraint(equalTo: avatarImage.centerXAnchor),
+            changeAvatarButton.centerYAnchor.constraint(equalTo: avatarImage.centerYAnchor),
             
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             
-            mainStack.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 20),
+            mainStack.topAnchor.constraint(equalTo: avatarImage.bottomAnchor, constant: 24),
             mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
@@ -209,5 +256,6 @@ final class EditProfileViewController: UIViewController, EditProfileViewProtocol
             websiteTextField.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
+
 }
 
