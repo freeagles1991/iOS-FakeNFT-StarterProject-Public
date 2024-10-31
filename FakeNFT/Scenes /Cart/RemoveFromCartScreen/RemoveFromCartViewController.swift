@@ -13,9 +13,9 @@ final class RemoveFromCartViewControllerImpl: UIViewController, RemoveFromCartVi
     var onConfirm: (() -> Void)?
     
     enum Constants {
-        static let removeText = "Вы уверены, что хотите удалить объект из корзины?"
-        static let removeButtonText = "Удалить"
-        static let cancelButtonText = "Вернуться"
+        static let removeText = NSLocalizedString("RemoveFromCart_removeText", comment: "Confirmation message for removing item from cart")
+        static let removeButtonText = NSLocalizedString("RemoveFromCart_removeButtonText", comment: "Text for the remove button")
+        static let cancelButtonText = NSLocalizedString("RemoveFromCart_cancelButtonText", comment: "Text for the cancel button")
     }
     
     // MARK: - Private Properties

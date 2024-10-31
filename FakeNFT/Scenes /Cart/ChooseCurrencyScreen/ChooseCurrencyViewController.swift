@@ -22,10 +22,11 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         return UIApplication.shared.windows.first
     }()
     
-    enum Constants: String {
-        case payScreenTitle = "Выбор способа оплаты"
-        case userAgreementText = "Совершая покупку, вы соглашаетесь с условиями Пользовательского соглашения"
-        case payButtonText = "Оплатить"
+    enum Constants {
+        static let payScreenTitle = NSLocalizedString("ChooseCurrency_PayScreenTitle", comment: "Выбор способа оплаты")
+        static let userAgreementText = NSLocalizedString("ChooseCurrency_UserAgreementText", comment: "Совершая покупку, вы соглашаетесь с условиями Пользовательского соглашения")
+        static let userAgreementLinkText = NSLocalizedString("ChooseCurrency_UserAgreementLinkText", comment: "Пользовательское соглашение")
+        static let payButtonText = NSLocalizedString("ChooseCurrency_PayButtonText", comment: "Оплатить")
     }
     
     // MARK: - Private Properties
@@ -39,10 +40,10 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            layout.minimumInteritemSpacing = 7
-            layout.minimumLineSpacing = 7
-
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 7
+        layout.minimumLineSpacing = 7
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
@@ -50,7 +51,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     }()
     
     private var lastSelectedCell: IndexPath?
-
+    
     private let itemsPerRow: CGFloat = 2
     private let sectionInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     private let interItemSpacing: CGFloat = 7
@@ -60,9 +61,9 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     private let userAgreementPanelView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-
+        
         view.backgroundColor = UIColor.dynamicLightGray
-
+        
         view.layer.cornerRadius = 16
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
@@ -76,9 +77,9 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         textView.isSelectable = true
         textView.isScrollEnabled = false
         textView.backgroundColor = .clear
-
+        
         textView.dataDetectorTypes = []
-
+        
         return textView
     }()
     
@@ -89,9 +90,9 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.titleLabel?.font = UIFont.bold17
-
+        
         button.setTitleColor(UIColor.dynamicWhite, for: .normal)
-
+        
         return button
     }()
     
@@ -151,7 +152,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     
     // MARK: - Private Methods - Верстка
     private func setupNavigationBarTitle() {
-        self.title = Constants.payScreenTitle.rawValue
+        self.title = Constants.payScreenTitle
     }
     
     private func setupLoadingView() {
@@ -185,7 +186,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
             userAgreementPanelView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             userAgreementPanelView.heightAnchor.constraint(equalToConstant: 184)
         ])
-    
+        
         userAgreementTextView.attributedText = makeUserAgreementLabelWithLink()
         userAgreementPanelView.addSubview(userAgreementTextView)
         
@@ -197,7 +198,7 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
         ])
         
         userAgreementPanelView.addSubview(payButton)
-        payButton.setTitle(Constants.payButtonText.rawValue, for: .normal)
+        payButton.setTitle(Constants.payButtonText, for: .normal)
         payButton.addTarget(self, action: #selector(didPayButtonTapped), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
@@ -212,22 +213,22 @@ final class ChooseCurrencyViewControllerImpl: UIViewController, ChooseCurrencyVi
     
     // MARK: - Private Methods
     private func makeUserAgreementLabelWithLink() -> NSMutableAttributedString {
-        let attributedString = NSMutableAttributedString(string: Constants.userAgreementText.rawValue)
+        let attributedString = NSMutableAttributedString(string: Constants.userAgreementText)
         
         let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 4
+        paragraphStyle.lineSpacing = 4
         
         let font = UIFont.regular13
         attributedString.addAttribute(.font, value: font, range: NSRange(location: 0, length: attributedString.length))
         
         attributedString.addAttribute(.foregroundColor, value: UIColor.dynamicBlack, range: NSRange(location: 0, length: attributedString.length))
         
-        let linkRange = (Constants.userAgreementText.rawValue as NSString).range(of: "Пользовательского соглашения")
+        let linkRange = (Constants.userAgreementText as NSString).range(of: Constants.userAgreementLinkText)
         
         attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedString.length))
         attributedString.addAttribute(.link, value: "https://www.example.com", range: linkRange)
         attributedString.addAttribute(.foregroundColor, value: UIColor.yaBlueUniversal, range: linkRange)
-
+        
         return attributedString
     }
 }
@@ -254,15 +255,15 @@ extension ChooseCurrencyViewControllerImpl: UICollectionViewDataSource, UICollec
         
         return CGSize(width: widthPerItem, height: heightPerItem)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return interItemSpacing
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return verticalItemSpacing
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return sectionInsets
     }

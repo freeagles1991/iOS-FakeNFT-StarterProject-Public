@@ -13,9 +13,9 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     let presenter: SuccessPurchasePresenter
     var onConfirm: (() -> Void)?
     
-    enum Constants: String {
-        case successString = "Успех! Оплата прошла, поздравляем с покупкой!"
-        case doneButtonString = "Вернуться в каталог"
+    enum Constants {
+        static let successString = NSLocalizedString("SuccessPurchase_SuccessMessage", comment: "Message displayed on successful purchase")
+        static let doneButtonString = NSLocalizedString("SuccessPurchase_DoneButtonTitle", comment: "Title for the button to return to catalog")
     }
 
     // MARK: - Private Properties
@@ -43,7 +43,7 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.bold22
-        label.numberOfLines = 2
+        label.numberOfLines = 3
         label.textAlignment = .center
         label.textColor = UIColor.dynamicBlack
         return label
@@ -106,7 +106,7 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     }
     
     private func setupTextLabel() {
-        textLabel.text = Constants.successString.rawValue
+        textLabel.text = Constants.successString
         
         NSLayoutConstraint.activate([
             textLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36 * ScreenSizeHelper.getViewMultiplier()),
@@ -117,7 +117,7 @@ final class SuccessPurchaseViewControllerImpl: UIViewController, SuccessPurchase
     
     private func setupDoneButton() {
         doneButton.addTarget(self, action: #selector(didDoneButtonTapped), for: .touchUpInside)
-        doneButton.setTitle(Constants.doneButtonString.rawValue, for: .normal)
+        doneButton.setTitle(Constants.doneButtonString, for: .normal)
         
         NSLayoutConstraint.activate([
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16 * ScreenSizeHelper.getViewMultiplier()),

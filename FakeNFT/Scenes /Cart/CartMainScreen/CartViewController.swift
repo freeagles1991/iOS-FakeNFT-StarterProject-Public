@@ -28,11 +28,11 @@ final class CartViewController: UIViewController, CartView{
     
     enum Constants {
         static let filterButtonIcon = "filterButtonIcon"
-        static let deleteNftIcon = "deleteNftIcon"
-        static let nftStubImage = "nftStubImage"
-        static let costString = "Цена"
-        static let payButtonString = "К оплате"
-        static let emptyCartLabelString = "Корзина пуста"
+            static let deleteNftIcon = "deleteNftIcon"
+            static let nftStubImage = "nftStubImage"
+            static let costString = NSLocalizedString("Cart_Cost", comment: "Label for displaying the cost")
+            static let payButtonString = NSLocalizedString("Cart_PayButton", comment: "Title for the pay button")
+            static let emptyCartLabelString = NSLocalizedString("Cart_EmptyLabel", comment: "Label shown when the cart is empty")
     }
     
     // MARK: - Private Properties
@@ -132,6 +132,9 @@ final class CartViewController: UIViewController, CartView{
         setupButtonPanel()
         
         presenter.viewDidLoad()
+        
+        let costLabel = Bundle.main.localizedString(forKey: "Cart_Cost", value: nil, table: nil)
+        print("Localized cost label:", costLabel)
         
         view.backgroundColor = .systemBackground
     }

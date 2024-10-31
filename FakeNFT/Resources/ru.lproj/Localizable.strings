@@ -1,0 +1,28 @@
+"Tab.catalog" = "Каталог";
+"Tab.cart" = "Корзина";
+"Tab.profile" = "Профиль";
+"Catalog.openNft" = "Открыть Nft";
+"Error.network" = "Произошла ошибка сети";
+"Error.unknown" = "Произошла неизвестная ошибка";
+"Error.repeat" = "Повторить";
+"Error.title" = "Ошибка";
+
+/* Успешная покупка */
+"SuccessPurchase_SuccessMessage" = "Успех! Оплата прошла, поздравляем с покупкой!";
+"SuccessPurchase_DoneButtonTitle" = "Вернуться в каталог";
+
+/* Удаление из корзины */
+"RemoveFromCart_removeText" = "Вы уверены, что хотите удалить объект из корзины?";
+"RemoveFromCart_removeButtonText" = "Удалить";
+"RemoveFromCart_cancelButtonText" = "Вернуться";
+
+/* Корзина основной экран */
+"Cart_Cost" = "Цена";
+"Cart_PayButton" = "К оплате";
+"Cart_EmptyLabel" = "Корзина пуста";
+
+/* Выбор валюты */
+"ChooseCurrency_PayScreenTitle" = "Выбор способа оплаты";
+"ChooseCurrency_UserAgreementText" = "Совершая покупку, вы соглашаетесь с условиями Пользовательского соглашения";
+"ChooseCurrency_UserAgreementLinkText" = "Пользовательское соглашение";
+"ChooseCurrency_PayButtonText" = "Оплатить";
