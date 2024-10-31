@@ -85,17 +85,17 @@ final class ProfileView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+    //MARK: - Public Methods
     func update(with profile: UserProfile) {
         self.profile = profile
         nameLabel.text = profile.name
         descriptionLabel.text = profile.description
         websiteLabel.text = profile.website
-        
         loadAvatar(from: profile.avatar)
         tableView.reloadData()
     }
     
+    //MARK: - Private Methods
     private func loadAvatar(from urlString: String) {
         let placeholderImage = UIImage(named: "placeholderAvatar")
         guard let avatarURL = URL(string: urlString) else {

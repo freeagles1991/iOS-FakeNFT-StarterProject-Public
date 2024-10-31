@@ -37,7 +37,7 @@ final class MyNFTsViewController: UIViewController {
     
     //MARK: - Private Method
     @objc private func didTapSortButton() {
-        presenter.handleSortSelection()
+        presenter.showSortingAlert()
     }
     
     private func setupUI() {
@@ -73,15 +73,31 @@ extension MyNFTsViewController: UITableViewDataSource {
         }
         
         if let nft = presenter.nft(at: indexPath.row) {
-            cell.configure(with: nft)
+            let isLiked = presenter.isLikedNFT(nft.id)
+            cell.configure(with: nft, isLiked: isLiked)
         }
+        
+        cell.delegate = self
         
         return cell
     }
 }
 
+//MARK: - NFTTableViewCellDelegate
+extension MyNFTsViewController: NFTTableViewCellDelegate {
+    func didTapLikeButton(in cell: NFTTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        presenter.didTapLikeButton(at: indexPath)
+    }
+    
+}
+
 //MARK: - MyNFTsViewProtocol
 extension MyNFTsViewController: MyNFTsViewProtocol {
+    func updateCell(cellIndexPath: IndexPath) {
+        tableView.reloadRows(at: [cellIndexPath], with: .automatic)
+    }
+
     func showAlert(with viewModel: AlertViewModel) {
         let alertController = viewModel.createAlertController()
         present(alertController, animated: true)

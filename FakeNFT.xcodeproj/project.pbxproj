@@ -765,6 +765,7 @@
 				C886C6B12CBB613C00D31171 /* MyNFTsViewController.swift in Sources */,
 				C8D0319A2CC8916D009CA8D1 /* Nft+Sorting.swift in Sources */,
 				3FC8C39329D246BA0081F015 /* DateFormatters+Presets.swift in Sources */,
+				C8598B462CD0439E006BDCD2 /* UpdateUserProfileRequest.swift in Sources */,
 				C8D031862CC3FD79009CA8D1 /* EditProfilePresenter.swift in Sources */,
 				C8746FE62CD06B6E00E6CCCA /* UpdateUserProfileRequest.swift in Sources */,
 				0CFCB7422A78013E0009A829 /* Nft.swift in Sources */,

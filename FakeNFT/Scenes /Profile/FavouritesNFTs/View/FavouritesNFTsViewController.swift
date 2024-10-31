@@ -12,8 +12,9 @@ final class FavouritesNFTsViewController: UIViewController {
     private var presenter : FavouritesNFTsPresenter
     private var params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 8)
     
-    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    internal let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
+    //MARK: - Init
     init(presenter: FavouritesNFTsPresenter) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
@@ -24,12 +25,14 @@ final class FavouritesNFTsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         presenter.viewDidLoad()
+        setupUI()
     }
     
+    //MARK: - Private Methods
     private  func setupUI() {
         view.backgroundColor = .systemBackground
         title = "Избранные NFT"
@@ -66,9 +69,11 @@ extension FavouritesNFTsViewController: UICollectionViewDataSource {
         }
         
         if let nft = presenter.nft(at: indexPath.row) {
-            cell.configure(with: nft)
+            let isLiked = presenter.isLikedNFT(nft.id)
+            cell.configure(with: nft, isLiked: isLiked)
         }
         
+        cell.delegate = self
         return cell
     }
     
@@ -92,6 +97,14 @@ extension FavouritesNFTsViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 20
+    }
+}
+
+//MARK: - NFTCollectionViewCellDelegate
+extension FavouritesNFTsViewController: NFTCollectionViewCellDelegate {
+    func didTapLikeButton(in cell: NFTCollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        presenter.didTapLikeButton(at: indexPath)
     }
 }
 

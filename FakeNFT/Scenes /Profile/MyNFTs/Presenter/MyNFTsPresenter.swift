@@ -17,71 +17,39 @@ protocol MyNFTsViewProtocol: AnyObject {
     func showError(message: String)
     func updateRightBarButtonItem(_ item: UIBarButtonItem?)
     func showAlert(with viewModel: AlertViewModel)
+    func updateCell(cellIndexPath: IndexPath)
 }
 
 protocol MyNFTsPresenterProtocol {
     func viewDidLoad()
     var numberOfNFTs: Int { get }
     func nft(at index: Int) -> Nft?
-    func handleSortSelection()
+    func isLikedNFT(_ nftID: String) -> Bool
+    func showSortingAlert()
+    func didTapLikeButton(at index: IndexPath)
 }
 
 final class MyNFTsPresenter: MyNFTsPresenterProtocol {
-
     // MARK: - Properties
     weak var view: MyNFTsViewProtocol?
-    private let nftService: NftService
-    private let profile: UserProfile
+    private let servicesAssembly: ServicesAssembly
+    private var profile: UserProfile
     private var nfts: [Nft] = []
-    private let sortKey = "selectedSortCriterion"
 
     // MARK: - Init
-    init(view: MyNFTsViewProtocol?, nftService: NftService, profile: UserProfile) {
+    init(view: MyNFTsViewProtocol?, servicesAssembly: ServicesAssembly, profile: UserProfile) {
         self.view = view
-        self.nftService = nftService
+        self.servicesAssembly = servicesAssembly
         self.profile = profile
     }
 
-    // MARK: - Life Cycle
+    // MARK: - Public Methods
     func viewDidLoad() {
         loadNFTs()
-        applySavedSortOption()
-    }
-
-    // MARK: - Loading NFTs
-    private func loadNFTs() {
-        guard !profile.nfts.isEmpty else {
-            view?.setBackgroundView(message: "У вас еще нет NFT.")
-            return
-        }
-        
-        view?.showLoadingIndicator()
-        fetchNFTs { [weak self] in
-            self?.handleLoadedNFTs()
-        }
     }
     
-    private func fetchNFTs(completion: @escaping () -> Void) {
-        let dispatchGroup = DispatchGroup()
-        
-        for nftID in profile.nfts {
-            dispatchGroup.enter()
-            nftService.loadNft(id: nftID) { [weak self] result in
-                self?.handleNFTLoadResult(result, id: nftID)
-                dispatchGroup.leave()
-            }
-        }
-        
-        dispatchGroup.notify(queue: .main, execute: completion)
-    }
-    
-    private func handleNFTLoadResult(_ result: Result<Nft, Error>, id: String) {
-        switch result {
-        case .success(let nft):
-            nfts.append(nft)
-        case .failure:
-            view?.showError(message: "Ошибка загрузки NFT с ID \(id).")
-        }
+    func isLikedNFT(_ nftID: String) -> Bool {
+        return profile.likes.contains(nftID)
     }
     
     private func handleLoadedNFTs() {
@@ -90,55 +58,105 @@ final class MyNFTsPresenter: MyNFTsPresenterProtocol {
             view?.setBackgroundView(message: "У вас еще нет NFT.")
             view?.updateRightBarButtonItem(nil)
         } else {
+            applySavedSortOption()
             view?.setBackgroundView(message: nil)
             view?.setupNavigationItem()
             view?.reloadData()
         }
     }
-
-    // MARK: - Sorting NFTs
-    func handleSortSelection() {
-        let sortOptions: [SortCriterion] = [.price, .name, .rating]
-        let alertActions = sortOptions.map { criterion in
-            AlertViewModel.AlertAction(title: criterion.displayName, style: .default) { [weak self] in
-                self?.sortNFTs(by: criterion)
+    
+    func didTapLikeButton(at index: IndexPath) {
+        guard index.row < nfts.count else { return }
+        
+        let currentNft = nfts[index.row]
+        let isLiked = profile.likes.contains(currentNft.id)
+        
+        let updatedLikes = isLiked ? profile.likes.filter { $0 != currentNft.id } : profile.likes + [currentNft.id]
+        let likesString = updatedLikes.isEmpty ? "null" : updatedLikes.joined(separator: ", ")
+        
+        servicesAssembly.userProfileService.changeLike(newNftLikes: likesString) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.handleLikeChangeResult(result, for: index)
             }
         }
-        let cancelAction = AlertViewModel.AlertAction(title: "Отменить", style: .cancel, handler: nil)
-        let alertViewModel = AlertViewModel(
-            title: "Сортировка",
-            message: "Выберите способ сортировки",
-            actions: alertActions + [cancelAction],
-            preferredStyle: .actionSheet
-        )
-        view?.showAlert(with: alertViewModel)
     }
     
-    private func sortNFTs(by criterion: SortCriterion) {
-        nfts.sort { $0.compare(with: $1, by: criterion) }
-        saveSortOption(criterion)
-        view?.reloadData()
-    }
-    
-    // MARK: - Handling Saved Sort Option
-    private func saveSortOption(_ criterion: SortCriterion) {
-        UserDefaults.standard.set(criterion.rawValue, forKey: sortKey)
-    }
-    
-    private func applySavedSortOption() {
-        guard let savedValue = UserDefaults.standard.string(forKey: sortKey),
-              let savedCriterion = SortCriterion(rawValue: savedValue) else { return }
-        sortNFTs(by: savedCriterion)
-    }
-
-    // MARK: - NFT Access
+    //MARK: - NFT Access
     var numberOfNFTs: Int {
         return nfts.count
     }
-    
+
     func nft(at index: Int) -> Nft? {
         return index < nfts.count ? nfts[index] : nil
     }
+    
+    //MARK: - Private Methods
+    //  Loading NFTs
+    private func loadNFTs() {
+        guard !profile.nfts.isEmpty else {
+            view?.setBackgroundView(message: "У вас еще нет NFT.")
+            return
+        }
+
+        view?.showLoadingIndicator()
+        fetchNFTs { [weak self] in
+            self?.handleLoadedNFTs()
+        }
+    }
+
+    private func fetchNFTs(completion: @escaping () -> Void) {
+        let dispatchGroup = DispatchGroup()
+
+        for nftID in profile.nfts {
+            dispatchGroup.enter()
+            servicesAssembly.nftService.loadNft(id: nftID) { [weak self] result in
+                self?.handleNFTLoadResult(result, id: nftID)
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main, execute: completion)
+    }
+
+    private func handleNFTLoadResult(_ result: Result<Nft, Error>, id: String) {
+        switch result {
+        case .success(let nft):
+            nfts.append(nft)
+        case .failure:
+            view?.showError(message: "Ошибка загрузки NFT с ID \(id).")
+        }
+    }
+
+    private func handleLikeChangeResult(_ result: Result<UserProfile, Error>, for index: IndexPath) {
+        switch result {
+        case .success(let updatedProfile):
+            profile = updatedProfile
+            view?.updateCell(cellIndexPath: index)
+        case .failure(let error):
+            print("Error: \(error.localizedDescription)")
+            view?.showError(message: "Ошибка обновления лайков: \(error.localizedDescription)")
+        }
+    }
+
 }
+
+// MARK: - SortingDelegate
+extension MyNFTsPresenter: SortingDelegate {
+    func sortNFTs(by criterion: SortingMethod) {
+        nfts.sort { $0.compare(with: $1, by: criterion) }
+        view?.reloadData()
+    }
+
+    private func applySavedSortOption() {
+        let savedCriterion = SortingHelper.savedSortingMethodInCart
+        sortNFTs(by: savedCriterion)
+    }
+
+    func showSortingAlert() {
+        guard let alertViewModel = SortingHelper.makeSortingAlertViewModel(sortingDelegate: self) else { return }
+        view?.showAlert(with: alertViewModel)
+    }
+}
+
 
 

@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol NFTCollectionViewCellDelegate: AnyObject {
+    func didTapLikeButton(in cell: NFTCollectionViewCell)
+}
+
 final class NFTCollectionViewCell: UICollectionViewCell {
     static let identifier = "NFTCollectionViewCell"
+    
+    weak var delegate: NFTCollectionViewCellDelegate?
     
     private let nftImageView: UIImageView = {
         let imageView = UIImageView()
@@ -51,7 +57,7 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -62,6 +68,25 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with nft: Nft, isLiked: Bool) {
+        let shortName = nft.name.split(separator: " ").first.map(String.init)
+        nameLabel.text = shortName
+        priceValueLabel.text = "\(nft.price) ETH"
+        ratingView.rating = nft.rating
+        if let imageUrl = nft.images.first {
+            nftImageView.kf.setImage(with: imageUrl)
+        }
+        
+        let likeImageName = isLiked ? "heartIsActive" : "headrtNoActive"
+        likeButton.setImage(UIImage(named: likeImageName), for: .normal)
+    }
+    
+    //MARK: - Private Methods0
+    @objc
+    private func likeButtonTapped() {
+        delegate?.didTapLikeButton(in: self)
+    }
+    
     private func setupUI() {
         contentView.addSubview(nftImageView)
         contentView.addSubview(likeButton)
@@ -70,7 +95,6 @@ final class NFTCollectionViewCell: UICollectionViewCell {
         infoContainerView.addSubview(nameLabel)
         infoContainerView.addSubview(ratingView)
         infoContainerView.addSubview(priceValueLabel)
-        
         
         [nftImageView, likeButton, infoContainerView, nameLabel, ratingView,priceValueLabel].forEach { $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -105,22 +129,5 @@ final class NFTCollectionViewCell: UICollectionViewCell {
             priceValueLabel.bottomAnchor.constraint(equalTo: infoContainerView.bottomAnchor)
             
         ])
-    }
-    
-    @objc
-    private func likeButtonTapped() {
-        let isActive = likeButton.currentImage == UIImage(named: "heartIsActive")
-        let newImageName = isActive ? "headrtNoActive" : "heartIsActive"
-        likeButton.setImage(UIImage(named: newImageName), for: .normal)
-    }
-    
-    func configure(with nft: Nft) {
-        let shortName = nft.name.split(separator: " ").first.map(String.init)
-        nameLabel.text = shortName
-        priceValueLabel.text = "\(nft.price) ETH"
-        ratingView.rating = nft.rating
-        if let imageUrl = nft.images.first {
-            nftImageView.kf.setImage(with: imageUrl)
-        }
     }
 }

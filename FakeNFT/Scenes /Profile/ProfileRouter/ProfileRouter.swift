@@ -26,9 +26,10 @@ final class ProfileRouter: ProfileRouterProtocol {
     }
     
     func navigateToEditProfile(from view: ProfileViewController, with profile: UserProfile) {
-        let editProfileVC = EditProfileViewController(profile: profile, delegate: view)
+        let editProfileVC = assemblyBuilder.createEditProfileModule(profile: profile, delegate: view)
         viewController?.present(editProfileVC, animated: true)
     }
+
     
     func navigateToMyNFTs(from view: ProfileViewController, with profile: UserProfile) {
         let myNFTsViewController = assemblyBuilder.createMyNFTsModule(from: view, with: profile)
@@ -37,7 +38,6 @@ final class ProfileRouter: ProfileRouterProtocol {
         }
     }
 
-    
     func navigateToFavoritesNFTs(from view: ProfileViewController, with profile: UserProfile) {
         let favoritesNFTsVC = assemblyBuilder.favouritesNFTsModule(from: view, with: profile)
         if let navigationController = view.navigationController {
