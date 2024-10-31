@@ -16,6 +16,7 @@ final class TabBarController: UITabBarController {
         let profileController = createProfileModule()
         
         viewControllers = [profileController, catalogNavigationController, cartNavigationController]
+        selectedIndex = 1
     }
     
     private func configureCatalogVC() -> UINavigationController {

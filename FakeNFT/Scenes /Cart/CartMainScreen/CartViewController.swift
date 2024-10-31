@@ -154,7 +154,7 @@ final class CartViewController: UIViewController, CartView{
     }
     
     func configureTotalCost(totalPrice: Double, nftsCount: Int) {
-        totalCostLabel.text = "\(totalPrice) ETH"
+        totalCostLabel.text = "\((totalPrice * 100).rounded()/100) ETH"
         nftCountLabel.text = "\(nftsCount) NFT"
     }
     
