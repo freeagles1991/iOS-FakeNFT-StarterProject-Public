@@ -2,36 +2,44 @@ import UIKit
 
 final class TabBarController: UITabBarController {
 
+
     var servicesAssembly: ServicesAssembly!
+
+    private let catalogTabBarItem = UITabBarItem(
+        title: NSLocalizedString("Tab.catalog", comment: ""),
+        image: UIImage(named: "catalogTabBarIcon_nonactive"),
+        selectedImage: UIImage(named: "catalogTabBarIcon_active")
+    )
+    
+    private let cartTabBarItem = UITabBarItem(
+        title: NSLocalizedString("Tab.cart", comment: ""),
+        image: UIImage(named: "cartTabBarIcon_nonactive"),
+        selectedImage: UIImage(named: "cartTabBarIcon_active")
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let catalogAssembly = CatalogAssembly(servicesAssembly: servicesAssembly)
+        let cataloViewController = catalogAssembly.build()
+        let catalogNavigationController = UINavigationController(rootViewController: cataloViewController)
+        
+        catalogNavigationController.tabBarItem = catalogTabBarItem
+        
+        let cartNavigationController = configureCartVC()
 
-        setupViewControllers()
+        viewControllers = [catalogNavigationController, cartNavigationController]
         view.backgroundColor = .systemBackground
     }
     
-    private func setupViewControllers() {
-        let catalogController = createCatalogModule()
-        let profileController = createProfileModule()
-        
-        viewControllers = [profileController, catalogController]
+    //Конфигурируем вкладку корзины
+    private func configureCartVC() -> UIViewController {
+        let cartAssembly = CartAssembly(servicesAssembler: servicesAssembly)
+        let cartController = cartAssembly.build()
+        let cartNavigationController = UINavigationController(rootViewController: cartController)
+        cartNavigationController.modalPresentationStyle = .fullScreen
+        cartNavigationController.tabBarItem = cartTabBarItem
+        return cartNavigationController
     }
     
-    private func createCatalogModule() -> UIViewController {
-        let catalogController = TestCatalogViewController(servicesAssembly: servicesAssembly)
-        catalogController.tabBarItem = createTabBarItem(title: NSLocalizedString("Tab.catalog", comment: ""), imageName: "square.stack.3d.up.fill", tag: 1)
-        return catalogController
-    }
-    
-    private func createProfileModule() -> UIViewController {
-        let builder = AssemblyBuilderProfile(servicesAssembly: servicesAssembly)
-        let profileController = builder.createProfileModule()
-        profileController.tabBarItem = createTabBarItem(title: "profile", imageName: "person.crop.circle.fill", tag: 0)
-        return profileController
-    }
-    
-    private func createTabBarItem(title: String, imageName: String, tag: Int) -> UITabBarItem {
-        return UITabBarItem(title: title, image: UIImage(systemName: imageName), tag: tag)
-    }
 }

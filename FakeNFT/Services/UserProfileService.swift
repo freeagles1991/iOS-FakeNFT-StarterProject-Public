@@ -22,16 +22,10 @@ final class UserProfileService: UserProfileServiceProtocol {
     
     func fetchUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         let request = UserProfileRequest()
-        networkClient.send(request: request) { [weak self] result in
-            guard self != nil  else { return }
+        networkClient.send(request: request, type: UserProfile.self) { result in
             switch result {
-            case .success(let data):
-                do {
-                    let profile = try JSONDecoder().decode(UserProfile.self, from: data)
-                    completion(.success(profile))
-                } catch {
-                    completion(.failure(NetworkClientError.parsingError))
-                }
+            case .success(let userProfile):
+                completion(.success(userProfile))
             case .failure(let error):
                 completion(.failure(error))
             }

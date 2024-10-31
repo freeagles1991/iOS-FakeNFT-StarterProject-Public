@@ -1,10 +1,3 @@
-//
-//  CartStore.swift
-//  FakeNFT
-//
-//  Created by Дима on 11.10.2024.
-//
-
 import Foundation
 import UIKit
 
@@ -12,7 +5,6 @@ final class CartStore {
     private static let cartKey = "nftsInCart"
     static let cartChangedNotification = Notification.Name("CartStoreCartChanged")
 
-    // Сохраняем и получаем IDшники NFT в корзине
     static var nftsInCart: Set<String> {
         get {
             guard let data = UserDefaults.standard.data(forKey: cartKey),
@@ -30,4 +22,6 @@ final class CartStore {
             NotificationCenter.default.post(name: CartStore.cartChangedNotification, object: nil)
         }
     }
+    
+    static var nftLargeImageURL: URL?
 }
