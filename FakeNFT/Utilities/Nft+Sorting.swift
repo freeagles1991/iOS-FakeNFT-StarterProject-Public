@@ -8,11 +8,11 @@ extension SortingMethod {
     var displayName: String {
         switch self {
         case .price:
-            return "По цене"
+            return NSLocalizedString("SortingMethod_Price", comment: "Sort by price")
         case .name:
-            return "По названию"
+            return NSLocalizedString("SortingMethod_Name", comment: "Sort by name")
         case .rating:
-            return "По рейтингу"
+            return NSLocalizedString("SortingMethod_Rating", comment: "Sort by rating")
         }
     }
 }

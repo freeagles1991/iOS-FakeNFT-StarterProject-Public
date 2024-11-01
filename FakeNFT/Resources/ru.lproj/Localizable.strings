@@ -26,3 +26,10 @@
 "ChooseCurrency_UserAgreementText" = "Совершая покупку, вы соглашаетесь с условиями Пользовательского соглашения";
 "ChooseCurrency_UserAgreementLinkText" = "Пользовательское соглашение";
 "ChooseCurrency_PayButtonText" = "Оплатить";
+
+/* Сортировка */
+"SortingMethod_Price" = "По цене";
+"SortingMethod_Name" = "По названию";
+"SortingMethod_Rating" = "По рейтингу";
+"Sorting_CancelButton" = "Отменить";
+"Sorting_Title" = "Сортировка";

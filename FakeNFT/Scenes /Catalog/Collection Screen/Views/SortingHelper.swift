@@ -9,9 +9,9 @@ final class SortingHelper {
     private static let sortingMethodKey = "savedSortingMethodInCart"
     private static let sortingMethodKeyForMyNFTs = "savedSortingMethodInMyNFTs"
     
-    enum Constants: String {
-        case cancelButtonString = "Отменить"
-        case titleString = "Сортировка"
+    enum Constants {
+        static let cancelButtonString = NSLocalizedString("Sorting_CancelButton", comment: "Cancel button title for sorting")
+        static let titleString = NSLocalizedString("Sorting_Title", comment: "Title for sorting screen")
     }
 
     static var savedSortingMethodInCart: SortingMethod {
@@ -50,9 +50,9 @@ final class SortingHelper {
                 sortingDelegate.sortNFTs(by: sortingMethod)
             }
         }
-        let cancelAction = AlertViewModel.AlertAction(title: Constants.cancelButtonString.rawValue, style: .cancel, handler: nil)
+        let cancelAction = AlertViewModel.AlertAction(title: Constants.cancelButtonString, style: .cancel, handler: nil)
         let alertViewModel = AlertViewModel(
-            title: Constants.titleString.rawValue,
+            title: Constants.titleString,
             message: nil,
             actions: alertActions + [cancelAction],
             preferredStyle: .actionSheet

@@ -26,3 +26,10 @@
 "ChooseCurrency_UserAgreementText" = "By making a purchase, you agree to the terms of the User Agreement";
 "ChooseCurrency_UserAgreementLinkText" = "User Agreement";
 "ChooseCurrency_PayButtonText" = "Pay";
+
+/* Sorting */
+"SortingMethod_Price" = "By Price";
+"SortingMethod_Name" = "By Name";
+"SortingMethod_Rating" = "By Rating";
+"Sorting_CancelButton" = "Cancel";
+"Sorting_Title" = "Sorting";
